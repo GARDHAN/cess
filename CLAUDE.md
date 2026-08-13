@@ -3,9 +3,12 @@
 Website for the Centre for Ecological and Social Sustainability at CHRIST (Deemed
 to be University), Bangalore.
 
-The Centre is attributed to the university directly and **no school is named** —
-the two source documents disagreed and it was never confirmed. Don't reintroduce a
-school name without it being verified.
+The Centre sits in the **Department of Social Work** at CHRIST. That was open for a
+while — the two source documents named different schools — and was settled by the
+client in `docs/ improvements.docx` (2026-08-14), which both instructs "instead of
+faculty u can mention department social work" and gives the footer line verbatim.
+Use the department, not a school. "Faculty" still means academic staff elsewhere on
+the page and should stay that way.
 
 ## Stack
 
@@ -76,6 +79,18 @@ Tokens live in `:root`. Use them rather than literal colours.
   at rest reports `scrollLeft` of about 3, not 0. The end-detection tolerance in
   `main.js` (`EPS`) exists for that; don't tighten it or the left arrow never
   disables and the edge mask never clears.
+- **Marquees** are the rail's moving cousin, used where the client asked for a row
+  that travels on its own: `.marq` > `.marq__row` > `.marq__track` of `.mcard`s.
+  The script duplicates the track and both slide left by exactly their own width,
+  so the loop has no seam — which only holds while a track is wider than the row,
+  hence the repeat-until-wide-enough loop for short sets. Duration is set from the
+  measured width so every marquee travels at the same px/sec whatever it carries.
+  It pauses on hover and focus, and falls back to a plain scroller under
+  `prefers-reduced-motion` or if the script never runs.
+
+A marquee's infinite animation stops headless Chrome's virtual clock from ever
+going idle, so `--virtual-time-budget` hangs on this page. Use `--timeout=6000`
+instead. Any `?debug=` query also freezes the tracks for the same reason.
 
 ## Content rules
 
@@ -104,3 +119,17 @@ below is CESS green.
 The site currently uses no photography. The CC BY-SA stock photographs that were
 in `images/` were removed unused; if any come back, the licence requires visible
 attribution on every page that shows them.
+
+The client asked for pictures in the marquee cards and none are licensed yet, so
+`.mcard__fig` draws a soft field from the same orb language as the page rather
+than leaving an empty box. Dropping an `<img>` inside the element covers the
+drawing — no other change to the card is needed.
+
+## Client review, 2026-08-14
+
+`docs/ improvements.docx` is the client's own annotated review — text plus nine
+screenshots. The screenshots are of a **different build** of the CESS site, not
+this one, so its instructions map by role rather than by matching text: its
+"areas" screenshot means `#areas` here, its "accomplishments" one became
+`#building`, and so on. Content in that document overrides the annual report
+wherever the two differ; it is the Centre speaking about itself.

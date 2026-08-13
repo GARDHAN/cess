@@ -96,6 +96,68 @@
     sync();
   });
 
+  /* continuous marquees — rows that travel on their own.
+
+     Two tracks sit side by side and both slide left by exactly their own
+     width, so when the animation restarts, track two is standing where track
+     one began and the loop shows no seam. That only holds if a track is wider
+     than the visible row, so a short set is repeated until it is; otherwise a
+     three-card section would loop with a gap in it.
+
+     Speed is fixed in pixels per second rather than in seconds per lap, so a
+     six-card row and a three-card row travel at the same pace. */
+  var MARQ_PX_PER_SEC = 34;
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  $$(".marq").forEach(function(marq){
+    var row = marq.querySelector(".marq__row");
+    var track = marq.querySelector(".marq__track");
+    if(!row || !track) return;
+
+    /* a reader who has asked for less motion gets the same row to push
+       themselves, not a stalled animation */
+    if(reduced){ marq.classList.add("marq--static"); marq.setAttribute("data-ready",""); return; }
+
+    var seed = Array.prototype.slice.call(track.children);
+    if(!seed.length) return;
+
+    function build(){
+      /* start from the original set every time, so a resize does not stack
+         clones from the previous pass on top of the ones before it */
+      while(track.children.length > seed.length) track.removeChild(track.lastChild);
+      var twin = row.querySelector('[data-marq-twin]');
+      if(twin) row.removeChild(twin);
+
+      var visible = marq.clientWidth;
+      /* repeat the set until one track alone can cover the row */
+      var guard = 0;
+      while(track.scrollWidth < visible && guard++ < 12){
+        seed.forEach(function(el){ track.appendChild(el.cloneNode(true)); });
+      }
+
+      var w = track.scrollWidth;
+      marq.style.setProperty("--marq-dur", (w / MARQ_PX_PER_SEC).toFixed(1) + "s");
+
+      var copy = track.cloneNode(true);
+      copy.setAttribute("data-marq-twin", "");
+      copy.setAttribute("aria-hidden", "true");
+      /* the duplicate is decoration; nothing in it should be tabbable */
+      Array.prototype.forEach.call(copy.querySelectorAll("a,button"), function(el){
+        el.setAttribute("tabindex", "-1");
+      });
+      row.appendChild(copy);
+      marq.setAttribute("data-ready", "");
+    }
+
+    build();
+
+    var rt;
+    addEventListener("resize", function(){
+      clearTimeout(rt);
+      rt = setTimeout(build, 200);
+    });
+  });
+
   /* ghost wordmark drifts a little against the scroll */
   var mark = document.querySelector(".hero__mark");
   if(mark && !matchMedia("(prefers-reduced-motion: reduce)").matches){

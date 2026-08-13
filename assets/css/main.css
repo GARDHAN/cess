@@ -695,3 +695,135 @@ button{ font:inherit; color:inherit; background:none; border:0; }
   color:var(--text-mute); margin-left:.2rem;
 }
 @media (hover:none){ .rail__btn{ display:none; } }
+
+/* ==========================================================
+   Client review, 2026-08-14 — additions
+   ========================================================== */
+
+/* ---------- hero tagline ---------- */
+.hero__tag{
+  font-size:clamp(1.35rem,2.6vw,2.15rem); font-weight:500; letter-spacing:-.03em;
+  color:var(--green-2); margin-top:clamp(18px,2vw,26px);
+}
+.hero .lede + .lede{ margin-top:.9rem; }
+
+/* ---------- discipline chips ----------
+   The Centre works across six disciplines and names them as a set, so they
+   read as one row of labels rather than six separate statements. */
+.chips{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1rem; }
+.chip{
+  display:inline-flex; align-items:center; gap:.45rem;
+  padding:.42rem .85rem; border-radius:999px;
+  border:1px solid var(--line); background:var(--paper-2);
+  font-size:.86rem; letter-spacing:-.005em; color:var(--text);
+  transition:border-color .3s var(--e), transform .3s var(--e), box-shadow .3s var(--e);
+}
+.chip::before{
+  content:""; width:6px; height:6px; border-radius:50%;
+  background:var(--chip, var(--leaf)); flex:none;
+}
+.chip:hover{ border-color:var(--chip, var(--leaf)); transform:translateY(-1px);
+  box-shadow:0 10px 22px -18px rgba(16,36,26,.6); }
+
+.prose .micro--inline{ display:block; margin-top:1.6rem; }
+
+/* ---------- continuous marquee ----------
+   A rail moves when you push it; a marquee moves on its own. Used where the
+   client asked for the row to travel continuously. The whole set of items is
+   duplicated in a second track, and both tracks slide left by exactly their
+   own width — at which point track two sits where track one began, so the
+   loop has no seam. Duration is set in JS from the measured width, so the
+   speed is the same however many cards a section carries.
+
+   It pauses on hover and on keyboard focus: the cards carry readable text,
+   and text that will not hold still cannot be read. */
+.marq{
+  margin-top:clamp(30px,3.6vw,52px); overflow:hidden;
+  /* a card is always mid-way through the cut at both ends; the fade makes the
+     cut read as the row continuing rather than as a card that got clipped */
+  /* narrow, and in px not %: a card is only ~258px wide at its smallest, and a
+     percentage fade would reach past its padding and dim the first word */
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 16px),transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 16px),transparent 100%);
+}
+/* the fade only makes sense while the row is moving */
+.marq--static{ -webkit-mask-image:none; mask-image:none; }
+.marq__row{ display:flex; width:max-content; }
+.marq__track{
+  display:flex; gap:clamp(14px,1.5vw,20px);
+  padding-right:clamp(14px,1.5vw,20px);
+  animation:marq var(--marq-dur,60s) linear infinite;
+}
+@keyframes marq{ from{ transform:translateX(0); } to{ transform:translateX(-100%); } }
+.marq:hover .marq__track,
+.marq:focus-within .marq__track{ animation-play-state:paused; }
+
+.marq__hint{
+  display:flex; align-items:center; gap:.5rem;
+  font-size:.66rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--text-mute); margin-top:clamp(12px,1.4vw,18px);
+}
+.marq__hint::before{ content:""; width:18px; height:1px; background:var(--line); }
+/* nothing hovers on a touch screen */
+@media (hover:none){ .marq__hint{ display:none; } }
+
+/* before the script measures and clones, show one readable row rather than a
+   stalled animation on a half-empty track */
+.marq:not([data-ready]) .marq__track{ animation:none; }
+.marq:not([data-ready]) .marq__row{ width:auto; max-width:100%; }
+.marq:not([data-ready]) .marq__track{ overflow-x:auto; scrollbar-width:none; }
+
+/* reduced motion, and any browser where the script did not run: the row stays
+   a plain horizontal scroller the reader drives */
+.marq--static{ overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; }
+.marq--static::-webkit-scrollbar{ display:none; }
+.marq--static .marq__track{ animation:none; }
+@media (prefers-reduced-motion:reduce){
+  .marq__track{ animation:none !important; }
+}
+
+/* ---------- marquee card ---------- */
+.mcard{
+  width:clamp(258px,26vw,340px); flex:none;
+  display:flex; flex-direction:column; gap:.9rem;
+  padding:.55rem .55rem 1.15rem;
+  border:1px solid var(--line); border-radius:var(--r); background:var(--paper-2);
+  transition:border-color .35s var(--e), transform .35s var(--e), box-shadow .35s var(--e);
+}
+.mcard:hover{ border-color:var(--leaf); transform:translateY(-3px);
+  box-shadow:0 14px 30px -24px rgba(16,36,26,.5); }
+.mcard__body{ padding-inline:.6rem; display:flex; flex-direction:column; gap:.5rem; }
+.mcard h3{ font-size:var(--t-h3); font-weight:600; letter-spacing:-.018em; }
+.mcard p{ font-size:.92rem; color:var(--text-soft); }
+.mcard .micro{ color:var(--text-mute); }
+
+/* The picture plate. No photography is licensed for the site yet, so each
+   plate is drawn from the same orb language as the page rather than left as
+   an empty box. Drop an <img> inside and it covers the drawing — the card
+   needs no other change. */
+.mcard__fig{
+  position:relative; aspect-ratio:16/10; overflow:hidden;
+  border-radius:calc(var(--r) - 3px);
+  background:var(--fig-bg,#EFF4EB);
+}
+.mcard__fig::before,
+.mcard__fig::after{ content:""; position:absolute; border-radius:50%; }
+.mcard__fig::before{
+  width:86%; aspect-ratio:1; left:-16%; top:-34%;
+  background:radial-gradient(closest-side, var(--fig-a,rgba(53,169,106,.55)) 0%, transparent 70%);
+}
+.mcard__fig::after{
+  width:70%; aspect-ratio:1; right:-14%; bottom:-30%;
+  background:radial-gradient(closest-side, var(--fig-b,rgba(189,227,136,.75)) 0%, transparent 72%);
+}
+.mcard__fig img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.mcard__fig i{
+  position:absolute; left:.85rem; bottom:.7rem; font-style:normal;
+  font-size:.62rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--green); mix-blend-mode:multiply;
+}
+
+/* ---------- footer social row ---------- */
+.foot__social{ display:flex; gap:1.1rem; flex-wrap:wrap; margin-top:.9rem; }
+.foot__social a{ font-size:.86rem; color:var(--green-2); text-decoration:none; }
+.foot__social a:hover{ text-decoration:underline; }

@@ -103,6 +103,13 @@ const server = createServer(async (req, res) => {
       // headless screenshot doesn't capture a page of invisible sections.
       // ?debug=widths — report any element wider than the viewport into the
       // document title, so a headless --dump-dom can read it back.
+      // any debug query freezes the marquees for the same reason ?reveal=all does
+      if (url.searchParams.has("debug")) {
+        body = body.replace(
+          /<\/head>/i,
+          `<style>.marq__track{ animation:none !important; }</style></head>`
+        );
+      }
       if (url.searchParams.get("debug") === "widths") {
         body = body.replace(
           /<\/body>/i,
@@ -136,6 +143,15 @@ const server = createServer(async (req, res) => {
                          " cw=" + Math.round(r.clientWidth) +
                          " sw=" + Math.round(r.scrollWidth) +
                          " pos=" + r.dataset.pos);
+              });
+              document.querySelectorAll(".marq").forEach(function(m){
+                var tr = m.querySelectorAll(".marq__track");
+                out.push("marq[" + (m.closest("section")||{}).id + "] tracks=" + tr.length +
+                         " cards=" + (tr[0] ? tr[0].children.length : 0) +
+                         " trackW=" + (tr[0] ? tr[0].scrollWidth : 0) +
+                         " boxW=" + m.clientWidth +
+                         " dur=" + getComputedStyle(tr[0]||m).animationDuration +
+                         " ready=" + m.hasAttribute("data-ready"));
               });
               document.title = "RAILS " + out.join(" | ") +
                 " || pageScrollWidth=" + document.documentElement.scrollWidth +
@@ -173,6 +189,9 @@ const server = createServer(async (req, res) => {
           `<style>
             .r{ opacity:1 !important; transform:none !important; }
             .chart .trk .mark{ width:calc(var(--v) * 1%) !important; transition:none !important; }
+            /* an infinite animation never lets headless Chrome's virtual clock
+               go idle, so --virtual-time-budget hangs instead of returning */
+            .marq__track{ animation:none !important; }
           </style></head>`
         );
       }
