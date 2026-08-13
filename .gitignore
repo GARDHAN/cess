@@ -1,0 +1,30 @@
+# macOS
+.DS_Store
+._*
+
+# Node
+node_modules/
+npm-debug.log*
+.npm/
+
+# Build output
+dist/
+.cache/
+.parcel-cache/
+.astro/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Env
+.env
+.env.local
+
+# Internal source documents — kept locally, deliberately not published.
+# The annual report contains photographs of identifiable children and
+# community members, named staff, and revenue strategy. Remove these two
+# lines only if the repo is private or these are cleared for release.
+docs/
+cess Dean.md
