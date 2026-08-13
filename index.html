@@ -5,6 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Centre for Ecological and Social Sustainability (CESS) | CHRIST (Deemed to be University)</title>
 <meta name="description" content="An academic and professional initiative advancing ecological consciousness and social well-being through research, innovation and community engagement. Nine programmes delivered in 2025–2026." />
+
+<!-- link previews. og:image must be absolute; update the domain if the site
+     moves off GitHub Pages or the preview will resolve to nothing. -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="CESS · CHRIST (Deemed to be University)" />
+<meta property="og:title" content="Centre for Ecological and Social Sustainability" />
+<meta property="og:description" content="Nine programmes delivered in 2025–2026 across community outreach, campus engagement and international masterclasses. 82.5% of participants rated them excellent or very useful." />
+<meta property="og:url" content="https://gardhan.github.io/cess/" />
+<meta property="og:image" content="https://gardhan.github.io/cess/images/brand/og-cover.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Centre for Ecological and Social Sustainability, CHRIST (Deemed to be University)" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="theme-color" content="#12204A" />
+
+<!-- the Centre's leaf mark, inline so there is no extra request -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2306251A'/%3E%3Cpath d='M16 26c0-6.5 3.7-10.2 9.3-11.2C24.4 21.3 21.6 25 16 26Z' fill='%23BDE388'/%3E%3Cpath d='M16 26C16 19.5 12.3 15.8 6.7 14.8 7.6 21.3 10.4 25 16 26Z' fill='%2335A96A'/%3E%3Cpath d='M16 26V13' stroke='%23EAF2E9' stroke-width='1.4'/%3E%3C/svg%3E" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..600&display=swap" rel="stylesheet" />
@@ -70,9 +88,38 @@
         <a href="#research">Research</a>
         <a class="pill" href="#contact">Get in touch</a>
       </nav>
+
+      <button class="menu-btn" id="menuBtn" type="button"
+              aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+        <span class="menu-btn__ico" aria-hidden="true"></span>
+        <span class="menu-btn__txt">Menu</span>
+      </button>
     </div>
   </div>
 </header>
+
+<!-- ==================== MOBILE MENU ==================== -->
+<div class="menu" id="menu" hidden>
+  <div class="wrap">
+    <nav class="menu__nav" aria-label="Mobile">
+      <a href="#about">About<span>01</span></a>
+      <a href="#areas">Areas<span>02</span></a>
+      <a href="#programmes">Programmes<span>03</span></a>
+      <a href="#impact">Impact<span>04</span></a>
+      <a href="#partners">Partners<span>05</span></a>
+      <a href="#programme">Certification<span>06</span></a>
+      <a href="#strategy">Strategy<span>07</span></a>
+      <a href="#framework">Framework<span>08</span></a>
+      <a href="#research">Research<span>09</span></a>
+      <a href="#opportunities">Take part<span>10</span></a>
+    </nav>
+    <div class="menu__foot">
+      <a class="pill" href="#contact">Get in touch</a>
+      <a href="mailto:cess@christuniversity.in">cess@christuniversity.in</a>
+      <a href="https://christuniversity.in" target="_blank" rel="noopener">christuniversity.in</a>
+    </div>
+  </div>
+</div>
 
 <!-- ==================== HERO ==================== -->
 <section class="dark hero" id="top">
@@ -80,7 +127,7 @@
   <div class="bloom" aria-hidden="true"></div>
 
   <div class="wrap on-dark">
-    <p class="micro hero__eyebrow r">School of Social Sciences · CHRIST (Deemed to be University)</p>
+    <p class="micro hero__eyebrow r">CHRIST (Deemed to be University) · Bangalore</p>
 
     <h1 class="r" data-d="1">Centre for Ecological and <em>Social Sustainability</em></h1>
 
@@ -166,22 +213,55 @@
   <div class="wrap">
     <div class="head r">
       <div>
-        <span class="micro">Core areas of engagement</span>
-        <h2>Seven areas of sustained focus.</h2>
+        <span class="micro">Areas of engagement</span>
+        <h2>Eight areas, each carrying delivered work.</h2>
       </div>
-      <p class="lede">Each area connects academic inquiry with professional practice and community realities.</p>
+      <p class="lede">
+        These are not aspirations. Every area below names the programme that has already
+        run in it, or the one committed for 2026–2027.
+      </p>
     </div>
 
     <div class="grid grid--4">
-      <article class="card r"><span class="card__n">01</span><h3>Child and youth development</h3><p>Educational continuity, participation and well-being across childhood and adolescence.</p></article>
-      <article class="card r" data-d="1"><span class="card__n">02</span><h3>Family and community well-being</h3><p>Support systems that strengthen households and the neighbourhoods around them.</p></article>
-      <article class="card r" data-d="2"><span class="card__n">03</span><h3>Women's empowerment</h3><p>Participation, livelihood and leadership through community-based initiatives.</p></article>
-      <article class="card r" data-d="3"><span class="card__n">04</span><h3>Ecological sustainability</h3><p>Environmental responsibility, sustainable living and resilience-oriented approaches.</p></article>
-      <article class="card r"><span class="card__n">05</span><h3>Green social work</h3><p>Integrating ecological perspectives into professional social work practice.</p></article>
-      <article class="card r" data-d="1"><span class="card__n">06</span><h3>Behavioural change and social innovation</h3><p>Strategies for sustainable behaviour, participation and community engagement.</p></article>
-      <article class="card r" data-d="2"><span class="card__n">07</span><h3>Research and policy engagement</h3><p>Evidence that contributes to academic knowledge and to public decision-making.</p></article>
-      <article class="card r" data-d="3" style="background:var(--paper-3); border-style:dashed; justify-content:center;">
-        <p style="font-size:.94rem; color:var(--text-soft);">Areas are pursued jointly by faculty, researchers, students and community partners.</p>
+      <article class="card r">
+        <span class="card__n">01</span><h3>Healthy ageing and geriatric care</h3>
+        <p>Preventive health, physiotherapy and nutritional literacy for older people, with St. John's Geriatric Centre.</p>
+        <span class="micro" style="margin-top:auto; color:var(--green-2);">192 in community clusters · 66 staff</span>
+      </article>
+      <article class="card r" data-d="1">
+        <span class="card__n">02</span><h3>Substance abuse prevention</h3>
+        <p>Peer-to-peer engagement with adolescents on substance use and peer pressure, delivered in schools.</p>
+        <span class="micro" style="margin-top:auto; color:var(--green-2);">103 reached · expanding to 150+</span>
+      </article>
+      <article class="card r" data-d="2">
+        <span class="card__n">03</span><h3>Water, sanitation and hygiene</h3>
+        <p>Intersectional barriers to WASH in rural contexts, climate-resilient practice, and the vulnerabilities of women and migrants.</p>
+        <span class="micro" style="margin-top:auto; color:var(--green-2);">46 taught · 180+ targeted 2026–27</span>
+      </article>
+      <article class="card r" data-d="3">
+        <span class="card__n">04</span><h3>Disability and inclusion</h3>
+        <p>Corneal blindness awareness and experiential empathy-building with Sumanahalli Society.</p>
+        <span class="micro" style="margin-top:auto; color:var(--green-2);">100 reached · micro-credential planned</span>
+      </article>
+      <article class="card r">
+        <span class="card__n">05</span><h3>Climate change and indigenous knowledge</h3>
+        <p>Global climate research set against indigenous tribal knowledge of forest ecosystems.</p>
+        <span class="micro" style="margin-top:auto; color:var(--green-2);">98 MSW students · with KATHO University</span>
+      </article>
+      <article class="card r" data-d="1">
+        <span class="card__n">06</span><h3>Gender and the body in social work</h3>
+        <p>Deconstructing gender norms and the societal control of bodies, through Foucault and Butler.</p>
+        <span class="micro" style="margin-top:auto; color:var(--green-2);">53 participants</span>
+      </article>
+      <article class="card r" data-d="2">
+        <span class="card__n">07</span><h3>Disaster management</h3>
+        <p>The role of the Indian Armed Forces in disaster response, rapid decision-making and civil–military coordination.</p>
+        <span class="micro" style="margin-top:auto; color:var(--green-2);">28 participants</span>
+      </article>
+      <article class="card r" data-d="3">
+        <span class="card__n">08</span><h3>Youth mental health and resilience</h3>
+        <p>Peer-led wellness cohorts, building on what the substance-abuse work established about peer engagement.</p>
+        <span class="micro" style="margin-top:auto; color:var(--amber);">New for 2026–27 · 250+ targeted</span>
       </article>
     </div>
   </div>
@@ -435,25 +515,42 @@
   <div class="bloom" aria-hidden="true"></div>
 
   <div class="wrap on-dark">
-    <span class="prog__tag r">Highlighted programme · Global Learning Initiative</span>
+    <span class="prog__tag r">Launching 2026–2027</span>
 
-    <h2 class="r" data-d="1">International <em>Certificate Course</em></h2>
+    <h2 class="r" data-d="1">Professional <em>certification</em></h2>
 
     <p class="lede r" data-d="2">
-      A professionally curated academic programme designed to provide participants with an
-      international perspective on ecological and social sustainability, integrating theory,
-      practice and global engagement.
+      Three credentials built directly on work the Centre has already delivered — each one
+      taught from programmes that have run, with outcomes measured. They also carry the
+      Centre's financial base, alongside internships and external grants.
     </p>
 
-    <div class="grid grid--4">
-      <article class="card r"><span class="micro">Ecology</span><h3>Ecological Sustainability</h3><p>Environmental responsibility, sustainable living and resilience-oriented approaches.</p></article>
-      <article class="card r" data-d="1"><span class="micro">Practice</span><h3>Green Social Work</h3><p>Integrating ecological perspectives into professional social work practice.</p></article>
-      <article class="card r" data-d="2"><span class="micro">Change</span><h3>Behavioural Change</h3><p>Strategies for sustainable behaviour, participation and community engagement.</p></article>
-      <article class="card r" data-d="3"><span class="micro">Global</span><h3>International Collaboration</h3><p>Exposure to global best practices, partnerships and cross-cultural learning.</p></article>
+    <div class="grid grid--3">
+      <article class="card r">
+        <span class="micro">Certificate course</span>
+        <h3>ESG Implementation for Social Work Professionals</h3>
+        <p>Environmental, Social and Governance frameworks applied to social work practice — the frame the Centre's own 2025–26 programmes were built on.</p>
+      </article>
+      <article class="card r" data-d="1">
+        <span class="micro">Certificate course</span>
+        <h3>Healthy Ageing</h3>
+        <p>Drawn from the Empowering Healthy Ageing initiative and the partnership with St. John's Geriatric Centre — geriatric care, preventive health and active ageing.</p>
+      </article>
+      <article class="card r" data-d="2">
+        <span class="micro">Micro-credential · 2 weeks</span>
+        <h3>Disability Justice &amp; Inclusive Practice</h3>
+        <p>An intensive growing out of the Beyond Vision programme with Sumanahalli Society, and its finding that actionable support empowers where charity does not.</p>
+      </article>
+    </div>
+
+    <div class="rows r" data-d="1" style="margin-top:clamp(30px,3.4vw,44px);">
+      <div class="row"><u></u><span><b>Paid internship programme</b> — open to national and international students.</span></div>
+      <div class="row"><u></u><span><b>International masterclass series</b> — two a year with international scholars, targeting 80+ student participation.</span></div>
+      <div class="row"><u></u><span><b>Consulting: CSR social audits</b> — for corporate and development partners.</span></div>
     </div>
 
     <div class="hero__acts r" data-d="2" style="margin-top:clamp(30px,3.4vw,44px);">
-      <a class="pill pill--light" href="#contact">Enquire about the programme
+      <a class="pill pill--light" href="#contact">Enquire about the programmes
         <svg viewBox="0 0 16 16" fill="none"><path d="M1 8h13M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.5"/></svg>
       </a>
     </div>
@@ -675,28 +772,6 @@
 
 <div class="wrap"><div class="rule"></div></div>
 
-<!-- ==================== COMMUNITY ENGAGEMENT ==================== -->
-<section class="sec" id="community">
-  <div class="wrap">
-    <div class="head r">
-      <div>
-        <span class="micro">Community engagement</span>
-        <h2>Participatory and inclusive by design.</h2>
-      </div>
-      <p class="lede">The Centre facilitates initiatives that strengthen local capacities, encourage collective participation and promote sustainable social development.</p>
-    </div>
-
-    <div class="rows r" data-d="1">
-      <div class="row"><u></u><span><b>Educational support for children</b> — continuity of learning and school engagement.</span></div>
-      <div class="row"><u></u><span><b>Youth participation and leadership</b> — building agency in local decision-making.</span></div>
-      <div class="row"><u></u><span><b>Women and family support initiatives</b> — livelihood, well-being and participation.</span></div>
-      <div class="row"><u></u><span><b>Community awareness programmes</b> — sustained public engagement.</span></div>
-      <div class="row"><u></u><span><b>Sustainability and environmental action</b> — collective, locally-led practice.</span></div>
-    </div>
-  </div>
-</section>
-
-<div class="wrap"><div class="rule"></div></div>
 
 <!-- ==================== RESEARCH ==================== -->
 <section class="sec" id="research">
@@ -704,19 +779,38 @@
     <div class="head r">
       <div>
         <span class="micro">Research and innovation</span>
-        <h2>Evidence-based and practice-oriented.</h2>
+        <h2>Building the research base.</h2>
       </div>
-      <p class="lede">Interdisciplinary research that contributes to academic knowledge as well as social transformation.</p>
+      <p class="lede">
+        The Centre is moving from individual studies to standing research infrastructure —
+        a lab, a publication series, and a recurring international seminar.
+      </p>
     </div>
 
     <div class="grid grid--3">
-      <article class="card r"><span class="card__n">01</span><h3>Sustainability studies</h3></article>
-      <article class="card r" data-d="1"><span class="card__n">02</span><h3>Social development</h3></article>
-      <article class="card r" data-d="2"><span class="card__n">03</span><h3>Community well-being</h3></article>
-      <article class="card r"><span class="card__n">04</span><h3>Behavioural and social research</h3></article>
-      <article class="card r" data-d="1"><span class="card__n">05</span><h3>Innovation for sustainable communities</h3></article>
-      <article class="card r" data-d="2" style="background:var(--paper-3); border-style:dashed;">
-        <p style="font-size:.94rem; color:var(--text-soft);">Research is pursued with community partners and, where relevant, international collaborators.</p>
+      <article class="card r">
+        <span class="card__n">01</span><h3>CESS Research Lab</h3>
+        <p>Dedicated faculty and postgraduate researchers, to be established in 2026–27.</p>
+      </article>
+      <article class="card r" data-d="1">
+        <span class="card__n">02</span><h3>India–Germany collaborative research</h3>
+        <p>With KATHO University. Research protocol and ethics approval Jun–Aug 2026, toward peer-reviewed publication.</p>
+      </article>
+      <article class="card r" data-d="2">
+        <span class="card__n">03</span><h3>CESS Working Paper Series</h3>
+        <p>Four working papers, quarterly through 2027, disseminated to 50+ institutions.</p>
+      </article>
+      <article class="card r">
+        <span class="card__n">04</span><h3>Peer-reviewed output</h3>
+        <p>Three journal articles and two book chapters targeted for 2026–2027.</p>
+      </article>
+      <article class="card r" data-d="1">
+        <span class="card__n">05</span><h3>CESS Research Seminar</h3>
+        <p>Held twice a year with international scholars.</p>
+      </article>
+      <article class="card r" data-d="2">
+        <span class="card__n">06</span><h3>Policy briefs and advocacy</h3>
+        <p>An annual working paper and policy briefs, with CESS modules integrated university-wide.</p>
       </article>
     </div>
   </div>
@@ -730,18 +824,40 @@
     <div class="head r">
       <div>
         <span class="micro">For students and researchers</span>
-        <h2>Opportunities for academic and professional engagement.</h2>
+        <h2>Ways to take part.</h2>
       </div>
-      <p class="lede">CESS provides structured routes for students, researchers and practitioners to take part in the work of the Centre.</p>
+      <p class="lede">
+        The Centre's method is field-based: its own feedback shows 74% of participants
+        prefer live, practical work to slide-based teaching, and its programmes are built
+        that way.
+      </p>
     </div>
 
     <div class="grid grid--3">
-      <article class="card r"><h3>Research projects</h3><p>Supervised enquiry aligned with the Centre's research areas.</p></article>
-      <article class="card r" data-d="1"><h3>Community-based initiatives</h3><p>Field engagement with partner organisations and communities.</p></article>
-      <article class="card r" data-d="2"><h3>Workshops and seminars</h3><p>Academic and professional sessions across the year.</p></article>
-      <article class="card r"><h3>Collaborative programmes</h3><p>Joint work with departments, institutions and partners.</p></article>
-      <article class="card r" data-d="1"><h3>Sustainability campaigns</h3><p>Awareness and behavioural change initiatives on campus and beyond.</p></article>
-      <article class="card r" data-d="2"><h3>Professional development</h3><p>Capacity building for students, faculty and practitioners.</p></article>
+      <article class="card r">
+        <h3>Paid internships</h3>
+        <p>A paid programme open to national and international students, being established for 2026–27.</p>
+      </article>
+      <article class="card r" data-d="1">
+        <h3>Supervised research projects</h3>
+        <p>Student research supported through the Research Lab and the collaborative work with KATHO University.</p>
+      </article>
+      <article class="card r" data-d="2">
+        <h3>Field delivery</h3>
+        <p>MSW students deliver programmes directly — the NMBA role-play they performed is what made that intervention land.</p>
+      </article>
+      <article class="card r">
+        <h3>Masterclasses</h3>
+        <p>Two international masterclasses a year, targeting 80+ student participation.</p>
+      </article>
+      <article class="card r" data-d="1">
+        <h3>Youth Sustainability Cohorts</h3>
+        <p>Youth-led cohorts in partner schools, as part of the school-to-university pipeline.</p>
+      </article>
+      <article class="card r" data-d="2">
+        <h3>Certification</h3>
+        <p>Two certificate courses and a two-week micro-credential, open to students and practising professionals.</p>
+      </article>
     </div>
   </div>
 </section>
@@ -768,7 +884,7 @@
       <div class="foot__in" style="text-align:left;">
         <div>
           <b>Centre for Ecological and Social Sustainability</b>
-          <span>School of Social Sciences | CHRIST (Deemed to be University)</span>
+          <span>CHRIST (Deemed to be University), Bangalore</span>
         </div>
         <div>
           <span>Hosur Road, Bangalore 560029, Karnataka, India</span><br />

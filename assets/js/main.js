@@ -18,6 +18,42 @@
   addEventListener("resize", onScroll);
   onScroll();
 
+  /* mobile menu */
+  var menuBtn = document.getElementById("menuBtn");
+  var menu = document.getElementById("menu");
+  if(menuBtn && menu){
+    menu.hidden = false;           /* only revealed once the script can control it */
+
+    var setMenu = function(open){
+      menu.classList.toggle("open", open);
+      menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      menuBtn.querySelector(".menu-btn__txt").textContent = open ? "Close" : "Menu";
+      document.documentElement.classList.toggle("locked", open);
+    };
+
+    menuBtn.addEventListener("click", function(){
+      setMenu(menuBtn.getAttribute("aria-expanded") !== "true");
+    });
+
+    /* a tapped link should navigate, not leave the panel covering the page */
+    $$("#menu a").forEach(function(a){
+      a.addEventListener("click", function(){ setMenu(false); });
+    });
+
+    addEventListener("keydown", function(e){
+      if(e.key === "Escape" && menuBtn.getAttribute("aria-expanded") === "true"){
+        setMenu(false);
+        menuBtn.focus();
+      }
+    });
+
+    /* if the viewport grows past the breakpoint the panel must not stay latched */
+    matchMedia("(min-width:1001px)").addEventListener("change", function(e){
+      if(e.matches) setMenu(false);
+    });
+  }
+
   /* ghost wordmark drifts a little against the scroll */
   var mark = document.querySelector(".hero__mark");
   if(mark && !matchMedia("(prefers-reduced-motion: reduce)").matches){

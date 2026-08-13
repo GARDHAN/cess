@@ -1,8 +1,11 @@
 # CESS — Centre for Ecological and Social Sustainability
 
 Website for the Centre for Ecological and Social Sustainability at CHRIST (Deemed
-to be University), Bangalore. (Which school it sits under is unresolved — see Q1
-in `docs/cess-facts-2025-26.md`.)
+to be University), Bangalore.
+
+The Centre is attributed to the university directly and **no school is named** —
+the two source documents disagreed and it was never confirmed. Don't reintroduce a
+school name without it being verified.
 
 ## Stack
 

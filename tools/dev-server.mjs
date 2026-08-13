@@ -122,6 +122,14 @@ const server = createServer(async (req, res) => {
           </script></body>`
         );
       }
+      // ?menu=open — force the mobile panel open, which a headless
+      // screenshot cannot do by clicking
+      if (url.searchParams.get("menu") === "open") {
+        body = body.replace(
+          /<\/head>/i,
+          `<style>.menu{ opacity:1 !important; visibility:visible !important; transform:none !important; }</style></head>`
+        );
+      }
       if (url.searchParams.get("reveal") === "all") {
         body = body.replace(
           /<\/head>/i,

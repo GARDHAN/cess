@@ -40,10 +40,9 @@ site is a folder that can be handed to university IT and hosted anywhere.
 Working draft, under review. Two items are unconfirmed and marked as such on the
 page or in `CLAUDE.md`:
 
-- **The school name.** The site currently reads *School of Social Sciences*; the
-  2025–26 report names the Dean of the *School of Psychological Sciences,
-  Education & Social Work*. One of these is wrong.
 - **Contact details** are placeholders pending confirmation.
+- **The school** within CHRIST is unconfirmed, so the site attributes the Centre to
+  the university directly rather than naming a school.
 
 Participant figures are per-programme and are deliberately not summed — the
 source report's own numbers overlap between programmes.

@@ -555,3 +555,52 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 .partner b{ font-size:1rem; font-weight:600; letter-spacing:-.015em; }
 .partner span{ font-size:.88rem; color:var(--text-soft); }
 .partner .micro{ margin-bottom:.2rem; }
+
+/* ---------- mobile menu ----------
+   Below 1000px the inline nav is hidden, so it needs somewhere to go.
+   A labelled button rather than a bare hamburger — it reads as a control
+   at a glance and stays in the type-led language of the rest of the page. */
+.menu-btn{
+  display:none; align-items:center; gap:.5rem; cursor:pointer;
+  font-size:.82rem; font-weight:500; letter-spacing:.02em;
+  padding:.55rem .95rem; border-radius:999px;
+  border:1px solid var(--line); color:var(--navy); background:var(--paper-2);
+  transition:background .3s var(--e), border-color .3s var(--e), color .3s var(--e);
+}
+.menu-btn:hover{ background:var(--navy); color:#fff; border-color:var(--navy); }
+.menu-btn__ico{ width:14px; height:10px; position:relative; flex:none; }
+.menu-btn__ico::before, .menu-btn__ico::after{
+  content:""; position:absolute; left:0; right:0; height:1.5px; background:currentColor;
+  transition:transform .32s var(--e), top .32s var(--e);
+}
+.menu-btn__ico::before{ top:0; }
+.menu-btn__ico::after{ top:8.5px; }
+[aria-expanded="true"] .menu-btn__ico::before{ top:4.25px; transform:rotate(45deg); }
+[aria-expanded="true"] .menu-btn__ico::after{ top:4.25px; transform:rotate(-45deg); }
+
+.menu{
+  position:fixed; left:0; right:0; top:0; bottom:0; z-index:45;
+  background:var(--paper); padding-top:calc(var(--util-h) + 78px);
+  overflow-y:auto; overscroll-behavior:contain;
+  opacity:0; visibility:hidden; transform:translateY(-8px);
+  transition:opacity .35s var(--e), transform .35s var(--e), visibility .35s var(--e);
+}
+.menu.open{ opacity:1; visibility:visible; transform:none; }
+.menu__nav{ display:flex; flex-direction:column; border-top:1px solid var(--line); }
+.menu__nav a{
+  display:flex; align-items:baseline; justify-content:space-between; gap:1rem;
+  padding:1.05rem .2rem; border-bottom:1px solid var(--line-2);
+  text-decoration:none; font-size:1.3rem; letter-spacing:-.022em; color:var(--text);
+}
+.menu__nav a span{ font-size:.66rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--text-mute); }
+.menu__foot{ display:flex; flex-direction:column; gap:.9rem; padding:clamp(24px,5vw,36px) 0 clamp(40px,8vw,64px); }
+.menu__foot .pill{ align-self:flex-start; }
+.menu__foot a:not(.pill){ font-size:.92rem; color:var(--text-soft); text-decoration:none; }
+
+@media (max-width:1000px){
+  .menu-btn{ display:inline-flex; margin-left:auto; }
+  .bar__nav{ display:none; }
+}
+@media (min-width:1001px){
+  .menu{ display:none; }
+}
