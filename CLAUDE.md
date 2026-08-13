@@ -59,35 +59,23 @@ lays out at 500 and crops the image, which looks like a layout bug and is not on
 
 Tokens live in `:root`. Use them rather than literal colours.
 
-- **The page is one continuous descent.** A single `linear-gradient` on `body`
-  runs the whole document, from a dark-but-not-black emerald (`#15382A`) at the
-  top to off-white (`#FBFBF9`) at the foot. Nothing else paints a ground — no
-  per-section backgrounds, no overlay fades. Sections are transparent and only
-  declare which half of the ramp they sit on. `html` is painted the end colour
-  so the body background doesn't propagate to the canvas and stretch.
-- **The dark-to-light crossing happens between 16% and 20%**, which lands inside
-  the `areas` section at both desktop and mobile widths. It is placed there
-  deliberately: that section is full of cards, so the change happens *behind
-  content* rather than sweeping across empty space, which is what made earlier
-  attempts read as an abrupt band.
-- **Cards on the dark half are solid** (`.on-dark .card`), never translucent. The
-  ground lightens beneath them as the ramp crosses; a translucent card lightens
-  with it and its light text dissolves.
-- `.dark` (hero, about, areas) means light text only — it paints nothing.
-- No radial glows on the grounds. A bloom over a flat emerald reads as a smudge.
-- If sections are added or removed above ~20%, re-measure with `?debug=sections`
-  and move the crossing stops, or text will land on a ground it can't sit on.
-
-**Validating the ramp.** After any change to the grounds or section order, render
-the full page at 1440 and 560 and check two things:
-
-1. *Monotonic* — average each row across the **left** gutter only (the ghost
-   wordmark bleeds into the right margin and gives false regressions), sample
-   below y=130 to skip the fixed header, tolerance ~0.004 relative luminance.
-   A single pixel column picks up ±1 gradient dither; average or it lies.
-2. *Contrast* — at each section's ground, body/secondary/muted text must hold
-   4.5:1. Last run: 0 regressions over 702 and 945 rows, 0.032 → 0.96, worst
-   text contrast 4.5:1.
+- **Flat off-white ground** (`--paper: #FAFAF7`) across the whole site. No
+  gradient descent, no dark sections, no per-section grounds.
+- **Orbs** carry the only colour besides type: very large, very faint radial
+  circles bleeding in from the corners of some sections (`.has-orb` on the
+  section, `.orb` + a placement modifier inside). They sit near the threshold of
+  visibility on purpose — if one reads as a shape rather than as warmth, it is
+  too strong. `.has-orb` clips them, which is what keeps them off the page's
+  horizontal scroll.
+- **Rails** carry any section with more items than a row should hold:
+  `.rail-wrap` > `.rail` (id, `tabindex="0"`, `role="region"`, `aria-label`) plus
+  a `.rail__bar` of two buttons. Items sized by `grid-auto-columns:
+  minmax(clamp(...), 1fr)`, so a rail with few enough items simply fills the row
+  and the script marks it `data-pos="none"`, hiding its controls.
+- Scroll-snap parks the first item behind the rail's own 3px padding, so a rail
+  at rest reports `scrollLeft` of about 3, not 0. The end-detection tolerance in
+  `main.js` (`EPS`) exists for that; don't tighten it or the left arrow never
+  disables and the edge mask never clears.
 
 ## Content rules
 

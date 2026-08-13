@@ -117,10 +117,12 @@
 </div>
 
 <!-- ==================== HERO ==================== -->
-<section class="dark hero" id="top">
+<section class="hero has-orb" id="top">
   <div class="hero__mark" aria-hidden="true">CESS</div>
+  <span class="orb orb--lg orb--tr" aria-hidden="true"></span>
+  <span class="orb orb--deep orb--bl" aria-hidden="true"></span>
 
-  <div class="wrap on-dark">
+  <div class="wrap">
     <p class="micro hero__eyebrow r">CHRIST (Deemed to be University) · Bangalore</p>
 
     <h1 class="r" data-d="1">Centre for Ecological and <em>Social Sustainability</em></h1>
@@ -133,10 +135,10 @@
     </p>
 
     <div class="hero__acts r" data-d="3">
-      <a class="pill pill--light" href="#programmes">See the 2025–26 programmes
+      <a class="pill" href="#programmes">See the 2025–26 programmes
         <svg viewBox="0 0 16 16" fill="none"><path d="M1 8h13M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.5"/></svg>
       </a>
-      <a class="pill pill--outline-light" href="#about">About the Centre</a>
+      <a class="pill pill--ghost" href="#about">About the Centre</a>
     </div>
 
     <div class="facts r" data-d="4">
@@ -149,8 +151,8 @@
 </section>
 
 <!-- ==================== ABOUT / FOREWORD ==================== -->
-<section class="dark sec" id="about">
-  <div class="wrap on-dark">
+<section class="sec" id="about">
+  <div class="wrap">
     <div class="prose r">
       <div>
         <span class="micro">About the Centre</span>
@@ -203,8 +205,9 @@
 
 
 <!-- ==================== CORE AREAS ==================== -->
-<section class="dark sec" id="areas">
-  <div class="wrap on-dark">
+<section class="sec has-orb" id="areas">
+  <span class="orb orb--lime orb--l" aria-hidden="true"></span>
+  <div class="wrap">
     <div class="head r">
       <div>
         <span class="micro">Areas of engagement</span>
@@ -216,7 +219,8 @@
       </p>
     </div>
 
-    <div class="grid grid--4">
+    <div class="rail-wrap">
+    <div class="rail" id="areas-rail" tabindex="0" role="region" aria-label="Areas of engagement" data-pos="start">
       <article class="card r">
         <span class="card__n">01</span><h3>Healthy ageing and geriatric care</h3>
         <p>Preventive health, physiotherapy and nutritional literacy for older people, with St. John's Geriatric Centre.</p>
@@ -258,13 +262,24 @@
         <span class="micro card__fig card__fig--new">New for 2026–27 · 250+ targeted</span>
       </article>
     </div>
+    <div class="rail__bar">
+      <button class="rail__btn" type="button" data-rail="areas-rail" data-dir="-1" aria-label="Scroll left" disabled>
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="rail__btn" type="button" data-rail="areas-rail" data-dir="1" aria-label="Scroll right">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="rail__hint">Scroll for more</span>
+    </div>
+  </div>
   </div>
 </section>
 
 
 
 <!-- ==================== PROGRAMMES 2025–26 ==================== -->
-<section class="sec" id="programmes">
+<section class="has-orb sec" id="programmes">
+  <span class="orb orb--lg orb--r" aria-hidden="true"></span>
   <div class="wrap">
     <div class="head r">
       <div>
@@ -286,7 +301,8 @@
         <p>Programmes directly engaging vulnerable, marginalised or external community populations to drive behavioural change.</p>
       </div>
 
-      <div class="grid grid--2">
+      <div class="rail-wrap">
+    <div class="rail" id="tier1-rail" tabindex="0" role="region" aria-label="Tier 1 programmes" data-pos="start">
         <article class="pcard r">
           <div class="pcard__top">
             <h4>Empowering Healthy Ageing</h4>
@@ -313,6 +329,16 @@
           <p class="pcard__learn"><b>What we learned.</b> Traditional lecture formats proved insufficient for behavioural change. A role-play enacted by MSW students carried the familial toll of substance abuse far more effectively, establishing peer-to-peer interactive engagement as the method that works in school settings. The programme closed with a unified NMBA pledge.</p>
         </article>
       </div>
+    <div class="rail__bar">
+      <button class="rail__btn" type="button" data-rail="tier1-rail" data-dir="-1" aria-label="Scroll left" disabled>
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="rail__btn" type="button" data-rail="tier1-rail" data-dir="1" aria-label="Scroll right">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="rail__hint">Scroll for more</span>
+    </div>
+  </div>
     </div>
 
     <!-- Tier 2 -->
@@ -323,7 +349,8 @@
         <p>Interactive, university-wide events designed to foster empathy, inclusivity and personal accountability among the student body and staff.</p>
       </div>
 
-      <div class="grid grid--3">
+      <div class="rail-wrap">
+    <div class="rail" id="tier2-rail" tabindex="0" role="region" aria-label="Tier 2 programmes" data-pos="start">
         <article class="pcard r">
           <div class="pcard__top">
             <h4>Promoting Healthy Ageing</h4>
@@ -364,6 +391,16 @@
           <p class="pcard__learn"><b>What we learned.</b> A paradigm shift from sympathy to empathy. Testimony from a visually impaired student established that financial charity is often less empowering than actionable medical support, and the experiential Blind Walk — navigating the campus without sight — produced a surge of students pledging to donate their corneas.</p>
         </article>
       </div>
+    <div class="rail__bar">
+      <button class="rail__btn" type="button" data-rail="tier2-rail" data-dir="-1" aria-label="Scroll left" disabled>
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="rail__btn" type="button" data-rail="tier2-rail" data-dir="1" aria-label="Scroll right">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="rail__hint">Scroll for more</span>
+    </div>
+  </div>
     </div>
 
     <!-- Tier 3 -->
@@ -374,7 +411,8 @@
         <p>High-level seminars and international workshops aimed at building intellectual capacity and bridging global research with indigenous knowledge.</p>
       </div>
 
-      <div class="grid grid--2">
+      <div class="rail-wrap">
+    <div class="rail" id="tier3-rail" tabindex="0" role="region" aria-label="Tier 3 programmes" data-pos="start">
         <article class="pcard r">
           <div class="pcard__top">
             <h4>International Workshop on Sustainability, Climate Change, and Community</h4>
@@ -400,12 +438,23 @@
           </dl>
         </article>
       </div>
+    <div class="rail__bar">
+      <button class="rail__btn" type="button" data-rail="tier3-rail" data-dir="-1" aria-label="Scroll left" disabled>
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="rail__btn" type="button" data-rail="tier3-rail" data-dir="1" aria-label="Scroll right">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="rail__hint">Scroll for more</span>
+    </div>
+  </div>
     </div>
   </div>
 </section>
 
 <!-- ==================== IMPACT / FEEDBACK ==================== -->
-<section class="sec" id="impact">
+<section class="has-orb sec" id="impact">
+  <span class="orb orb--deep orb--tl" aria-hidden="true"></span>
   <div class="wrap">
     <div class="head r">
       <div>
@@ -479,7 +528,8 @@
       <p class="lede">Every programme in 2025–2026 was delivered alongside an institution already working in the field.</p>
     </div>
 
-    <div class="partners">
+    <div class="rail-wrap">
+    <div class="rail" id="partners-rail" tabindex="0" role="region" aria-label="Partners" data-pos="start">
       <article class="partner r">
         <span class="micro">Healthcare</span>
         <b>St. John's Geriatric Centre</b>
@@ -501,11 +551,22 @@
         <span>Academic partner on the flagship International Workshop on Sustainability, Climate Change and Community.</span>
       </article>
     </div>
+    <div class="rail__bar">
+      <button class="rail__btn" type="button" data-rail="partners-rail" data-dir="-1" aria-label="Scroll left" disabled>
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="rail__btn" type="button" data-rail="partners-rail" data-dir="1" aria-label="Scroll right">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="rail__hint">Scroll for more</span>
+    </div>
+  </div>
   </div>
 </section>
 
 <!-- ==================== HIGHLIGHTED PROGRAMME ==================== -->
-<section class="sec prog" id="programme">
+<section class="has-orb sec prog" id="programme">
+  <span class="orb orb--lg orb--bl" aria-hidden="true"></span>
 
   <div class="wrap">
     <span class="prog__tag r">Launching 2026–2027</span>
@@ -627,7 +688,8 @@
 </section>
 
 <!-- ==================== TRIPLE-PILLAR FRAMEWORK ==================== -->
-<section class="sec" id="framework">
+<section class="has-orb sec" id="framework">
+  <span class="orb orb--lime orb--tr" aria-hidden="true"></span>
 
   <div class="wrap">
     <div class="head head--full r">
@@ -689,7 +751,8 @@
       <p class="lede">Seven positions the Centre holds, taken together rather than singly.</p>
     </div>
 
-    <div class="uvp">
+    <div class="rail-wrap">
+    <div class="rail" id="uvp-rail" tabindex="0" role="region" aria-label="What distinguishes the Centre" data-pos="start">
       <article class="r"><h3>Global–local integration</h3><p>Leverages German research standards and Malaysian field expertise.</p></article>
       <article class="r" data-d="1"><h3>Interdisciplinary bridge</h3><p>Uniquely positioned to bridge social work with other sciences.</p></article>
       <article class="r" data-d="2"><h3>Revenue-generating model</h3><p>Financially self-sustaining through certificate courses and grants.</p></article>
@@ -698,6 +761,16 @@
       <article class="r" data-d="2"><h3>Student development excellence</h3><p>Experiential learning producing practice-ready graduates.</p></article>
       <article class="r"><h3>Scalability &amp; replicability</h3><p>Programmes designed for replication across geographies.</p></article>
     </div>
+    <div class="rail__bar">
+      <button class="rail__btn" type="button" data-rail="uvp-rail" data-dir="-1" aria-label="Scroll left" disabled>
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="rail__btn" type="button" data-rail="uvp-rail" data-dir="1" aria-label="Scroll right">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="rail__hint">Scroll for more</span>
+    </div>
+  </div>
   </div>
 </section>
 
@@ -779,7 +852,8 @@
       </p>
     </div>
 
-    <div class="grid grid--3">
+    <div class="rail-wrap">
+    <div class="rail" id="research-rail" tabindex="0" role="region" aria-label="Research programme" data-pos="start">
       <article class="card r">
         <span class="card__n">01</span><h3>CESS Research Lab</h3>
         <p>Dedicated faculty and postgraduate researchers, to be established in 2026–27.</p>
@@ -805,6 +879,16 @@
         <p>An annual working paper and policy briefs, with CESS modules integrated university-wide.</p>
       </article>
     </div>
+    <div class="rail__bar">
+      <button class="rail__btn" type="button" data-rail="research-rail" data-dir="-1" aria-label="Scroll left" disabled>
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="rail__btn" type="button" data-rail="research-rail" data-dir="1" aria-label="Scroll right">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="rail__hint">Scroll for more</span>
+    </div>
+  </div>
   </div>
 </section>
 
@@ -825,7 +909,8 @@
       </p>
     </div>
 
-    <div class="grid grid--3">
+    <div class="rail-wrap">
+    <div class="rail" id="takepart-rail" tabindex="0" role="region" aria-label="Ways to take part" data-pos="start">
       <article class="card r">
         <h3>Paid internships</h3>
         <p>A paid programme open to national and international students, being established for 2026–27.</p>
@@ -851,11 +936,22 @@
         <p>Two certificate courses and a two-week micro-credential, open to students and practising professionals.</p>
       </article>
     </div>
+    <div class="rail__bar">
+      <button class="rail__btn" type="button" data-rail="takepart-rail" data-dir="-1" aria-label="Scroll left" disabled>
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="rail__btn" type="button" data-rail="takepart-rail" data-dir="1" aria-label="Scroll right">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="rail__hint">Scroll for more</span>
+    </div>
+  </div>
   </div>
 </section>
 
 <!-- ==================== CLOSING + FOOTER ==================== -->
-<section class="sec" id="contact" style="padding-block:clamp(76px,9vw,140px) clamp(40px,5vw,64px);">
+<section class="has-orb sec" id="contact" style="padding-block:clamp(76px,9vw,140px) clamp(40px,5vw,64px);">
+  <span class="orb orb--lg orb--br" aria-hidden="true"></span>
 
   <div class="wrap close">
     <span class="micro r">The way forward</span>

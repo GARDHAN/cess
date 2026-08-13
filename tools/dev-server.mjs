@@ -124,6 +124,26 @@ const server = createServer(async (req, res) => {
       }
       // ?menu=open — force the mobile panel open, which a headless
       // screenshot cannot do by clicking
+      // ?debug=rails — report each rail's scroll geometry
+      if (url.searchParams.get("debug") === "rails") {
+        body = body.replace(
+          /<\/body>/i,
+          `<script>
+            addEventListener("load", function(){
+              var out = [];
+              document.querySelectorAll(".rail").forEach(function(r){
+                out.push(r.id + " x=" + Math.round(r.scrollLeft) +
+                         " cw=" + Math.round(r.clientWidth) +
+                         " sw=" + Math.round(r.scrollWidth) +
+                         " pos=" + r.dataset.pos);
+              });
+              document.title = "RAILS " + out.join(" | ") +
+                " || pageScrollWidth=" + document.documentElement.scrollWidth +
+                " client=" + document.documentElement.clientWidth;
+            });
+          </script></body>`
+        );
+      }
       // ?debug=sections — report each section's id and vertical extent, so the
       // colour ramp can be checked against real section boundaries
       if (url.searchParams.get("debug") === "sections") {

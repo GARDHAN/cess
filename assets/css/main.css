@@ -20,17 +20,9 @@
      single gradient across the whole document that lightens with scroll and
      settles on off-white. --g0 is where the hero melts out, so the hero's
      fade target and the gradient's first stop must stay identical. */
-  --g0:  #DCE7D8;
-  --g1:  #DFE9DB;
-  --g2:  #E5EDE1;
-  --g3:  #EBF1E8;
-  --g4:  #F1F5EF;
-  --g5:  #F6F8F5;
-  --g6:  #FBFBF9;
-
-  --paper:   var(--g0);
+  --paper:   #FAFAF7;
   --paper-2: #FFFFFF;
-  --paper-3: rgba(255,255,255,.45);
+  --paper-3: #F2F4EF;
 
   --green:   #14603C;
   --green-2: #1E7A4B;
@@ -77,7 +69,7 @@ html.locked{ overflow:hidden; }
 
 /* the end colour also fills overscroll, and stops body's background
    propagating to the canvas — which would stretch it and break the ramp */
-html{ background:var(--g6); }
+html{ background:var(--paper); }
 
 body{
   margin:0;
@@ -85,19 +77,7 @@ body{
      scroll position rather than to section boundaries */
   /* the dark zone ends at ~22% of the document, so the ramp starts there and
      rises to the end — every section below sits a shade lighter than the last */
-  background:linear-gradient(180deg,
-    #15382A   0%,
-    #18402F   8%,
-    #1C4835  14%,
-    #2E5B45  16%,
-    #5C8A70  18%,
-    #A8C1AD  20%,
-    #C4D5C6  26%,
-    #D6E1D6  40%,
-    #E4EBE2  55%,
-    #EDF1EB  70%,
-    #F5F7F3  86%,
-    #FBFBF9 100%);
+  background:var(--paper);
   color:var(--text);
   font-family:"Instrument Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size:1.0625rem; line-height:1.65;
@@ -120,10 +100,8 @@ button{ font:inherit; color:inherit; background:none; border:0; }
   font-size:.66rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
   color:var(--text-mute);
 }
-.on-dark .micro{ color:var(--on-mute); }
 
 .lede{ font-size:clamp(1.02rem,1.3vw,1.16rem); line-height:1.6; color:var(--text-soft); max-width:62ch; }
-.on-dark .lede{ color:var(--on-soft); }
 
 /* ---------- pill buttons ---------- */
 .pill{
@@ -136,10 +114,6 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 .pill:hover{ background:var(--green-2); transform:translateY(-1px); }
 .pill--ghost{ background:transparent; color:var(--text); border-color:var(--line); }
 .pill--ghost:hover{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
-.pill--light{ background:var(--lime); color:var(--ink); }
-.pill--light:hover{ background:#CFEDA2; }
-.pill--outline-light{ background:transparent; color:var(--on); border-color:var(--on-line); }
-.pill--outline-light:hover{ background:var(--on); color:var(--ink); border-color:var(--on); }
 .pill svg{ width:14px; height:14px; }
 
 /* ---------- top bar ----------
@@ -240,13 +214,9 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 }
 
 /* ---------- radiance grounds ---------- */
-/* Only the hero, about and areas sit on the dark part of the page ramp;
-   they carry light text but paint no ground of their own. */
-.dark{ position:relative; color:var(--on); isolation:isolate; }
 /* the dark ground melts into the page instead of stopping at an edge */
 /* capped: on a tall content section, 22% of the height would reach up and
    wash out the last rows of content */
-.dark > *{ position:relative; z-index:1; }
 
 /* ---------- hero ---------- */
 /* top padding clears the fixed two-tier bar */
@@ -254,27 +224,27 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 .hero__mark{
   position:absolute; right:-6%; top:14%; z-index:0; pointer-events:none; user-select:none;
   font-size:clamp(12rem,30vw,32rem); font-weight:700; letter-spacing:-.06em; line-height:.8;
-  color:rgba(189,227,136,.042); white-space:nowrap;
+  color:rgba(20,96,60,.019); white-space:nowrap;
 }
-.hero__eyebrow{ display:flex; align-items:center; gap:.75rem; color:var(--on-soft); }
-.hero__eyebrow::before{ content:""; width:26px; height:1px; background:var(--lime); }
+.hero__eyebrow{ display:flex; align-items:center; gap:.75rem; color:var(--text-mute); }
+.hero__eyebrow::before{ content:""; width:26px; height:1px; background:var(--leaf); }
 .hero h1{
   font-size:var(--t-hero); letter-spacing:-.042em; line-height:.98; max-width:17ch;
   margin:clamp(20px,2.6vw,34px) 0 clamp(20px,2.4vw,30px);
 }
-.hero h1 em{ font-style:normal; color:var(--lime); }
+.hero h1 em{ font-style:normal; color:var(--green-2); }
 .hero__acts{ margin-top:clamp(26px,3.2vw,40px); display:flex; gap:.7rem; flex-wrap:wrap; }
 
 /* facts strip */
 .facts{
   margin-top:clamp(48px,6vw,84px); padding-top:clamp(24px,2.6vw,32px);
-  border-top:1px solid var(--on-line);
+  border-top:1px solid var(--line);
   display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:clamp(20px,2.6vw,40px);
 }
 .facts div span{ display:block; }
 .facts .v{
   font-size:clamp(1.15rem,1.7vw,1.45rem); font-weight:500; letter-spacing:-.02em;
-  margin-top:.55rem; color:var(--on); font-variant-numeric:tabular-nums;
+  margin-top:.55rem; color:var(--text); font-variant-numeric:tabular-nums;
 }
 
 /* ---------- sections ---------- */
@@ -307,11 +277,6 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 }
 
 /* card on dark */
-.on-dark .card{ background:rgba(255,255,255,.035); border-color:var(--on-line); }
-.on-dark .card:hover{ border-color:var(--lime); box-shadow:none; }
-.on-dark .card h3{ color:var(--on); }
-.on-dark .card p{ color:var(--on-soft); }
-.on-dark .card__n{ color:var(--on-mute); }
 
 /* corner ribbon badge */
 .ribbon{
@@ -323,17 +288,14 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 
 /* plain list rows */
 .rows{ margin-top:clamp(26px,3vw,40px); border-top:1px solid var(--line); }
-.on-dark .rows{ border-top-color:var(--on-line); }
 .row{
   display:grid; grid-template-columns:auto 1fr; gap:1.2rem; align-items:baseline;
   padding:clamp(14px,1.6vw,20px) .2rem; border-bottom:1px solid var(--line-2);
   transition:padding-left .35s var(--e), background .35s var(--e);
 }
-.on-dark .row{ border-bottom-color:var(--on-line); }
 .row:hover{ padding-left:.7rem; }
 .row b{ font-weight:500; font-size:1.02rem; letter-spacing:-.012em; }
 .row span{ font-size:.94rem; color:var(--text-soft); }
-.on-dark .row span{ color:var(--on-soft); }
 .row u{ text-decoration:none; width:6px; height:6px; border-radius:50%; background:var(--leaf); transform:translateY(-3px); }
 
 /* two-column prose */
@@ -350,7 +312,7 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 }
 .prog__tag::before{ content:""; width:5px; height:5px; border-radius:50%; background:var(--amber); }
 .prog h2{ font-size:clamp(2.1rem,4.4vw,3.9rem); letter-spacing:-.038em; max-width:15ch; margin:1.3rem 0 1.2rem; }
-.prog h2 em{ font-style:normal; color:var(--lime); }
+.prog h2 em{ font-style:normal; color:var(--green-2); }
 
 /* closing */
 .close{ text-align:center; }
@@ -361,8 +323,8 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 .foot{ padding-block:clamp(40px,5vw,70px) clamp(28px,3vw,40px); }
 .foot__in{ display:flex; justify-content:space-between; gap:1.5rem; flex-wrap:wrap; align-items:flex-end; }
 .foot b{ font-size:1.05rem; font-weight:600; display:block; }
-.foot span{ font-size:.86rem; color:var(--on-soft); }
-.foot__note{ margin-top:clamp(26px,3vw,40px); padding-top:1.2rem; border-top:1px solid var(--on-line); font-size:.78rem; color:var(--on-mute); display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+.foot span{ font-size:.86rem; color:var(--text-soft); }
+.foot__note{ margin-top:clamp(26px,3vw,40px); padding-top:1.2rem; border-top:1px solid var(--line); font-size:.78rem; color:var(--text-mute); display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
 
 /* reveal
    Gated behind .js, which an inline script in <head> sets. If the script
@@ -397,7 +359,6 @@ button{ font:inherit; color:inherit; background:none; border:0; }
   font-size:.68rem; font-weight:600; letter-spacing:.06em;
 }
 .flag::before{ content:""; width:5px; height:5px; border-radius:50%; background:var(--amber); flex:none; }
-.on-dark .flag{ color:#E9C98A; background:rgba(224,163,62,.10); border-color:rgba(224,163,62,.35); }
 
 /* ---------- vision / mission statement ---------- */
 .stmt{
@@ -408,8 +369,6 @@ button{ font:inherit; color:inherit; background:none; border:0; }
   quotes:none; font-size:clamp(1.1rem,1.7vw,1.4rem); line-height:1.45;
   letter-spacing:-.02em; color:var(--text);
 }
-.on-dark .stmt{ border-left-color:var(--lime); }
-.on-dark .stmt q{ color:var(--on); }
 
 /* ---------- programme tiers ---------- */
 .tier{ margin-top:clamp(40px,5vw,72px); }
@@ -491,15 +450,15 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 /* ---------- three pillars ---------- */
 .pillars{ margin-top:clamp(30px,3.6vw,52px); display:grid; gap:clamp(14px,1.5vw,20px); grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
 .pillar{
-  border:1px solid var(--on-line); border-radius:var(--r); padding:clamp(20px,2.1vw,28px);
+  border:1px solid var(--line); border-radius:var(--r); padding:clamp(20px,2.1vw,28px);
   background:rgba(255,255,255,.035); display:flex; flex-direction:column; gap:1rem;
 }
-.pillar__n{ font-size:.66rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--lime); }
-.pillar h3{ font-size:var(--t-h3); font-weight:600; color:var(--on); letter-spacing:-.018em; }
+.pillar__n{ font-size:.66rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--green-2); }
+.pillar h3{ font-size:var(--t-h3); font-weight:600; color:var(--text); letter-spacing:-.018em; }
 .pillar ul{ margin:0; padding:0; list-style:none; display:grid; gap:.6rem; }
 .pillar li{
   display:grid; grid-template-columns:auto 1fr; gap:.7rem; align-items:baseline;
-  font-size:.92rem; color:var(--on-soft);
+  font-size:.92rem; color:var(--text-soft);
 }
 .pillar li::before{ content:""; width:5px; height:5px; border-radius:50%; background:var(--leaf); transform:translateY(-2px); }
 
@@ -653,11 +612,86 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 /* per-card figure line — the evidence under each area */
 .card__fig{ margin-top:auto; color:var(--green-2); }
 .card__fig--new{ color:#8A6520; }
-.on-dark .card__fig{ color:var(--lime); }
-.on-dark .card__fig--new{ color:var(--amber); }
 
 /* On the dark part of the ramp the ground lightens beneath the cards, so a
    translucent card would lighten with it and its light text would dissolve.
    Solid cards stay readable wherever they land on the ramp. */
-.on-dark .card{ background:#123A2B; border-color:rgba(189,227,136,.17); }
-.on-dark .card:hover{ background:#16452F; }
+
+/* ==========================================================
+   Off-white ground with soft green orbs, and horizontal rails
+   for sections carrying more content than a grid should stack.
+   ========================================================== */
+
+/* ---------- orbs ----------
+   Large, very faint spheres of green bleeding in from the corners.
+   They are the only colour on the page besides the type, so they stay
+   near the threshold of visibility — if you notice one as a shape
+   rather than as warmth, it is too strong. */
+.has-orb{ position:relative; isolation:isolate; overflow:hidden; }
+.has-orb > *{ position:relative; z-index:1; }
+.orb{
+  position:absolute; z-index:0; pointer-events:none; border-radius:50%;
+  width:clamp(380px, 46vw, 880px); aspect-ratio:1;
+  background:radial-gradient(closest-side,
+    rgba(53,169,106,.16) 0%,
+    rgba(53,169,106,.09) 42%,
+    rgba(53,169,106,0)  72%);
+}
+.orb--deep{
+  background:radial-gradient(closest-side,
+    rgba(20,96,60,.15) 0%,
+    rgba(20,96,60,.07) 45%,
+    rgba(20,96,60,0)   72%);
+}
+.orb--lime{
+  background:radial-gradient(closest-side,
+    rgba(141,193,88,.15) 0%,
+    rgba(141,193,88,.07) 45%,
+    rgba(141,193,88,0)   72%);
+}
+.orb--tl{ top:0;    left:0;  transform:translate(-38%,-42%); }
+.orb--tr{ top:0;    right:0; transform:translate(38%,-42%); }
+.orb--bl{ bottom:0; left:0;  transform:translate(-40%,40%); }
+.orb--br{ bottom:0; right:0; transform:translate(40%,40%); }
+.orb--r { top:50%;  right:0; transform:translate(42%,-50%); }
+.orb--l { top:50%;  left:0;  transform:translate(-42%,-50%); }
+.orb--lg{ width:clamp(520px, 62vw, 1150px); }
+
+/* ---------- horizontal rail ---------- */
+.rail-wrap{ margin-top:clamp(30px,3.6vw,52px); }
+.rail{
+  display:grid; grid-auto-flow:column;
+  grid-auto-columns:minmax(clamp(248px, 25vw, 330px), 1fr);
+  gap:clamp(14px,1.5vw,20px);
+  overflow-x:auto; overscroll-behavior-x:contain;
+  scroll-snap-type:x proximity;
+  padding:3px 3px clamp(6px,1vw,12px);
+  scrollbar-width:none; -ms-overflow-style:none;
+}
+.rail::-webkit-scrollbar{ display:none; }
+.rail > *{ scroll-snap-align:start; }
+/* the right edge softens while there is more to reach */
+.rail[data-pos="start"], .rail[data-pos="mid"]{
+  -webkit-mask-image:linear-gradient(90deg,#000 0 95%,rgba(0,0,0,.6) 100%);
+          mask-image:linear-gradient(90deg,#000 0 95%,rgba(0,0,0,.6) 100%);
+}
+.rail[data-pos="mid"]{
+  -webkit-mask-image:linear-gradient(90deg,rgba(0,0,0,.6) 0,#000 4% 95%,rgba(0,0,0,.6) 100%);
+          mask-image:linear-gradient(90deg,rgba(0,0,0,.6) 0,#000 4% 95%,rgba(0,0,0,.6) 100%);
+}
+.rail:focus-visible{ outline:2px solid var(--leaf); outline-offset:6px; border-radius:var(--r); }
+
+.rail__bar{ display:flex; align-items:center; gap:.6rem; margin-top:clamp(12px,1.4vw,18px); }
+.rail__btn{
+  width:38px; height:38px; flex:none; display:grid; place-items:center; cursor:pointer;
+  border:1px solid var(--line); border-radius:50%; background:var(--paper-2); color:var(--text);
+  transition:background .3s var(--e), color .3s var(--e), border-color .3s var(--e), opacity .3s var(--e);
+}
+.rail__btn:hover:not(:disabled){ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.rail__btn:disabled{ opacity:.3; cursor:default; }
+.rail__btn svg{ width:15px; height:15px; }
+.rail__hint{
+  font-size:.66rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--text-mute); margin-left:.2rem;
+}
+@media (hover:none){ .rail__btn{ display:none; } }

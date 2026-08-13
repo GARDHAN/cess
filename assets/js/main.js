@@ -54,6 +54,48 @@
     });
   }
 
+  /* horizontal rails — arrow buttons, and edge state for the fade masks */
+  $$(".rail").forEach(function(rail){
+    var btns = $$('.rail__btn[data-rail="' + rail.id + '"]');
+    var hint = rail.parentNode.querySelector(".rail__hint");
+
+    function step(){
+      var first = rail.firstElementChild;
+      return first ? first.getBoundingClientRect().width + 18 : rail.clientWidth * 0.8;
+    }
+
+    /* scroll-snap parks the first card behind the rail's own padding, so a
+       rail at rest sits a few px in rather than at exactly 0 */
+    var EPS = 8;
+
+    function sync(){
+      var max = rail.scrollWidth - rail.clientWidth;
+      var x = rail.scrollLeft;
+      var scrollable = max > EPS;
+      var atStart = x <= EPS, atEnd = x >= max - EPS;
+      rail.dataset.pos = !scrollable ? "none" : (atStart ? "start" : (atEnd ? "end" : "mid"));
+      btns.forEach(function(b){
+        b.disabled = !scrollable || (Number(b.dataset.dir) < 0 ? atStart : atEnd);
+      });
+      if(hint) hint.style.visibility = scrollable ? "visible" : "hidden";
+    }
+
+    btns.forEach(function(b){
+      b.addEventListener("click", function(){
+        rail.scrollBy({ left: Number(b.dataset.dir) * step(), behavior: "smooth" });
+      });
+    });
+
+    rail.addEventListener("scroll", function(){
+      /* cheap enough to run raw, but coalesce to a frame anyway */
+      if(rail._t) return;
+      rail._t = requestAnimationFrame(function(){ rail._t = 0; sync(); });
+    }, { passive:true });
+
+    addEventListener("resize", sync);
+    sync();
+  });
+
   /* ghost wordmark drifts a little against the scroll */
   var mark = document.querySelector(".hero__mark");
   if(mark && !matchMedia("(prefers-reduced-motion: reduce)").matches){
