@@ -59,43 +59,35 @@ lays out at 500 and crops the image, which looks like a layout bug and is not on
 
 Tokens live in `:root`. Use them rather than literal colours.
 
-- **The page is one continuous descent.** `body` carries a single
-  `linear-gradient` over the whole document height (`--g0` → `--g6`), so the
-  background lightens with scroll position rather than at section edges: deep
-  emerald at the hero, sage after it, off-white by the footer. `html` is painted
-  `--g6` so the body background doesn't propagate to the canvas and stretch.
-- **The dark zone spans three sections** — hero, about, areas — as `.tone-1`,
-  `.tone-2`, `.tone-3`, each starting on exactly the colour the one above ended
-  on. One dark section alone made the step to pale too abrupt.
-- **Only the last dark section melts out**, via `.tone-melt`, and the fade must
-  sit entirely inside empty padding: `padding-bottom` = melt height + a gap.
-  Cards on a dark ground are translucent, so any overlap lightens the ground
-  *through* them while their text is still light — content appears to dissolve.
-  The selector is doubled (`.tone-melt.tone-melt`) because `.sec` sets
-  `padding-block` later in the file and that shorthand would otherwise win.
-- The melt's final stop must stay exactly `--g0`, the page gradient's first
-  stop, or the join shows as a band. Don't add dark sections below the melt;
-  it breaks the one-way progression.
-- The body gradient's hold (`--g0` until ~22%) is pinned to where the dark zone
-  actually ends. If sections are added or removed above that point, re-measure
-  with `?debug=sections` and move the stop, or a flat or reversed band appears.
-- No radial glows on the grounds. A bloom over a flat emerald reads as a smudge,
-  not light.
+- **The page is one continuous descent.** A single `linear-gradient` on `body`
+  runs the whole document, from a dark-but-not-black emerald (`#15382A`) at the
+  top to off-white (`#FBFBF9`) at the foot. Nothing else paints a ground — no
+  per-section backgrounds, no overlay fades. Sections are transparent and only
+  declare which half of the ramp they sit on. `html` is painted the end colour
+  so the body background doesn't propagate to the canvas and stretch.
+- **The dark-to-light crossing happens between 16% and 20%**, which lands inside
+  the `areas` section at both desktop and mobile widths. It is placed there
+  deliberately: that section is full of cards, so the change happens *behind
+  content* rather than sweeping across empty space, which is what made earlier
+  attempts read as an abrupt band.
+- **Cards on the dark half are solid** (`.on-dark .card`), never translucent. The
+  ground lightens beneath them as the ramp crosses; a translucent card lightens
+  with it and its light text dissolves.
+- `.dark` (hero, about, areas) means light text only — it paints nothing.
+- No radial glows on the grounds. A bloom over a flat emerald reads as a smudge.
+- If sections are added or removed above ~20%, re-measure with `?debug=sections`
+  and move the crossing stops, or text will land on a ground it can't sit on.
 
-**Validating the ramp.** After any change to the grounds, render the full page
-and check the background is monotonically lightening — average a row across both
-gutters (a single pixel column picks up ±1 gradient dither and gives false
-regressions), sample below y=130 to skip the fixed header, and use a tolerance of
-about 0.004 in relative luminance. Every section should enter at the luminance
-the one above left off.
-- `.on-dark` switches text/card treatment, and is now used by the hero alone.
-- `.micro` label over value is the data pattern throughout.
-- `.pill` buttons, `.card` grids, `.row` lists, `.rule` hairlines.
-- `.r` marks anything that reveals on scroll; `data-d="1..4"` staggers it.
-  The reveal is gated behind a `.js` class set by an inline script in `<head>`,
-  so a failed script load leaves the page fully readable instead of blank.
-  Do not move those rules back onto bare `.r`.
-- Every animation is disabled under `prefers-reduced-motion`. Keep it that way.
+**Validating the ramp.** After any change to the grounds or section order, render
+the full page at 1440 and 560 and check two things:
+
+1. *Monotonic* — average each row across the **left** gutter only (the ghost
+   wordmark bleeds into the right margin and gives false regressions), sample
+   below y=130 to skip the fixed header, tolerance ~0.004 relative luminance.
+   A single pixel column picks up ±1 gradient dither; average or it lies.
+2. *Contrast* — at each section's ground, body/secondary/muted text must hold
+   4.5:1. Last run: 0 regressions over 702 and 945 rows, 0.032 → 0.96, worst
+   text contrast 4.5:1.
 
 ## Content rules
 

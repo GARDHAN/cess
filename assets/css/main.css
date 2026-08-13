@@ -49,8 +49,8 @@
   --logo-h: clamp(38px, 4.4vw, 54px);
 
   --text:      #10241A;
-  --text-soft: #4A5C51;
-  --text-mute: #7A8A80;
+  --text-soft: #3F5147;
+  --text-mute: #414E46;
   --line:      #D9E1D6;
   --line-2:    #E7EDE4;
 
@@ -86,14 +86,18 @@ body{
   /* the dark zone ends at ~22% of the document, so the ramp starts there and
      rises to the end — every section below sits a shade lighter than the last */
   background:linear-gradient(180deg,
-    var(--g0)   0%,
-    var(--g0) 22.2%,
-    var(--g1)  32%,
-    var(--g2)  44%,
-    var(--g3)  56%,
-    var(--g4)  68%,
-    var(--g5)  84%,
-    var(--g6) 100%);
+    #15382A   0%,
+    #18402F   8%,
+    #1C4835  14%,
+    #2E5B45  16%,
+    #5C8A70  18%,
+    #A8C1AD  20%,
+    #C4D5C6  26%,
+    #D6E1D6  40%,
+    #E4EBE2  55%,
+    #EDF1EB  70%,
+    #F5F7F3  86%,
+    #FBFBF9 100%);
   color:var(--text);
   font-family:"Instrument Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size:1.0625rem; line-height:1.65;
@@ -236,42 +240,12 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 }
 
 /* ---------- radiance grounds ---------- */
-/* The descent runs across three stacked sections rather than ending at the
-   hero, so the eye never meets a single hard step from emerald to pale. Each
-   tone starts on exactly the colour the one above ended on. */
-.dark{ position:relative; color:var(--on); isolation:isolate; overflow:hidden; }
-
-.tone-1{
-  background:linear-gradient(180deg, #04231C 0%, #06291F 100%);
-}
-.tone-2{ background:linear-gradient(180deg, #06291F 0%, #0A3227 100%); }
-.tone-3{ background:linear-gradient(180deg, #0A3227 0%, #14402F 100%); }
+/* Only the hero, about and areas sit on the dark part of the page ramp;
+   they carry light text but paint no ground of their own. */
+.dark{ position:relative; color:var(--on); isolation:isolate; }
 /* the dark ground melts into the page instead of stopping at an edge */
 /* capped: on a tall content section, 22% of the height would reach up and
    wash out the last rows of content */
-/* Only the last dark section melts out, and it does so over a long, mostly
-   empty run so the change reads as a drift rather than an edge. The final
-   stop must equal --g0 — the page gradient's first stop — exactly. */
-/* The fade must sit entirely inside empty padding. Cards on a dark ground are
-   translucent, so any overlap lightens the ground *through* them while their
-   text is still styled for dark — which reads as content dissolving. */
-/* .sec sets padding-block later in this file, and that shorthand would
-   overwrite a bare padding-bottom here — hence the doubled selector. */
-.tone-melt{ --melt:clamp(200px, 19vw, 280px); }
-.tone-melt.tone-melt{ padding-bottom:calc(var(--melt) + clamp(36px, 3.5vw, 64px)); }
-.tone-melt::after{
-  content:""; position:absolute; left:0; right:0; bottom:0;
-  height:var(--melt); z-index:0; pointer-events:none;
-  background:linear-gradient(180deg,
-    rgba(220,231,216,0)    0%,
-    rgba(220,231,216,.10) 22%,
-    rgba(220,231,216,.26) 40%,
-    rgba(220,231,216,.48) 56%,
-    rgba(220,231,216,.70) 70%,
-    rgba(220,231,216,.87) 82%,
-    rgba(220,231,216,.96) 92%,
-    var(--g0)            100%);
-}
 .dark > *{ position:relative; z-index:1; }
 
 /* ---------- hero ---------- */
@@ -681,3 +655,9 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 .card__fig--new{ color:#8A6520; }
 .on-dark .card__fig{ color:var(--lime); }
 .on-dark .card__fig--new{ color:var(--amber); }
+
+/* On the dark part of the ramp the ground lightens beneath the cards, so a
+   translucent card would lighten with it and its light text would dissolve.
+   Solid cards stay readable wherever they land on the ramp. */
+.on-dark .card{ background:#123A2B; border-color:rgba(189,227,136,.17); }
+.on-dark .card:hover{ background:#16452F; }
