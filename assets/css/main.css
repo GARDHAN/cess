@@ -4,8 +4,8 @@
    minimal bar, pill buttons, huge tight headline, ghost
    wordmark, hairline rules, bordered card grids, micro
    label over value.
-   Colour: institutional green. Radiance: dark grounds that
-   bloom to light and melt into the page rather than stopping.
+   Colour: one descent from deep emerald to off-white, tied to
+   scroll position — never a dark ground below a light one.
    ========================================================== */
 
 :root{
@@ -83,14 +83,16 @@ body{
   margin:0;
   /* one gradient over the whole document height, so the shift is tied to
      scroll position rather than to section boundaries */
+  /* the dark zone ends at ~22% of the document, so the ramp starts there and
+     rises to the end — every section below sits a shade lighter than the last */
   background:linear-gradient(180deg,
-    var(--g0)  0%,
-    var(--g0) 27%,
-    var(--g1) 38%,
-    var(--g2) 50%,
-    var(--g3) 62%,
-    var(--g4) 74%,
-    var(--g5) 87%,
+    var(--g0)   0%,
+    var(--g0) 22.2%,
+    var(--g1)  32%,
+    var(--g2)  44%,
+    var(--g3)  56%,
+    var(--g4)  68%,
+    var(--g5)  84%,
     var(--g6) 100%);
   color:var(--text);
   font-family:"Instrument Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -240,9 +242,7 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 .dark{ position:relative; color:var(--on); isolation:isolate; overflow:hidden; }
 
 .tone-1{
-  background:
-    radial-gradient(78% 52% at 50% 112%, rgba(45,170,120,.26) 0%, rgba(45,170,120,0) 60%),
-    linear-gradient(180deg, #04231C 0%, #06291F 100%);
+  background:linear-gradient(180deg, #04231C 0%, #06291F 100%);
 }
 .tone-2{ background:linear-gradient(180deg, #06291F 0%, #0A3227 100%); }
 .tone-3{ background:linear-gradient(180deg, #0A3227 0%, #14402F 100%); }
@@ -257,8 +257,8 @@ button{ font:inherit; color:inherit; background:none; border:0; }
    text is still styled for dark — which reads as content dissolving. */
 /* .sec sets padding-block later in this file, and that shorthand would
    overwrite a bare padding-bottom here — hence the doubled selector. */
-.tone-melt{ --melt:clamp(320px, 34vw, 520px); }
-.tone-melt.tone-melt{ padding-bottom:calc(var(--melt) + clamp(48px, 5vw, 96px)); }
+.tone-melt{ --melt:clamp(200px, 19vw, 280px); }
+.tone-melt.tone-melt{ padding-bottom:calc(var(--melt) + clamp(36px, 3.5vw, 64px)); }
 .tone-melt::after{
   content:""; position:absolute; left:0; right:0; bottom:0;
   height:var(--melt); z-index:0; pointer-events:none;
@@ -273,13 +273,6 @@ button{ font:inherit; color:inherit; background:none; border:0; }
     var(--g0)            100%);
 }
 .dark > *{ position:relative; z-index:1; }
-.bloom{
-  position:absolute; left:50%; bottom:-26%; transform:translateX(-50%);
-  width:min(1100px,120vw); aspect-ratio:2/1; z-index:0; pointer-events:none;
-  background:radial-gradient(closest-side, rgba(189,227,136,.20), rgba(189,227,136,0) 72%);
-  animation:breathe 14s ease-in-out infinite;
-}
-@keyframes breathe{ 0%,100%{ opacity:.75; transform:translateX(-50%) scale(1) } 50%{ opacity:1; transform:translateX(-50%) scale(1.07) } }
 
 /* ---------- hero ---------- */
 /* top padding clears the fixed two-tier bar */

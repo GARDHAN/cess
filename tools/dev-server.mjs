@@ -124,6 +124,23 @@ const server = createServer(async (req, res) => {
       }
       // ?menu=open — force the mobile panel open, which a headless
       // screenshot cannot do by clicking
+      // ?debug=sections — report each section's id and vertical extent, so the
+      // colour ramp can be checked against real section boundaries
+      if (url.searchParams.get("debug") === "sections") {
+        body = body.replace(
+          /<\/body>/i,
+          `<script>
+            (function(){
+              var out = [];
+              document.querySelectorAll("section[id]").forEach(function(el){
+                var r = el.getBoundingClientRect(), top = r.top + scrollY;
+                out.push(el.id + ":" + Math.round(top) + "-" + Math.round(top + r.height));
+              });
+              document.title = "SECTIONS " + document.body.scrollHeight + " " + out.join(" ");
+            })();
+          </script></body>`
+        );
+      }
       if (url.searchParams.get("menu") === "open") {
         body = body.replace(
           /<\/head>/i,

@@ -76,6 +76,18 @@ Tokens live in `:root`. Use them rather than literal colours.
 - The melt's final stop must stay exactly `--g0`, the page gradient's first
   stop, or the join shows as a band. Don't add dark sections below the melt;
   it breaks the one-way progression.
+- The body gradient's hold (`--g0` until ~22%) is pinned to where the dark zone
+  actually ends. If sections are added or removed above that point, re-measure
+  with `?debug=sections` and move the stop, or a flat or reversed band appears.
+- No radial glows on the grounds. A bloom over a flat emerald reads as a smudge,
+  not light.
+
+**Validating the ramp.** After any change to the grounds, render the full page
+and check the background is monotonically lightening — average a row across both
+gutters (a single pixel column picks up ±1 gradient dither and gives false
+regressions), sample below y=130 to skip the fixed header, and use a tolerance of
+about 0.004 in relative luminance. Every section should enter at the luminance
+the one above left off.
 - `.on-dark` switches text/card treatment, and is now used by the hero alone.
 - `.micro` label over value is the data pattern throughout.
 - `.pill` buttons, `.card` grids, `.row` lists, `.rule` hairlines.
