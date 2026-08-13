@@ -84,12 +84,13 @@ body{
   /* one gradient over the whole document height, so the shift is tied to
      scroll position rather than to section boundaries */
   background:linear-gradient(180deg,
-    var(--g0) 0%,
-    var(--g1) 12%,
-    var(--g2) 30%,
-    var(--g3) 50%,
-    var(--g4) 70%,
-    var(--g5) 85%,
+    var(--g0)  0%,
+    var(--g0) 27%,
+    var(--g1) 38%,
+    var(--g2) 50%,
+    var(--g3) 62%,
+    var(--g4) 74%,
+    var(--g5) 87%,
     var(--g6) 100%);
   color:var(--text);
   font-family:"Instrument Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -233,34 +234,45 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 }
 
 /* ---------- radiance grounds ---------- */
-.dark{
-  position:relative; color:var(--on); isolation:isolate; overflow:hidden;
+/* The descent runs across three stacked sections rather than ending at the
+   hero, so the eye never meets a single hard step from emerald to pale. Each
+   tone starts on exactly the colour the one above ended on. */
+.dark{ position:relative; color:var(--on); isolation:isolate; overflow:hidden; }
+
+.tone-1{
   background:
-    radial-gradient(78% 52% at 50% 108%, rgba(45,170,120,.34) 0%, rgba(45,170,120,0) 62%),
-    radial-gradient(120% 78% at 50% -18%, #0C4536 0%, #073026 46%, #04231C 100%);
+    radial-gradient(78% 52% at 50% 112%, rgba(45,170,120,.26) 0%, rgba(45,170,120,0) 60%),
+    linear-gradient(180deg, #04231C 0%, #06291F 100%);
 }
+.tone-2{ background:linear-gradient(180deg, #06291F 0%, #0A3227 100%); }
+.tone-3{ background:linear-gradient(180deg, #0A3227 0%, #14402F 100%); }
 /* the dark ground melts into the page instead of stopping at an edge */
 /* capped: on a tall content section, 22% of the height would reach up and
    wash out the last rows of content */
-/* the hero hands off to the page gradient. The fade must run a long way and
-   land exactly on --g0, or the join shows as a band. */
-.dark::after{
-  content:""; position:absolute; left:0; right:0; bottom:0; height:clamp(160px, 26%, 300px); z-index:0; pointer-events:none;
+/* Only the last dark section melts out, and it does so over a long, mostly
+   empty run so the change reads as a drift rather than an edge. The final
+   stop must equal --g0 — the page gradient's first stop — exactly. */
+/* The fade must sit entirely inside empty padding. Cards on a dark ground are
+   translucent, so any overlap lightens the ground *through* them while their
+   text is still styled for dark — which reads as content dissolving. */
+/* .sec sets padding-block later in this file, and that shorthand would
+   overwrite a bare padding-bottom here — hence the doubled selector. */
+.tone-melt{ --melt:clamp(320px, 34vw, 520px); }
+.tone-melt.tone-melt{ padding-bottom:calc(var(--melt) + clamp(48px, 5vw, 96px)); }
+.tone-melt::after{
+  content:""; position:absolute; left:0; right:0; bottom:0;
+  height:var(--melt); z-index:0; pointer-events:none;
   background:linear-gradient(180deg,
-    rgba(220,231,216,0) 0%,
-    rgba(220,231,216,.55) 55%,
-    rgba(220,231,216,.88) 80%,
-    var(--g0) 100%);
+    rgba(220,231,216,0)    0%,
+    rgba(220,231,216,.10) 22%,
+    rgba(220,231,216,.26) 40%,
+    rgba(220,231,216,.48) 56%,
+    rgba(220,231,216,.70) 70%,
+    rgba(220,231,216,.87) 82%,
+    rgba(220,231,216,.96) 92%,
+    var(--g0)            100%);
 }
-/* dark sections whose content runs close to the bottom edge */
-.dark--tail{ padding-bottom:clamp(150px, 14vw, 210px); }
 .dark > *{ position:relative; z-index:1; }
-/* the final ground ends the page, so it must not melt out at the bottom */
-.dark--last::after{ display:none; }
-.dark--band::before{
-  content:""; position:absolute; left:0; right:0; top:0; height:16%; z-index:0; pointer-events:none;
-  background:linear-gradient(180deg, var(--paper) 0%, rgba(244,247,242,0) 100%);
-}
 .bloom{
   position:absolute; left:50%; bottom:-26%; transform:translateX(-50%);
   width:min(1100px,120vw); aspect-ratio:2/1; z-index:0; pointer-events:none;
@@ -666,3 +678,13 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 
 /* the Centre's own mark, lifted from its annual report */
 .brand img{ height:clamp(28px,3.2vw,36px); width:auto; flex:none; }
+
+/* the Centre's wordmark — leaf-C with ESS, as it appears on its own documents */
+.brand img{ height:clamp(34px,4vw,46px); width:auto; flex:none; }
+.brand .brand__sub{ margin-top:0; align-self:center; max-width:16ch; line-height:1.35; }
+
+/* per-card figure line — the evidence under each area */
+.card__fig{ margin-top:auto; color:var(--green-2); }
+.card__fig--new{ color:#8A6520; }
+.on-dark .card__fig{ color:var(--lime); }
+.on-dark .card__fig--new{ color:var(--amber); }

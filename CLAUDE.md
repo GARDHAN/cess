@@ -48,9 +48,10 @@ lays out at 500 and crops the image, which looks like a layout bug and is not on
   out of the draft. Component styles for the report content are appended at the
   end of the CSS, after the original design system.
 - `images/brand/` — logos. `christ-logo.png` is the CHRIST master and
-  `christ-logo-112.png` is what the page loads. `cess-logo.png` is the Centre's
-  own lockup, lifted from its annual report; `cess-mark.png` is the leaf mark
-  cropped from it, used in the header.
+  `christ-logo-112.png` is what the page loads. The Centre's own logo was
+  lifted from page 1 of its annual report: `cess-logo.png` is the full lockup,
+  `cess-wordmark.png` is the leaf-C with ESS (descriptor type removed) and is
+  what the header uses, `cess-mark.png` is the leaf alone.
 - `cess Dean.md` — the Dean's strategy document: vision statement, strategic goals
   2026–27, long-term goals 2027–32. Source of truth for the Centre's own wording.
 
@@ -63,10 +64,18 @@ Tokens live in `:root`. Use them rather than literal colours.
   background lightens with scroll position rather than at section edges: deep
   emerald at the hero, sage after it, off-white by the footer. `html` is painted
   `--g6` so the body background doesn't propagate to the canvas and stretch.
-- **Only the hero is dark.** It paints its own emerald ground and fades out via
-  `.dark::after`, whose final stop must stay exactly `--g0` — the gradient's
-  first stop — or the join shows as a visible band. Don't reintroduce dark
-  sections mid-page; it breaks the one-way progression.
+- **The dark zone spans three sections** — hero, about, areas — as `.tone-1`,
+  `.tone-2`, `.tone-3`, each starting on exactly the colour the one above ended
+  on. One dark section alone made the step to pale too abrupt.
+- **Only the last dark section melts out**, via `.tone-melt`, and the fade must
+  sit entirely inside empty padding: `padding-bottom` = melt height + a gap.
+  Cards on a dark ground are translucent, so any overlap lightens the ground
+  *through* them while their text is still light — content appears to dissolve.
+  The selector is doubled (`.tone-melt.tone-melt`) because `.sec` sets
+  `padding-block` later in the file and that shorthand would otherwise win.
+- The melt's final stop must stay exactly `--g0`, the page gradient's first
+  stop, or the join shows as a band. Don't add dark sections below the melt;
+  it breaks the one-way progression.
 - `.on-dark` switches text/card treatment, and is now used by the hero alone.
 - `.micro` label over value is the data pattern throughout.
 - `.pill` buttons, `.card` grids, `.row` lists, `.rule` hairlines.
