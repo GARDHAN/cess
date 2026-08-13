@@ -96,6 +96,27 @@
     sync();
   });
 
+  /* one disclosure control per row.
+
+     Every card keeps its own <details>, so the page still works without this;
+     what the button adds is opening the whole row at once instead of card by
+     card. The summaries are hidden by CSS only when the script is present. */
+  $$(".disc-all").forEach(function(btn){
+    var scope = document.getElementById(btn.dataset.disc);
+    if(!scope) return;
+    var panels = Array.prototype.slice.call(scope.querySelectorAll("details.more"));
+    if(!panels.length){ btn.hidden = true; return; }
+
+    btn.addEventListener("click", function(){
+      var open = btn.getAttribute("aria-expanded") !== "true";
+      panels.forEach(function(d){ d.open = open; });
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      btn.querySelector("span").textContent = open ? "Hide detail" : "Detail and outcomes";
+      /* the row grew or shrank, so the rail's own end-detection is stale */
+      dispatchEvent(new Event("resize"));
+    });
+  });
+
   /* continuous marquees — rows that travel on their own.
 
      Two tracks sit side by side and both slide left by exactly their own
@@ -165,14 +186,16 @@
      objective is nearest it sits at full strength, and the ones above and
      below recede in proportion to their distance from it — so the one you
      just read fades upward as the next one arrives. */
-  var objList = document.getElementById("objList");
-  var objDots = document.getElementById("objDots");
-  if(objList){
+  /* below this width the two columns collapse into one and everything is read
+     in order, so the fade would only be in the way */
+  var wide = matchMedia("(min-width:901px)");
+
+  $$(".stack").forEach(function(stack){
+    var objList = stack.querySelector(".stack__list");
+    var objDots = stack.querySelector(".stack__dots");
+    if(!objList) return;
     var objs = Array.prototype.slice.call(objList.children);
     var dots = objDots ? Array.prototype.slice.call(objDots.children) : [];
-    /* below this width the two columns collapse into one and everything is
-       read in order, so the fade would only be in the way */
-    var wide = matchMedia("(min-width:901px)");
     var oTick = false;
 
     function paint(){
@@ -208,7 +231,7 @@
     addEventListener("resize", paint);
     wide.addEventListener("change", paint);
     paint();
-  }
+  });
 
   /* The hero recedes as the page leaves it, and the ghost wordmark drifts
      against the scroll behind it. Both ride one scroll handler, and both write

@@ -17,11 +17,15 @@
   --ink-2:   #08372B;
   --ink-3:   #0C4536;
 
-  /* The ground, as the client specified: a deep leaf green. Light type sits on
-     it at about 11:1. Panels lift one step off it, recesses drop one below. */
-  --paper:   #0C3C01;
-  --paper-2: #16500A;
-  --paper-3: #093100;
+  /* The ground: a deep emerald, blue-leaning rather than olive. Light type
+     sits on it at about 12.7:1. Panels lift one step off it, recesses drop one
+     below, and two further shades give sections a little rhythm without ever
+     becoming a different colour — the deltas are a couple of percent. */
+  --paper:   #103023;
+  --paper-2: #17402F;
+  --paper-3: #0B2419;
+  --sec-lift: #133628;
+  --sec-deep: #0D2A1E;
 
   /* The university masthead stays light. It carries CHRIST's identity and its
      lockup is drawn for a white ground, so the bar keeps its own small palette
@@ -290,7 +294,7 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 /* corner ribbon badge */
 .ribbon{
   position:absolute; top:0; right:20px; width:26px; padding:.4rem 0 .55rem;
-  background:var(--green); color:#fff; text-align:center;
+  background:var(--lime); color:var(--ink); text-align:center;
   font-size:.6rem; font-weight:700; letter-spacing:.02em;
   clip-path:polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
 }
@@ -386,7 +390,7 @@ button{ font:inherit; color:inherit; background:none; border:0; }
   padding-bottom:1rem; border-bottom:1px solid var(--line);
 }
 .tier__n{
-  font-size:.7rem; font-weight:700; letter-spacing:.12em; color:var(--green);
+  font-size:.7rem; font-weight:700; letter-spacing:.12em; color:var(--green-2);
   border:1px solid var(--line); border-radius:999px; padding:.28rem .7rem; white-space:nowrap;
 }
 .tier__h h3{ font-size:clamp(1.25rem,2vw,1.6rem); font-weight:500; letter-spacing:-.025em; }
@@ -404,7 +408,7 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 .pcard__count{ text-align:right; flex:none; }
 .pcard__count b{
   display:block; font-size:clamp(1.5rem,2.4vw,2rem); font-weight:500; letter-spacing:-.03em;
-  color:var(--green); font-variant-numeric:tabular-nums; line-height:1;
+  color:var(--lime); font-variant-numeric:tabular-nums; line-height:1;
 }
 .pcard__count span{ display:block; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-mute); margin-top:.4rem; }
 
@@ -442,7 +446,7 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 /* the mark: thin, rounded data-end, anchored to a recessive baseline */
 .trk .mark{
   height:11px; border-radius:0 4px 4px 0; flex:none;
-  background:var(--c, var(--green));
+  background:var(--c, var(--lime));
   width:calc(var(--v) * 1%);
   transition:width 1.1s var(--e-out);
 }
@@ -862,7 +866,7 @@ button{ font:inherit; color:inherit; background:none; border:0; }
   transition:color .3s var(--e);
 }
 .more summary::-webkit-details-marker{ display:none; }
-.more summary:hover{ color:var(--green); }
+.more summary:hover{ color:var(--lime); }
 .more summary svg{ width:15px; height:15px; flex:none; transition:transform .3s var(--e); }
 .more[open] summary svg{ transform:rotate(180deg); }
 .more[open] summary{ margin-bottom:.9rem; }
@@ -914,6 +918,7 @@ button{ font:inherit; color:inherit; background:none; border:0; }
   font-variant-numeric:tabular-nums; padding-top:.45rem;
 }
 .objx h3{ font-size:clamp(1.2rem,1.9vw,1.55rem); font-weight:600; letter-spacing:-.022em; }
+.objx__body > p{ margin-top:.7rem; font-size:.98rem; color:var(--text-soft); max-width:52ch; }
 .objx ul{ margin:1rem 0 0; padding:0; list-style:none; display:grid; gap:.7rem; }
 .objx li{
   display:grid; grid-template-columns:auto 1fr; gap:.8rem; align-items:baseline;
@@ -999,7 +1004,7 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 .card, .pcard, .partner, .mcard{ transition:
   border-color .35s var(--e), transform .45s var(--e-enter),
   box-shadow .45s var(--e-enter), background .35s var(--e); }
-.card:hover, .pcard:hover, .partner:hover, .mcard:hover{ background:#1A5A0D; }
+.card:hover, .pcard:hover, .partner:hover, .mcard:hover{ background:#1C4B37; }
 
 .rail__btn{ transition:background .3s var(--e), color .3s var(--e),
   border-color .3s var(--e), opacity .3s var(--e), transform .3s var(--e-enter); }
@@ -1031,3 +1036,31 @@ button{ font:inherit; color:inherit; background:none; border:0; }
   }
   .hero__in{ opacity:1; transform:none; }
 }
+
+
+/* ---------- section shades ----------
+   "A little lighter or darker in a few sections." Kept to a couple of percent
+   so it registers as rhythm, not as a second colour, and each carries a
+   hairline at the join so the step reads as deliberate. */
+.sec--lift{ background:var(--sec-lift); border-block:1px solid var(--line-2); }
+.sec--deep{ background:var(--sec-deep); border-block:1px solid var(--line-2); }
+
+/* ---------- one disclosure control per row ----------
+   Each card still owns a real <details>, so with no script every card opens on
+   its own. With the script running, the per-card summaries step aside and a
+   single button opens and closes the whole row at once. */
+.js .more > summary{ display:none; }
+.js .more{ border-top:0; padding-top:0; }
+.js .more:not([open]){ display:none; }
+
+.disc-all{
+  margin-left:auto; display:inline-flex; align-items:center; gap:.6rem; cursor:pointer;
+  border:1px solid var(--line); border-radius:999px; padding:.5rem 1rem;
+  font-size:.7rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--green-2); background:transparent;
+  transition:background .3s var(--e), border-color .3s var(--e), color .3s var(--e);
+}
+.disc-all:hover{ background:var(--paper-2); border-color:var(--green-2); }
+.disc-all svg{ width:15px; height:15px; transition:transform .32s var(--e-enter); }
+.disc-all[aria-expanded="true"] svg{ transform:rotate(180deg); }
+html:not(.js) .disc-all{ display:none; }

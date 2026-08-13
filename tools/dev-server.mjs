@@ -170,8 +170,8 @@ const server = createServer(async (req, res) => {
           `<script>
             addEventListener("load", function(){
               var sec = document.getElementById("strategy");
-              var aside = document.querySelector(".stack__aside");
-              var items = [].slice.call(document.getElementById("objList").children);
+              var aside = sec.querySelector(".stack__aside");
+              var items = [].slice.call(sec.querySelector(".stack__list").children);
               var top = sec.getBoundingClientRect().top + scrollY;
               var out = [];
               for (var step = 0; step < 8; step++){
@@ -186,7 +186,7 @@ const server = createServer(async (req, res) => {
                 var ops = items.map(function(el){
                   return (+getComputedStyle(el).opacity).toFixed(2);
                 });
-                var on = document.querySelector(".stack__dots li.on");
+                var on = sec.querySelector(".stack__dots li.on");
                 out.push("y" + Math.round(y) +
                          " asideTop=" + Math.round(aside.getBoundingClientRect().top) +
                          " dot=" + (on ? on.textContent.trim() : "-") +
@@ -232,12 +232,30 @@ const server = createServer(async (req, res) => {
           </script></body>`
         );
       }
-      // ?open=all — expand every <details>, which a screenshot cannot click
+      // ?open=all — expand everything a screenshot cannot click: the group
+      // buttons first (the real path, so their own state updates too), then any
+      // stray <details> not covered by one.
       if (url.searchParams.get("open") === "all") {
         body = body.replace(
           /<\/body>/i,
-          `<script>document.querySelectorAll("details").forEach(function(d){ d.open = true; });</script></body>`
+          `<script>
+            addEventListener("load", function(){
+              document.querySelectorAll(".disc-all").forEach(function(b){ b.click(); });
+              document.querySelectorAll("details").forEach(function(d){ d.open = true; });
+              document.title = "OPENALL buttons=" + document.querySelectorAll(".disc-all[aria-expanded='true']").length +
+                "/" + document.querySelectorAll(".disc-all").length +
+                " details=" + document.querySelectorAll("details[open]").length +
+                "/" + document.querySelectorAll("details").length;
+            });
+          </script></body>`
         );
+      }
+      // ?nojs=1 — serve the page with every script stripped, to check the
+      // no-JavaScript path. Chrome's --disable-javascript is a no-op in current
+      // builds and --blink-settings=scriptEnabled=false renders nothing, so
+      // removing the scripts server-side is the only reliable way to see it.
+      if (url.searchParams.get("nojs") === "1") {
+        body = body.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
       }
       if (url.searchParams.get("menu") === "open") {
         body = body.replace(

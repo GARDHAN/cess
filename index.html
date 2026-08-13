@@ -216,7 +216,7 @@
 
 
 <!-- ==================== CORE AREAS ==================== -->
-<section class="sec has-orb" id="areas">
+<section class="sec--lift sec has-orb" id="areas">
   <span class="orb orb--lime orb--l" aria-hidden="true"></span>
   <div class="wrap">
     <div class="head r">
@@ -341,6 +341,10 @@
       <button class="rail__btn" type="button" data-rail="tier1-rail" data-dir="1" aria-label="Scroll right">
         <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
+      <button class="disc-all" type="button" data-disc="tier1-rail" aria-expanded="false" aria-controls="tier1-rail">
+        <span>Detail and outcomes</span>
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
       <span class="rail__hint">Scroll for more</span>
     </div>
   </div>
@@ -412,6 +416,10 @@
       <button class="rail__btn" type="button" data-rail="tier2-rail" data-dir="1" aria-label="Scroll right">
         <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
+      <button class="disc-all" type="button" data-disc="tier2-rail" aria-expanded="false" aria-controls="tier2-rail">
+        <span>Detail and outcomes</span>
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
       <span class="rail__hint">Scroll for more</span>
     </div>
   </div>
@@ -465,6 +473,10 @@
       <button class="rail__btn" type="button" data-rail="tier3-rail" data-dir="1" aria-label="Scroll right">
         <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
+      <button class="disc-all" type="button" data-disc="tier3-rail" aria-expanded="false" aria-controls="tier3-rail">
+        <span>Detail and outcomes</span>
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
       <span class="rail__hint">Scroll for more</span>
     </div>
   </div>
@@ -473,7 +485,7 @@
 </section>
 
 <!-- ==================== IMPACT / FEEDBACK ==================== -->
-<section class="has-orb sec" id="impact">
+<section class="sec--deep has-orb sec" id="impact">
   <span class="orb orb--deep orb--tl" aria-hidden="true"></span>
   <div class="wrap">
     <div class="head r">
@@ -548,39 +560,28 @@
       <p class="lede">Every programme in 2025–2026 was delivered alongside an institution already working in the field.</p>
     </div>
 
-    <div class="rail-wrap">
-    <div class="rail" id="partners-rail" tabindex="0" role="region" aria-label="Partners" data-pos="start">
+    <div class="partners">
       <article class="partner r">
-        <span class="micro">Healthcare</span>
-        <b>St. John's Geriatric Centre</b>
-        <span>A Ray of Hope. Geriatric care and preventive health across both the Empowering Healthy Ageing initiative and the staff wellness programme.</span>
-      </article>
+          <span class="micro">Healthcare</span>
+          <b>St. John's Geriatric Centre</b>
+          <span>A Ray of Hope. Geriatric care and preventive health across both the Empowering Healthy Ageing initiative and the staff wellness programme.</span>
+        </article>
       <article class="partner r" data-d="1">
-        <span class="micro">Schools</span>
-        <b>St. Patrick's School, Bengaluru</b>
-        <span>Host for the Nasha Mukt Bharat deaddiction awareness programme reaching 103 students and staff.</span>
-      </article>
+          <span class="micro">Schools</span>
+          <b>St. Patrick's School, Bengaluru</b>
+          <span>Host for the Nasha Mukt Bharat deaddiction awareness programme reaching 103 students and staff.</span>
+        </article>
       <article class="partner r" data-d="2">
-        <span class="micro">Disability</span>
-        <b>Sumanahalli Society</b>
-        <span>Partner on Beyond Vision — corneal blindness awareness, lived-experience testimony and the experiential Blind Walk.</span>
-      </article>
+          <span class="micro">Disability</span>
+          <b>Sumanahalli Society</b>
+          <span>Partner on Beyond Vision — corneal blindness awareness, lived-experience testimony and the experiential Blind Walk.</span>
+        </article>
       <article class="partner r" data-d="3">
-        <span class="micro">International</span>
-        <b>KATHO University, Germany</b>
-        <span>Academic partner on the flagship International Workshop on Sustainability, Climate Change and Community.</span>
-      </article>
+          <span class="micro">International</span>
+          <b>KATHO University, Germany</b>
+          <span>Academic partner on the flagship International Workshop on Sustainability, Climate Change and Community.</span>
+        </article>
     </div>
-    <div class="rail__bar">
-      <button class="rail__btn" type="button" data-rail="partners-rail" data-dir="-1" aria-label="Scroll left" disabled>
-        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="rail__btn" type="button" data-rail="partners-rail" data-dir="1" aria-label="Scroll right">
-        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <span class="rail__hint">Scroll for more</span>
-    </div>
-  </div>
   </div>
 </section>
 
@@ -655,7 +656,7 @@
 </section>
 
 <!-- ==================== WHAT WE'RE BUILDING ==================== -->
-<section class="sec" id="building">
+<section class="sec--lift sec" id="building">
   <div class="wrap">
     <div class="head r">
       <div>
@@ -726,7 +727,7 @@
         <span class="micro">Revisited objectives · 2026–2027</span>
         <h2>Five core strategic objectives.</h2>
         <p class="lede">The Centre's thrust areas for the coming year, each carrying its own deliverables.</p>
-        <ol class="stack__dots" id="objDots" aria-hidden="true">
+        <ol class="stack__dots" aria-hidden="true">
         <li data-i="0"><span>01</span></li>
         <li data-i="1"><span>02</span></li>
         <li data-i="2"><span>03</span></li>
@@ -735,7 +736,7 @@
         </ol>
       </div>
 
-      <ol class="stack__list" id="objList">
+      <ol class="stack__list">
         <li class="objx" data-i="0">
           <span class="objx__n">01</span>
           <div class="objx__body">
@@ -803,7 +804,7 @@
 </section>
 
 <!-- ==================== TRIPLE-PILLAR FRAMEWORK ==================== -->
-<section class="has-orb sec" id="framework">
+<section class="sec--deep has-orb sec" id="framework">
   <span class="orb orb--lime orb--tr" aria-hidden="true"></span>
 
   <div class="wrap">
@@ -856,36 +857,87 @@
 </section>
 
 <!-- ==================== VALUE PROPOSITION ==================== -->
+<!-- ==================== VALUE PROPOSITION ==================== -->
+<!-- Same pinned-heading treatment as the strategic objectives: the heading
+     holds while the seven positions travel past it, one at full strength. -->
 <section class="sec" id="value">
   <div class="wrap">
-    <div class="head r">
-      <div>
+    <div class="stack">
+
+      <div class="stack__aside">
         <span class="micro">Unique value proposition</span>
         <h2>What distinguishes the Centre.</h2>
+        <p class="lede">Seven positions the Centre holds, taken together rather than singly.</p>
+        <ol class="stack__dots" aria-hidden="true">
+        <li><span>01</span></li>
+        <li><span>02</span></li>
+        <li><span>03</span></li>
+        <li><span>04</span></li>
+        <li><span>05</span></li>
+        <li><span>06</span></li>
+        <li><span>07</span></li>
+        </ol>
       </div>
-      <p class="lede">Seven positions the Centre holds, taken together rather than singly.</p>
-    </div>
 
-    <div class="rail-wrap">
-    <div class="rail" id="uvp-rail" tabindex="0" role="region" aria-label="What distinguishes the Centre" data-pos="start">
-      <article class="r"><h3>Global–local integration</h3><p>Leverages German research standards and Malaysian field expertise.</p></article>
-      <article class="r" data-d="1"><h3>Interdisciplinary bridge</h3><p>Uniquely positioned to bridge social work with other sciences.</p></article>
-      <article class="r" data-d="2"><h3>Revenue-generating model</h3><p>Financially self-sustaining through certificate courses and grants.</p></article>
-      <article class="r"><h3>Research-to-practice pipeline</h3><p>Directly translates academic inquiry into community interventions.</p></article>
-      <article class="r" data-d="1"><h3>International legitimacy</h3><p>Partnerships with premier institutions elevate the university profile.</p></article>
-      <article class="r" data-d="2"><h3>Student development excellence</h3><p>Experiential learning producing practice-ready graduates.</p></article>
-      <article class="r"><h3>Scalability &amp; replicability</h3><p>Programmes designed for replication across geographies.</p></article>
+      <ol class="stack__list">
+        <li class="objx">
+          <span class="objx__n">01</span>
+          <div class="objx__body">
+            <h3>Global–local integration</h3>
+            <p>Leverages German research standards and Malaysian field expertise.</p>
+          </div>
+        </li>
+
+        <li class="objx">
+          <span class="objx__n">02</span>
+          <div class="objx__body">
+            <h3>Interdisciplinary bridge</h3>
+            <p>Uniquely positioned to bridge social work with other sciences.</p>
+          </div>
+        </li>
+
+        <li class="objx">
+          <span class="objx__n">03</span>
+          <div class="objx__body">
+            <h3>Revenue-generating model</h3>
+            <p>Financially self-sustaining through certificate courses and grants.</p>
+          </div>
+        </li>
+
+        <li class="objx">
+          <span class="objx__n">04</span>
+          <div class="objx__body">
+            <h3>Research-to-practice pipeline</h3>
+            <p>Directly translates academic inquiry into community interventions.</p>
+          </div>
+        </li>
+
+        <li class="objx">
+          <span class="objx__n">05</span>
+          <div class="objx__body">
+            <h3>International legitimacy</h3>
+            <p>Partnerships with premier institutions elevate the university profile.</p>
+          </div>
+        </li>
+
+        <li class="objx">
+          <span class="objx__n">06</span>
+          <div class="objx__body">
+            <h3>Student development excellence</h3>
+            <p>Experiential learning producing practice-ready graduates.</p>
+          </div>
+        </li>
+
+        <li class="objx">
+          <span class="objx__n">07</span>
+          <div class="objx__body">
+            <h3>Scalability &amp; replicability</h3>
+            <p>Programmes designed for replication across geographies.</p>
+          </div>
+        </li>
+      </ol>
+
     </div>
-    <div class="rail__bar">
-      <button class="rail__btn" type="button" data-rail="uvp-rail" data-dir="-1" aria-label="Scroll left" disabled>
-        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="rail__btn" type="button" data-rail="uvp-rail" data-dir="1" aria-label="Scroll right">
-        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <span class="rail__hint">Scroll for more</span>
-    </div>
-  </div>
   </div>
 </section>
 
@@ -1022,7 +1074,7 @@
 <div class="wrap"><div class="rule r"></div></div>
 
 <!-- ==================== OPPORTUNITIES ==================== -->
-<section class="sec" id="opportunities">
+<section class="sec--lift sec" id="opportunities">
   <div class="wrap">
     <div class="head r">
       <div>

@@ -38,7 +38,12 @@ a page of invisible sections. Everything reported into `<title>` is read back
 with `--dump-dom`:
 
 - `?reveal=all` — force every scroll-reveal into its final state
-- `?open=all` — expand every `<details>`, which a screenshot cannot click
+- `?open=all` — click every `.disc-all` (the real path, so their own state
+  updates), then open any stray `<details>`; reports the counts in `<title>`
+- `?nojs=1` — serve the page with every `<script>` stripped, to check the
+  no-JavaScript path. Chrome's `--disable-javascript` is a **no-op** in current
+  builds and `--blink-settings=scriptEnabled=false` renders nothing at all, so
+  this is the only reliable way to see that path — don't trust either flag.
 - `?debug=widths` — list elements wider than the viewport
 - `?debug=sections` — each section's id and vertical extent
 - `?debug=rails` — rail and marquee geometry, plus page scroll width
@@ -72,12 +77,17 @@ lays out at 500 and crops the image, which looks like a layout bug and is not on
 
 Tokens live in `:root`. Use them rather than literal colours.
 
-- **Deep green ground** (`--paper: #0C3C01`, the client's own colour) across the
-  whole site, light type on it, `--lime` as the single accent. No gradient
-  descent, no per-section grounds. Panels lift one step (`--paper-2`), the
-  closing section drops one (`--paper-3`), and `html` takes that closing colour
-  so the overscroll bounce matches what you are looking at when you hit the
-  bottom.
+- **Deep emerald ground** (`--paper: #103023`) across the whole site, light type
+  on it at about 12.7:1, `--lime` as the single accent. Blue-leaning rather than
+  olive — the client compared the two and picked this. Panels lift one step
+  (`--paper-2`), the closing section drops one (`--paper-3`), and `html` takes
+  that closing colour so the overscroll bounce matches what you are looking at
+  when you hit the bottom.
+- **Section shades** give the page rhythm: `.sec--lift` and `.sec--deep` sit a
+  couple of percent either side of the ground, with a hairline at each join so
+  the step reads as deliberate rather than as a rendering seam. Keep the deltas
+  tiny — this is rhythm, not a second colour. Currently on areas, impact,
+  building, framework and opportunities.
 - **The masthead is the exception** and keeps its own light palette —
   `--chrome`, `--chrome-line`, `--chrome-mute`. It carries CHRIST's identity and
   the university lockup is drawn for a white ground. Anything placed in the bar
@@ -115,11 +125,17 @@ Tokens live in `:root`. Use them rather than literal colours.
 - **Disclosures** (`.more`) keep dense cards to their headline: a programme card
   shows its title and its number, and folds venue, partner and findings into a
   native `<details>`. Prefer this to deleting content the report supports.
-- **The pinned stack** (`.stack`) is how `#strategy` reads: the heading column
+  One control opens a whole row: a `.disc-all` button in the rail bar toggles
+  every `<details>` in its rail. Each card still owns a real `<details>`, so
+  with no script every card opens on its own and the group button is hidden —
+  the per-card summaries only step aside once `.js` is on the root.
+- **The pinned stack** (`.stack`) is used twice, by `#strategy` and `#value`: the
+  heading column
   sticks while the objectives travel past it, and `main.js` fades each objective
   by its distance from a reading line at 42% of the viewport, so exactly one is
-  at full strength. Pinning is pure CSS, so the section releases itself when the
-  list ends — but only if `.stack__list` keeps a bottom tail taller than the
+  at full strength. The script binds to `.stack` / `.stack__list` / `.stack__dots`
+  by class, not by id, so a third one needs no JS change. Pinning is pure CSS, so
+  the section releases itself when the list ends — but only if `.stack__list` keeps a bottom tail taller than the
   viewport gap, or the heading unpins while the last objective is still being
   read. Below 901px the columns collapse and the fade is switched off.
 
