@@ -107,7 +107,7 @@ const server = createServer(async (req, res) => {
       if (url.searchParams.has("debug")) {
         body = body.replace(
           /<\/head>/i,
-          `<style>.marq__track{ animation:none !important; }</style></head>`
+          `<style>*,*::before,*::after{ animation:none !important; }</style></head>`
         );
       }
       if (url.searchParams.get("debug") === "widths") {
@@ -252,8 +252,9 @@ const server = createServer(async (req, res) => {
             .r{ opacity:1 !important; transform:none !important; }
             .chart .trk .mark{ width:calc(var(--v) * 1%) !important; transition:none !important; }
             /* an infinite animation never lets headless Chrome's virtual clock
-               go idle, so --virtual-time-budget hangs instead of returning */
-            .marq__track{ animation:none !important; }
+               go idle, so --virtual-time-budget hangs instead of returning.
+               The marquees and the drifting orbs are both infinite. */
+            *,*::before,*::after{ animation:none !important; }
             /* the objective stack sets its own opacity from the reading line */
             .objx{ opacity:1 !important; transform:none !important; }
           </style></head>`

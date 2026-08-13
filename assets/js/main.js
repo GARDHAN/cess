@@ -210,18 +210,32 @@
     paint();
   }
 
-  /* ghost wordmark drifts a little against the scroll */
+  /* The hero recedes as the page leaves it, and the ghost wordmark drifts
+     against the scroll behind it. Both ride one scroll handler, and both write
+     a single property, so the frame stays cheap. */
   var mark = document.querySelector(".hero__mark");
-  if(mark && !matchMedia("(prefers-reduced-motion: reduce)").matches){
-    var ticking = false;
+  var heroIn = document.querySelector(".hero__in");
+  var hero = document.getElementById("top");
+  if((mark || heroIn) && !reduced){
+    var hTick = false;
+    function heroPaint(){
+      var y = scrollY;
+      if(mark && y < innerHeight * 1.2){
+        mark.style.transform = "translateY(" + (y * -0.08).toFixed(1) + "px)";
+      }
+      if(heroIn && hero){
+        /* fully present until the page has moved a third of the hero, then
+           gone by the time the hero is behind you */
+        var h = hero.offsetHeight || innerHeight;
+        var gone = Math.min(1, Math.max(0, (y - h * 0.30) / (h * 0.55)));
+        heroIn.style.setProperty("--gone", gone.toFixed(3));
+      }
+    }
     addEventListener("scroll", function(){
-      if(ticking) return;
-      ticking = true;
-      requestAnimationFrame(function(){
-        var y = scrollY;
-        if(y < innerHeight * 1.2) mark.style.transform = "translateY(" + (y * -0.08).toFixed(1) + "px)";
-        ticking = false;
-      });
+      if(hTick) return;
+      hTick = true;
+      requestAnimationFrame(function(){ hTick = false; heroPaint(); });
     }, { passive:true });
+    heroPaint();
   }
 })();

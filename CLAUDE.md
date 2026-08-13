@@ -72,17 +72,23 @@ lays out at 500 and crops the image, which looks like a layout bug and is not on
 
 Tokens live in `:root`. Use them rather than literal colours.
 
-- **Flat green ground** (`--paper: #E3EFDB`) across the whole site. No gradient
-  descent, no dark sections, no per-section grounds. It is light enough to carry
-  `--text` at about 13:1, and leaf-leaning rather than mint so it reads fresh
-  instead of clinical. Cards, the masthead and the closing panel are near-white
-  (`--paper-2`); that contrast is what keeps the page clean rather than washed.
-  The closing `#contact` panel is the one deliberate off-white section, and
-  `html` takes that colour so the overscroll bounce matches it.
+- **Deep green ground** (`--paper: #0C3C01`, the client's own colour) across the
+  whole site, light type on it, `--lime` as the single accent. No gradient
+  descent, no per-section grounds. Panels lift one step (`--paper-2`), the
+  closing section drops one (`--paper-3`), and `html` takes that closing colour
+  so the overscroll bounce matches what you are looking at when you hit the
+  bottom.
+- **The masthead is the exception** and keeps its own light palette —
+  `--chrome`, `--chrome-line`, `--chrome-mute`. It carries CHRIST's identity and
+  the university lockup is drawn for a white ground. Anything placed in the bar
+  takes chrome tokens, not page tokens, or it turns light-on-light.
+- `--green` (#14603C) stays dark deliberately: it is used on the light masthead
+  and on the light `.mcard__fig` picture plates, never against the ground. The
+  accent that *does* sit on the ground is `--green-2`, which is light.
 - **Orbs** give the flat ground depth: very large, faint radial circles bleeding
   in from the sides of some sections (`.has-orb` on the section, `.orb` + a
-  placement modifier inside). On green they work in two directions — deeper
-  greens for shadow, `--lime` as a near-white bloom for light.
+  placement modifier inside). On the dark ground they are light — pools of
+  warmth lifting out of the green rather than stains laid on it.
   **Placements bleed sideways only.** A vertical offset puts the section's own
   overflow clip through the middle of the gradient, and at these alphas that
   draws a hard horizontal line across the page; off the left or right the clip
@@ -117,9 +123,23 @@ Tokens live in `:root`. Use them rather than literal colours.
   viewport gap, or the heading unpins while the last objective is still being
   read. Below 901px the columns collapse and the fade is switched off.
 
-A marquee's infinite animation stops headless Chrome's virtual clock from ever
-going idle, so `--virtual-time-budget` hangs on this page. Use `--timeout=6000`
-instead. Any `?debug=` query also freezes the tracks for the same reason.
+- **Motion** lives in one block at the end of the stylesheet: reveal stagger,
+  drifting orbs, a hero that recedes as you scroll off it, hairlines that draw
+  in, disclosure content that arrives. It is all ambient or on-reveal — nothing
+  moves while a reader is on a fixed piece of text — and the whole block is
+  switched off under `prefers-reduced-motion`. The orbs animate `translate` and
+  `scale`, which are their own properties, so they compose with the placement
+  modifiers' `transform` instead of replacing it.
+
+`.has-orb > *` must never be a bare universal selector. It sits after `.orb` and
+`.hero__mark` in the sheet, so at equal specificity it stripped their
+`position:absolute` and dropped them back into flow — the ghost wordmark then
+pushed the whole hero down by its own height, which read as a padding problem
+and was not one. The rule excludes them by name.
+
+Infinite animations stop headless Chrome's virtual clock from ever going idle,
+so `--virtual-time-budget` hangs on this page. Use `--timeout=6000` instead. Any
+`?debug=` query and `?reveal=all` freeze all animation for the same reason.
 
 ## Content rules
 
