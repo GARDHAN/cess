@@ -11,15 +11,26 @@
 :root{
   color-scheme: light;
 
-  /* dark end of the radiance */
-  --ink:     #06251A;
-  --ink-2:   #0B3826;
-  --ink-3:   #125135;
+  /* deep emerald — the top of the page */
+  --ink:     #052A21;
+  --ink-2:   #08372B;
+  --ink-3:   #0C4536;
 
-  /* light end */
-  --paper:   #F4F7F2;
+  /* The page is one continuous descent: deep emerald at the hero, then a
+     single gradient across the whole document that lightens with scroll and
+     settles on off-white. --g0 is where the hero melts out, so the hero's
+     fade target and the gradient's first stop must stay identical. */
+  --g0:  #DCE7D8;
+  --g1:  #DFE9DB;
+  --g2:  #E5EDE1;
+  --g3:  #EBF1E8;
+  --g4:  #F1F5EF;
+  --g5:  #F6F8F5;
+  --g6:  #FBFBF9;
+
+  --paper:   var(--g0);
   --paper-2: #FFFFFF;
-  --paper-3: #EAEFE6;
+  --paper-3: rgba(255,255,255,.45);
 
   --green:   #14603C;
   --green-2: #1E7A4B;
@@ -64,9 +75,22 @@
 html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:110px; }
 html.locked{ overflow:hidden; }
 
+/* the end colour also fills overscroll, and stops body's background
+   propagating to the canvas — which would stretch it and break the ramp */
+html{ background:var(--g6); }
+
 body{
   margin:0;
-  background:var(--paper);
+  /* one gradient over the whole document height, so the shift is tied to
+     scroll position rather than to section boundaries */
+  background:linear-gradient(180deg,
+    var(--g0) 0%,
+    var(--g1) 12%,
+    var(--g2) 30%,
+    var(--g3) 50%,
+    var(--g4) 70%,
+    var(--g5) 85%,
+    var(--g6) 100%);
   color:var(--text);
   font-family:"Instrument Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size:1.0625rem; line-height:1.65;
@@ -212,15 +236,21 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 .dark{
   position:relative; color:var(--on); isolation:isolate; overflow:hidden;
   background:
-    radial-gradient(78% 52% at 50% 108%, rgba(53,169,106,.42) 0%, rgba(53,169,106,0) 62%),
-    radial-gradient(120% 78% at 50% -18%, #0C3B27 0%, #072A1D 46%, #06251A 100%);
+    radial-gradient(78% 52% at 50% 108%, rgba(45,170,120,.34) 0%, rgba(45,170,120,0) 62%),
+    radial-gradient(120% 78% at 50% -18%, #0C4536 0%, #073026 46%, #04231C 100%);
 }
 /* the dark ground melts into the page instead of stopping at an edge */
 /* capped: on a tall content section, 22% of the height would reach up and
    wash out the last rows of content */
+/* the hero hands off to the page gradient. The fade must run a long way and
+   land exactly on --g0, or the join shows as a band. */
 .dark::after{
-  content:""; position:absolute; left:0; right:0; bottom:0; height:min(22%, 120px); z-index:0; pointer-events:none;
-  background:linear-gradient(180deg, rgba(244,247,242,0) 0%, var(--paper) 100%);
+  content:""; position:absolute; left:0; right:0; bottom:0; height:clamp(160px, 26%, 300px); z-index:0; pointer-events:none;
+  background:linear-gradient(180deg,
+    rgba(220,231,216,0) 0%,
+    rgba(220,231,216,.55) 55%,
+    rgba(220,231,216,.88) 80%,
+    var(--g0) 100%);
 }
 /* dark sections whose content runs close to the bottom edge */
 .dark--tail{ padding-bottom:clamp(150px, 14vw, 210px); }
@@ -604,3 +634,35 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 @media (min-width:1001px){
   .menu{ display:none; }
 }
+
+/* ==========================================================
+   Light-ground corrections.
+   The page is now a single descending gradient with only the hero
+   dark, so components originally drawn for a dark ground are
+   restated here for light.
+   ========================================================== */
+
+/* highlighted programme */
+.prog__tag{ border-color:rgba(138,101,32,.4); color:#8A6520; background:rgba(224,163,62,.08); }
+.prog h2 em{ color:var(--green-2); }
+
+/* three pillars */
+.pillar{
+  border-color:var(--line); background:var(--paper-2);
+  transition:border-color .35s var(--e), transform .35s var(--e);
+}
+.pillar:hover{ border-color:var(--leaf); transform:translateY(-3px); }
+.pillar__n{ color:var(--green-2); }
+.pillar h3{ color:var(--text); }
+.pillar li{ color:var(--text-soft); }
+
+/* closing + footer */
+.foot span{ color:var(--text-soft); }
+.foot__note{ border-top-color:var(--line); color:var(--text-mute); }
+
+/* the gradient's last stop is nearly white, so cards need their edge to
+   carry the separation that the background no longer provides */
+.sec:last-of-type .card, #opportunities .card, #research .card{ border-color:#DFE6DB; }
+
+/* the Centre's own mark, lifted from its annual report */
+.brand img{ height:clamp(28px,3.2vw,36px); width:auto; flex:none; }

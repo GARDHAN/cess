@@ -47,8 +47,10 @@ lays out at 500 and crops the image, which looks like a layout bug and is not on
 - `assets/css/main.css`, `assets/js/main.js` — the stylesheet and script, split
   out of the draft. Component styles for the report content are appended at the
   end of the CSS, after the original design system.
-- `images/brand/` — the CHRIST logo: `christ-logo.png` is the master,
-  `christ-logo-112.png` is what the page loads.
+- `images/brand/` — logos. `christ-logo.png` is the CHRIST master and
+  `christ-logo-112.png` is what the page loads. `cess-logo.png` is the Centre's
+  own lockup, lifted from its annual report; `cess-mark.png` is the leaf mark
+  cropped from it, used in the header.
 - `cess Dean.md` — the Dean's strategy document: vision statement, strategic goals
   2026–27, long-term goals 2027–32. Source of truth for the Centre's own wording.
 
@@ -56,10 +58,16 @@ lays out at 500 and crops the image, which looks like a layout bug and is not on
 
 Tokens live in `:root`. Use them rather than literal colours.
 
-- Ground rhythm: dark sections (`.dark`) alternate with light. `.dark` melts into
-  the page below via `::after`; `.dark--band` melts in from above; `.dark--last`
-  ends the page and must not melt out.
-- `.on-dark` switches text/card treatment for content on dark grounds.
+- **The page is one continuous descent.** `body` carries a single
+  `linear-gradient` over the whole document height (`--g0` → `--g6`), so the
+  background lightens with scroll position rather than at section edges: deep
+  emerald at the hero, sage after it, off-white by the footer. `html` is painted
+  `--g6` so the body background doesn't propagate to the canvas and stretch.
+- **Only the hero is dark.** It paints its own emerald ground and fades out via
+  `.dark::after`, whose final stop must stay exactly `--g0` — the gradient's
+  first stop — or the join shows as a visible band. Don't reintroduce dark
+  sections mid-page; it breaks the one-way progression.
+- `.on-dark` switches text/card treatment, and is now used by the hero alone.
 - `.micro` label over value is the data pattern throughout.
 - `.pill` buttons, `.card` grids, `.row` lists, `.rule` hairlines.
 - `.r` marks anything that reveals on scroll; `data-d="1..4"` staggers it.
