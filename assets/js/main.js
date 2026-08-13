@@ -158,6 +158,58 @@
     });
   });
 
+  /* pinned heading, travelling objectives.
+
+     The pinning is pure CSS (position:sticky), so the section releases on its
+     own once the list runs out. What JS adds is the reading line: whichever
+     objective is nearest it sits at full strength, and the ones above and
+     below recede in proportion to their distance from it — so the one you
+     just read fades upward as the next one arrives. */
+  var objList = document.getElementById("objList");
+  var objDots = document.getElementById("objDots");
+  if(objList){
+    var objs = Array.prototype.slice.call(objList.children);
+    var dots = objDots ? Array.prototype.slice.call(objDots.children) : [];
+    /* below this width the two columns collapse into one and everything is
+       read in order, so the fade would only be in the way */
+    var wide = matchMedia("(min-width:901px)");
+    var oTick = false;
+
+    function paint(){
+      if(!wide.matches || reduced){
+        objs.forEach(function(el){ el.style.opacity = ""; el.style.transform = ""; });
+        dots.forEach(function(d){ d.classList.remove("on"); });
+        return;
+      }
+      var line = innerHeight * 0.42;   /* the reading line */
+      var reach = innerHeight * 0.40;  /* how far from it an item still counts */
+      var best = 0, bestD = Infinity;
+
+      objs.forEach(function(el, i){
+        var r = el.getBoundingClientRect();
+        var mid = r.top + r.height / 2;
+        var raw = mid - line;
+        var d = Math.min(1, Math.abs(raw) / reach);
+        if(Math.abs(raw) < bestD){ bestD = Math.abs(raw); best = i; }
+        /* squared falloff: the active item holds full strength across a band
+           rather than dimming the moment it moves off the line */
+        el.style.opacity = (1 - d * d * 0.8).toFixed(3);
+        el.style.transform = "translateY(" + (raw < 0 ? -1 : 1) * (d * 10) + "px)";
+      });
+
+      dots.forEach(function(dot, i){ dot.classList.toggle("on", i === best); });
+    }
+
+    addEventListener("scroll", function(){
+      if(oTick) return;
+      oTick = true;
+      requestAnimationFrame(function(){ oTick = false; paint(); });
+    }, { passive:true });
+    addEventListener("resize", paint);
+    wide.addEventListener("change", paint);
+    paint();
+  }
+
   /* ghost wordmark drifts a little against the scroll */
   var mark = document.querySelector(".hero__mark");
   if(mark && !matchMedia("(prefers-reduced-motion: reduce)").matches){

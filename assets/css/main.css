@@ -16,13 +16,13 @@
   --ink-2:   #08372B;
   --ink-3:   #0C4536;
 
-  /* The page is one continuous descent: deep emerald at the hero, then a
-     single gradient across the whole document that lightens with scroll and
-     settles on off-white. --g0 is where the hero melts out, so the hero's
-     fade target and the gradient's first stop must stay identical. */
-  --paper:   #FAFAF7;
-  --paper-2: #FFFFFF;
-  --paper-3: #F2F4EF;
+  /* The ground is green, not off-white. It is light enough to carry dark type
+     at 13:1 and leaf-leaning rather than mint, so it reads fresh instead of
+     clinical. Cards and the masthead stay near-white: that contrast is what
+     keeps the page feeling clean rather than washed in one colour. */
+  --paper:   #E3EFDB;
+  --paper-2: #FBFDF8;
+  --paper-3: #D7E7CD;
 
   --green:   #14603C;
   --green-2: #1E7A4B;
@@ -43,8 +43,8 @@
   --text:      #10241A;
   --text-soft: #3F5147;
   --text-mute: #414E46;
-  --line:      #D9E1D6;
-  --line-2:    #E7EDE4;
+  --line:      #C2D5B9;
+  --line-2:    #D2E1C9;
 
   --on:       #EAF2E9;
   --on-soft:  #9EBBA9;
@@ -67,9 +67,9 @@
 html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:110px; }
 html.locked{ overflow:hidden; }
 
-/* the end colour also fills overscroll, and stops body's background
-   propagating to the canvas — which would stretch it and break the ramp */
-html{ background:var(--paper); }
+/* the canvas takes the closing panel's colour, not the page ground: this is
+   what shows on overscroll, and the page ends on the off-white panel */
+html{ background:var(--paper-2); }
 
 body{
   margin:0;
@@ -220,11 +220,11 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 
 /* ---------- hero ---------- */
 /* top padding clears the fixed two-tier bar */
-.hero{ padding-block: clamp(178px,16vw,250px) clamp(120px,15vw,210px); overflow:hidden; }
+.hero{ padding-block: clamp(146px,11vw,188px) clamp(96px,11vw,164px); overflow:hidden; }
 .hero__mark{
-  position:absolute; right:-6%; top:14%; z-index:0; pointer-events:none; user-select:none;
+  position:absolute; right:-13%; top:8%; z-index:0; pointer-events:none; user-select:none;
   font-size:clamp(12rem,30vw,32rem); font-weight:700; letter-spacing:-.06em; line-height:.8;
-  color:rgba(20,96,60,.019); white-space:nowrap;
+  color:rgba(20,96,60,.045); white-space:nowrap;
 }
 .hero__eyebrow{ display:flex; align-items:center; gap:.75rem; color:var(--text-mute); }
 .hero__eyebrow::before{ content:""; width:26px; height:1px; background:var(--leaf); }
@@ -451,7 +451,7 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 .pillars{ margin-top:clamp(30px,3.6vw,52px); display:grid; gap:clamp(14px,1.5vw,20px); grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
 .pillar{
   border:1px solid var(--line); border-radius:var(--r); padding:clamp(20px,2.1vw,28px);
-  background:rgba(255,255,255,.035); display:flex; flex-direction:column; gap:1rem;
+  background:var(--paper-2); display:flex; flex-direction:column; gap:1rem;
 }
 .pillar__n{ font-size:.66rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--green-2); }
 .pillar h3{ font-size:var(--t-h3); font-weight:600; color:var(--text); letter-spacing:-.018em; }
@@ -600,7 +600,8 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 
 /* the gradient's last stop is nearly white, so cards need their edge to
    carry the separation that the background no longer provides */
-.sec:last-of-type .card, #opportunities .card, #research .card{ border-color:#DFE6DB; }
+/* cards are near-white on a green ground now, so the default hairline
+   already carries the separation this rule used to add */
 
 /* the Centre's own mark, lifted from its annual report */
 .brand img{ height:clamp(28px,3.2vw,36px); width:auto; flex:none; }
@@ -629,30 +630,38 @@ button{ font:inherit; color:inherit; background:none; border:0; }
    rather than as warmth, it is too strong. */
 .has-orb{ position:relative; isolation:isolate; overflow:hidden; }
 .has-orb > *{ position:relative; z-index:1; }
+/* On a green ground a faint green orb is invisible, so the set now works in
+   two directions: deeper greens for shadow, a pale bloom for light. That is
+   what gives the flat colour some depth without printing a shape on it. */
 .orb{
   position:absolute; z-index:0; pointer-events:none; border-radius:50%;
   width:clamp(380px, 46vw, 880px); aspect-ratio:1;
   background:radial-gradient(closest-side,
-    rgba(53,169,106,.16) 0%,
-    rgba(53,169,106,.09) 42%,
-    rgba(53,169,106,0)  72%);
+    rgba(20,96,60,.20) 0%,
+    rgba(20,96,60,.10) 44%,
+    rgba(20,96,60,0)   72%);
 }
 .orb--deep{
   background:radial-gradient(closest-side,
-    rgba(20,96,60,.15) 0%,
-    rgba(20,96,60,.07) 45%,
-    rgba(20,96,60,0)   72%);
+    rgba(5,42,33,.16) 0%,
+    rgba(5,42,33,.07) 46%,
+    rgba(5,42,33,0)   72%);
 }
+/* the light one — reads as a clearing rather than a stain */
 .orb--lime{
   background:radial-gradient(closest-side,
-    rgba(141,193,88,.15) 0%,
-    rgba(141,193,88,.07) 45%,
-    rgba(141,193,88,0)   72%);
+    rgba(252,253,248,.85) 0%,
+    rgba(252,253,248,.38) 45%,
+    rgba(252,253,248,0)   74%);
 }
-.orb--tl{ top:0;    left:0;  transform:translate(-38%,-42%); }
-.orb--tr{ top:0;    right:0; transform:translate(38%,-42%); }
-.orb--bl{ bottom:0; left:0;  transform:translate(-40%,40%); }
-.orb--br{ bottom:0; right:0; transform:translate(40%,40%); }
+/* Placements bleed sideways only. A vertical offset would put the section's
+   own overflow clip through the middle of the gradient, and at these alphas
+   that shows as a hard horizontal line across the page; off the left or right
+   the clip lands at the viewport edge, where nobody can see it. */
+.orb--tl{ top:0;    left:0;  transform:translate(-42%,0); }
+.orb--tr{ top:0;    right:0; transform:translate(42%,0); }
+.orb--bl{ bottom:0; left:0;  transform:translate(-42%,0); }
+.orb--br{ bottom:0; right:0; transform:translate(42%,0); }
 .orb--r { top:50%;  right:0; transform:translate(42%,-50%); }
 .orb--l { top:50%;  left:0;  transform:translate(-42%,-50%); }
 .orb--lg{ width:clamp(520px, 62vw, 1150px); }
@@ -804,7 +813,7 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 .mcard__fig{
   position:relative; aspect-ratio:16/10; overflow:hidden;
   border-radius:calc(var(--r) - 3px);
-  background:var(--fig-bg,#EFF4EB);
+  background:var(--fig-bg,#EAF3E4);
 }
 .mcard__fig::before,
 .mcard__fig::after{ content:""; position:absolute; border-radius:50%; }
@@ -827,3 +836,90 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 .foot__social{ display:flex; gap:1.1rem; flex-wrap:wrap; margin-top:.9rem; }
 .foot__social a{ font-size:.86rem; color:var(--green-2); text-decoration:none; }
 .foot__social a:hover{ text-decoration:underline; }
+
+/* ---------- disclosure inside a programme card ----------
+   The cards were carrying venue, date, partner and a paragraph of findings
+   all at once. The title and the headline number are what the row is for;
+   the rest opens on demand. */
+.more{ border-top:1px solid var(--line-2); padding-top:.85rem; }
+.more summary{
+  display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  cursor:pointer; list-style:none;
+  font-size:.72rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--green-2); padding:.15rem 0;
+  transition:color .3s var(--e);
+}
+.more summary::-webkit-details-marker{ display:none; }
+.more summary:hover{ color:var(--green); }
+.more summary svg{ width:15px; height:15px; flex:none; transition:transform .3s var(--e); }
+.more[open] summary svg{ transform:rotate(180deg); }
+.more[open] summary{ margin-bottom:.9rem; }
+.more .meta{ border-top:0; padding-top:0; }
+.more .pcard__learn{ margin-top:.9rem; }
+
+/* ---------- pinned heading, travelling list ----------
+   Two columns: the left one sticks, the right one scrolls. The fade is set
+   from JS against a reading line, so whichever objective is at that line is
+   at full strength and the ones above and below recede. */
+.stack{
+  display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+  gap:clamp(28px,5vw,88px); align-items:start;
+}
+.stack__aside{ position:sticky; top:clamp(112px,15vh,168px); align-self:start; }
+.stack__aside h2{ font-size:var(--t-h2); max-width:14ch; margin:1.1rem 0 1.2rem; }
+
+.stack__dots{
+  list-style:none; margin:clamp(24px,3vw,38px) 0 0; padding:0;
+  display:flex; flex-direction:column; gap:.1rem;
+}
+.stack__dots li{
+  display:flex; align-items:center; gap:.8rem;
+  font-size:.68rem; font-weight:600; letter-spacing:.12em;
+  color:var(--text-mute); opacity:.4; padding:.3rem 0;
+  font-variant-numeric:tabular-nums;
+  transition:opacity .4s var(--e), color .4s var(--e);
+}
+.stack__dots li::before{
+  content:""; width:22px; height:2px; border-radius:2px; background:currentColor;
+  transition:width .4s var(--e);
+}
+.stack__dots li.on{ opacity:1; color:var(--green); }
+.stack__dots li.on::before{ width:42px; }
+
+.stack__list{
+  list-style:none; margin:0; padding:0;
+  display:grid; gap:clamp(44px,7vh,96px);
+  /* the tail keeps the containing block taller than the last objective, so the
+     heading is still pinned while that objective sits at the reading line */
+  padding-block:clamp(8px,6vh,64px) clamp(80px,30vh,300px);
+}
+.objx{
+  display:grid; grid-template-columns:auto minmax(0,1fr); gap:clamp(16px,2.2vw,32px);
+  will-change:opacity, transform;
+}
+.objx__n{
+  font-size:.7rem; font-weight:600; letter-spacing:.1em; color:var(--green-2);
+  font-variant-numeric:tabular-nums; padding-top:.45rem;
+}
+.objx h3{ font-size:clamp(1.2rem,1.9vw,1.55rem); font-weight:600; letter-spacing:-.022em; }
+.objx ul{ margin:1rem 0 0; padding:0; list-style:none; display:grid; gap:.7rem; }
+.objx li{
+  display:grid; grid-template-columns:auto 1fr; gap:.8rem; align-items:baseline;
+  font-size:.94rem; color:var(--text-soft);
+}
+.objx li::before{ content:""; width:5px; height:5px; border-radius:50%; background:var(--leaf); transform:translateY(-2px); }
+
+@media (max-width:900px){
+  .stack{ grid-template-columns:1fr; gap:clamp(20px,4vw,32px); }
+  .stack__aside{ position:static; }
+  .stack__dots{ display:none; }
+  .stack__list{ gap:clamp(30px,5vw,44px); padding-block:0; }
+  /* the fade needs a tall column to make sense; stacked, everything is read */
+  .objx{ opacity:1 !important; transform:none !important; }
+}
+
+/* ---------- the page ends on off-white ----------
+   The one place the green ground gives way: the closing panel reads as the
+   page resolving rather than as another green section. */
+#contact{ background:var(--paper-2); border-top:1px solid var(--line); }
+#contact .orb{ opacity:.55; }

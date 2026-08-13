@@ -160,6 +160,43 @@ const server = createServer(async (req, res) => {
           </script></body>`
         );
       }
+      // ?debug=stack — walk the objectives section past the reading line and
+      // report, at each step, which objective is active, what the others faded
+      // to, and whether the heading is still pinned. A full-page screenshot
+      // cannot show this: sticky never engages in a 15000px-tall window.
+      if (url.searchParams.get("debug") === "stack") {
+        body = body.replace(
+          /<\/body>/i,
+          `<script>
+            addEventListener("load", function(){
+              var sec = document.getElementById("strategy");
+              var aside = document.querySelector(".stack__aside");
+              var items = [].slice.call(document.getElementById("objList").children);
+              var top = sec.getBoundingClientRect().top + scrollY;
+              var out = [];
+              for (var step = 0; step < 8; step++){
+                var y = top - 200 + step * 300;
+                /* html has scroll-behavior:smooth, which would animate past the
+                   sample point and read intermediate values */
+                scrollTo({ top: y, behavior: "instant" });
+                /* the page repaints the stack on rAF after a scroll, which is too
+                   late for --dump-dom; it also repaints synchronously on resize,
+                   so a resize event is the way to sample without waiting a frame */
+                dispatchEvent(new Event("resize"));
+                var ops = items.map(function(el){
+                  return (+getComputedStyle(el).opacity).toFixed(2);
+                });
+                var on = document.querySelector(".stack__dots li.on");
+                out.push("y" + Math.round(y) +
+                         " asideTop=" + Math.round(aside.getBoundingClientRect().top) +
+                         " dot=" + (on ? on.textContent.trim() : "-") +
+                         " op=[" + ops.join(",") + "]");
+              }
+              document.title = "STACK " + out.join(" | ");
+            });
+          </script></body>`
+        );
+      }
       // ?debug=sections — report each section's id and vertical extent, so the
       // colour ramp can be checked against real section boundaries
       if (url.searchParams.get("debug") === "sections") {
@@ -177,6 +214,31 @@ const server = createServer(async (req, res) => {
           </script></body>`
         );
       }
+      // ?y=N — lift the document by N so a viewport-sized screenshot shows the
+      // page as it looks at that scroll offset. It cannot scroll for real:
+      // headless Chrome screenshots the composited surface at the origin, so a
+      // scrolled page comes back blank. Sticky elements therefore sit where
+      // they would at scroll 0, not where they would be pinned — use
+      // ?debug=stack to measure pinning instead.
+      if (url.searchParams.has("y")) {
+        const y = Number(url.searchParams.get("y")) || 0;
+        body = body.replace(
+          /<\/body>/i,
+          `<script>
+            addEventListener("load", function(){
+              document.body.style.marginTop = "${-y}px";
+              dispatchEvent(new Event("resize"));
+            });
+          </script></body>`
+        );
+      }
+      // ?open=all — expand every <details>, which a screenshot cannot click
+      if (url.searchParams.get("open") === "all") {
+        body = body.replace(
+          /<\/body>/i,
+          `<script>document.querySelectorAll("details").forEach(function(d){ d.open = true; });</script></body>`
+        );
+      }
       if (url.searchParams.get("menu") === "open") {
         body = body.replace(
           /<\/head>/i,
@@ -192,6 +254,8 @@ const server = createServer(async (req, res) => {
             /* an infinite animation never lets headless Chrome's virtual clock
                go idle, so --virtual-time-budget hangs instead of returning */
             .marq__track{ animation:none !important; }
+            /* the objective stack sets its own opacity from the reading line */
+            .objx{ opacity:1 !important; transform:none !important; }
           </style></head>`
         );
       }

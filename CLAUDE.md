@@ -33,12 +33,22 @@ node tools/dev-server.mjs other.html 3000    # any file, any port
 Opens the browser and reloads it on every save. Zero dependencies — it is just
 Node's own http and fs. `NO_OPEN=1` skips launching the browser.
 
-Two query flags help when checking work in headless Chrome, which otherwise
-captures a page of invisible sections:
+Query flags help when checking work in headless Chrome, which otherwise captures
+a page of invisible sections. Everything reported into `<title>` is read back
+with `--dump-dom`:
 
 - `?reveal=all` — force every scroll-reveal into its final state
-- `?debug=widths` — list elements wider than the viewport into `<title>`,
-  readable via `--dump-dom`
+- `?open=all` — expand every `<details>`, which a screenshot cannot click
+- `?debug=widths` — list elements wider than the viewport
+- `?debug=sections` — each section's id and vertical extent
+- `?debug=rails` — rail and marquee geometry, plus page scroll width
+- `?debug=stack` — walk `#strategy` past the reading line and report, at each
+  step, which objective is active and what the others faded to. This is the only
+  way to check that section: sticky never engages in a tall screenshot window.
+- `?y=N` — lift the document by N so a viewport-sized screenshot shows the page
+  at that offset. It cannot scroll for real — headless Chrome screenshots the
+  composited surface at the origin, so a scrolled page comes back blank — which
+  also means sticky elements sit unpinned. Use `?debug=stack` for pinning.
 
 Note Chrome headless clamps its window to a 500px minimum width; asking for less
 lays out at 500 and crops the image, which looks like a layout bug and is not one.
@@ -62,14 +72,22 @@ lays out at 500 and crops the image, which looks like a layout bug and is not on
 
 Tokens live in `:root`. Use them rather than literal colours.
 
-- **Flat off-white ground** (`--paper: #FAFAF7`) across the whole site. No
-  gradient descent, no dark sections, no per-section grounds.
-- **Orbs** carry the only colour besides type: very large, very faint radial
-  circles bleeding in from the corners of some sections (`.has-orb` on the
-  section, `.orb` + a placement modifier inside). They sit near the threshold of
-  visibility on purpose — if one reads as a shape rather than as warmth, it is
-  too strong. `.has-orb` clips them, which is what keeps them off the page's
-  horizontal scroll.
+- **Flat green ground** (`--paper: #E3EFDB`) across the whole site. No gradient
+  descent, no dark sections, no per-section grounds. It is light enough to carry
+  `--text` at about 13:1, and leaf-leaning rather than mint so it reads fresh
+  instead of clinical. Cards, the masthead and the closing panel are near-white
+  (`--paper-2`); that contrast is what keeps the page clean rather than washed.
+  The closing `#contact` panel is the one deliberate off-white section, and
+  `html` takes that colour so the overscroll bounce matches it.
+- **Orbs** give the flat ground depth: very large, faint radial circles bleeding
+  in from the sides of some sections (`.has-orb` on the section, `.orb` + a
+  placement modifier inside). On green they work in two directions — deeper
+  greens for shadow, `--lime` as a near-white bloom for light.
+  **Placements bleed sideways only.** A vertical offset puts the section's own
+  overflow clip through the middle of the gradient, and at these alphas that
+  draws a hard horizontal line across the page; off the left or right the clip
+  lands at the viewport edge where nobody sees it. If you add a placement, keep
+  the vertical translate at 0 and the orb no taller than its section.
 - **Rails** carry any section with more items than a row should hold:
   `.rail-wrap` > `.rail` (id, `tabindex="0"`, `role="region"`, `aria-label`) plus
   a `.rail__bar` of two buttons. Items sized by `grid-auto-columns:
@@ -87,6 +105,17 @@ Tokens live in `:root`. Use them rather than literal colours.
   measured width so every marquee travels at the same px/sec whatever it carries.
   It pauses on hover and focus, and falls back to a plain scroller under
   `prefers-reduced-motion` or if the script never runs.
+
+- **Disclosures** (`.more`) keep dense cards to their headline: a programme card
+  shows its title and its number, and folds venue, partner and findings into a
+  native `<details>`. Prefer this to deleting content the report supports.
+- **The pinned stack** (`.stack`) is how `#strategy` reads: the heading column
+  sticks while the objectives travel past it, and `main.js` fades each objective
+  by its distance from a reading line at 42% of the viewport, so exactly one is
+  at full strength. Pinning is pure CSS, so the section releases itself when the
+  list ends — but only if `.stack__list` keeps a bottom tail taller than the
+  viewport gap, or the heading unpins while the last objective is still being
+  read. Below 901px the columns collapse and the fade is switched off.
 
 A marquee's infinite animation stops headless Chrome's virtual clock from ever
 going idle, so `--virtual-time-budget` hangs on this page. Use `--timeout=6000`
