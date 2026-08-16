@@ -48,6 +48,10 @@ with `--dump-dom`:
   panel open; reports the dialog's title, body length and whether the in-place
   description was hidden. A screenshot cannot click, and the row starts at
   opacity 0, so this is the only way to see or check that component.
+- `?debug=travel` — sample each marquee's scroll position over a couple of
+  seconds and report how far it moved and whether it wrapped. The row travels by
+  writing `scrollLeft`, so nothing about it shows in a screenshot or in the
+  computed styles. It is the one debug view that leaves the motion running.
 - `?debug=widths` — list elements wider than the viewport
 - `?debug=sections` — each section's id and vertical extent
 - `?debug=rails` — rail and marquee geometry, plus page scroll width
@@ -119,12 +123,34 @@ Tokens live in `:root`. Use them rather than literal colours.
   disables and the edge mask never clears.
 - **Marquees** are the rail's moving cousin, used where the client asked for a row
   that travels on its own: `.marq` > `.marq__row` > `.marq__track` of `.mcard`s.
-  The script duplicates the track and both slide left by exactly their own width,
-  so the loop has no seam — which only holds while a track is wider than the row,
-  hence the repeat-until-wide-enough loop for short sets. Duration is set from the
-  measured width so every marquee travels at the same px/sec whatever it carries.
-  It pauses on hover and focus, and falls back to a plain scroller under
-  `prefers-reduced-motion` or if the script never runs.
+  The script duplicates the track, so a scroll position of exactly one track
+  width shows the same thing as a position of zero — which only holds while a
+  track is wider than the row, hence the repeat-until-wide-enough loop for short
+  sets.
+  **The row travels by writing `scrollLeft`, not by animating a transform**, and
+  that is the whole point: the client asked for a row that moves on its own and
+  that the reader can also take hold of. Travel and drag write the same number,
+  so a reader grabbing the row is not fighting an animation, and letting go does
+  not snap it back to where an animation had got to. The position is wrapped into
+  one track width every frame; because the wrap point is where the content
+  repeats, crossing it is invisible. Speed is px/sec so every row travels at the
+  same pace whatever it carries.
+  Travel stops for a pointer over the row, focus inside it, a drag in progress,
+  or the section being off screen. Under `prefers-reduced-motion`, or with no
+  script at all, the row simply does not travel — it is a scroll container
+  either way, so it stays draggable and swipeable.
+  Consequences worth knowing: `animation:none` does **not** stop it, so the
+  server's debug views set `window.CESS_NO_AUTOSCROLL` instead; and `.marq` needs
+  `scroll-behavior:auto`, or the smooth scrolling inherited from `html` tries to
+  animate every per-frame write and the row crawls.
+- **Drag to pan** (`dragToPan` in `main.js`) is on every horizontal scroller —
+  both rails and all three marquees. Mouse and pen only: a touch screen already
+  drags an `overflow-x` container natively, and taking the pointer there would
+  mean deciding for ourselves whether a finger meant to pan the row or scroll the
+  page, which is the judgement the browser already makes correctly. Marquees pass
+  a wrap function so their position loops; rails leave it out and let the browser
+  clamp at the ends. A drag of more than 4px swallows the click that follows it,
+  so releasing over a card does not also activate it.
 
 - **The discipline line** (`.disc`) carries the About section's "We combine" set
   as one continuous line — no boxes, a hairline between each term, the accent
@@ -143,6 +169,13 @@ Tokens live in `:root`. Use them rather than literal colours.
   Without the dialog the descriptions simply read in place: `main.js` sets
   `pop-ok` on the root only after confirming `showModal`, and that class is what
   hides them — never hide them from CSS alone.
+  On hover each term gets a **crayon scribble** in its own colour, the same
+  drawn-by-hand language as the area illustrations. It is one SVG in `--scribble`
+  used as a *mask*, so the shape is shared and only `background` changes per
+  word; six background-images would be six copies of the same drawing. The
+  scribble sits at `z-index:-1`, which is why the button carries
+  `isolation:isolate` — without a stacking context of its own it would fall
+  behind the section instead of behind the word.
 
 **Two components are built and supported but not currently on the page.** Both
 carried annual-report and Dean's-document material that the client's own document
@@ -201,7 +234,17 @@ and was not one. The rule excludes them by name.
 
 Infinite animations stop headless Chrome's virtual clock from ever going idle,
 so `--virtual-time-budget` hangs on this page. Use `--timeout=6000` instead. Any
-`?debug=` query and `?reveal=all` freeze all animation for the same reason.
+`?debug=` query and `?reveal=all` freeze all animation for the same reason, and
+also set `window.CESS_NO_AUTOSCROLL` — the marquees travel from a rAF loop that
+`animation:none` cannot reach, and a rAF that never settles keeps the clock busy
+just as an infinite animation does.
+
+**`--dump-dom` captures at load, and `--timeout` does not delay it.** A debug
+view that sets `document.title` after a `setTimeout` reports nothing — which is
+why every flag above writes its title synchronously. When a view genuinely has
+to watch something over time, request `/__slow?ms=N` from the page: the server
+holds that image open for N ms, which holds the load event open with it.
+`?debug=travel` is the working example.
 
 ## Content rules
 
@@ -231,10 +274,19 @@ The site currently uses no photography. The CC BY-SA stock photographs that were
 in `images/` were removed unused; if any come back, the licence requires visible
 attribution on every page that shows them.
 
-The client asked for pictures in the marquee cards and none are licensed yet, so
-`.mcard__fig` draws a soft field from the same orb language as the page rather
-than leaving an empty box. Dropping an `<img>` inside the element covers the
-drawing — no other change to the card is needed.
+`images/areas/` holds seven hand-drawn illustrations, one per area of
+engagement, supplied by the client and numbered to match: `01-…` is the card
+numbered 01. They are decorative — each card says in words what its picture says
+in pencil — so the `<img>` takes `alt=""` rather than repeating the heading to a
+screen reader. Source files were 2–9MB each; they ship resized to 900px wide and
+converted to WebP (~40KB each, `sips -Z 900` then `cwebp -q 80`). Anything added
+later should go through the same pass — the originals are far too heavy to serve.
+
+The other rows still have no photography. `.mcard__fig` draws a soft field from
+the same orb language as the page rather than leaving an empty box; dropping an
+`<img>` inside covers the drawing, with no other change to the card. The
+certificate course row is deliberately without one: the client asked for the
+picture area to come off it, and those cards carry `.mcard--text`.
 
 ## Scope — the client document governs the page
 

@@ -289,6 +289,27 @@ button{ font:inherit; color:inherit; background:none; border:0; }
   font-variant-numeric:tabular-nums;
 }
 
+/* A card carrying its own illustration. The drawings are numbered to the
+   areas and sit above the number and title. They are decorative — the card
+   says in words what the picture says in pencil — so the img takes alt="".
+   The plate keeps the card's padding off the picture: the illustration is
+   inset to the card edge, which reads as a drawing pinned to the card rather
+   than a photograph filling it. */
+.card--pic{ padding-top:clamp(14px,1.5vw,18px); }
+.card__pic{
+  aspect-ratio:16/10; overflow:hidden;
+  border-radius:calc(var(--r) - 6px);
+  background:#F6F2E6;                       /* the paper the drawings sit on */
+  margin-bottom:.35rem;
+}
+.card__pic img{
+  display:block; width:100%; height:100%; object-fit:cover;
+  /* the subject is centred in a wide frame with a lot of paper around it;
+     cover on a 16:10 plate crops that margin rather than the drawing */
+  transition:transform .6s var(--e-enter);
+}
+.card--pic:hover .card__pic img{ transform:scale(1.03); }
+
 /* card on dark */
 
 /* corner ribbon badge */
@@ -703,6 +724,12 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 }
 .rail::-webkit-scrollbar{ display:none; }
 .rail > *{ scroll-snap-align:start; }
+/* the rail is dragged by the same handler as the marquees. Snap is released
+   for the length of a drag: proximity snap is gentle, but it still tugs at
+   the pointer while the reader is the one moving the row. */
+.rail{ cursor:grab; }
+.rail.is-drag{ cursor:grabbing; user-select:none; scroll-snap-type:none; }
+.rail img{ -webkit-user-drag:none; user-select:none; }
 /* the right edge softens while there is more to reach */
 .rail[data-pos="start"], .rail[data-pos="mid"]{
   -webkit-mask-image:linear-gradient(90deg,#000 0 95%,rgba(0,0,0,.6) 100%);
@@ -765,18 +792,41 @@ button{ font:inherit; color:inherit; background:none; border:0; }
   color:var(--text); white-space:nowrap; cursor:pointer; position:relative;
   transition:color .4s var(--e), transform .5s var(--e-enter);
 }
-/* the accent draws itself under the word rather than boxing it */
-.disc__t::after{
-  content:""; position:absolute; left:0; right:0; bottom:.05rem; height:1px;
+/* A crayon scribble sweeps in behind the word, in that word's own colour —
+   the same drawn-by-hand language as the illustrations in the areas. It is one
+   SVG used as a mask, so the shape is shared and only the colour changes; a
+   background-image per colour would be six copies of the same drawing.
+   `isolation` keeps the z-index:-1 inside the button: without a stacking
+   context of its own the scribble would fall behind the section itself. */
+.disc__t{ isolation:isolate; }
+.disc__t::before{
+  content:""; position:absolute; z-index:-1;
+  left:-.42em; right:-.42em; top:-.34em; bottom:-.16em;
   background:var(--chip, var(--leaf));
-  transform:scaleX(0); transform-origin:left;
-  transition:transform .5s var(--e-enter);
+  -webkit-mask-image:var(--scribble); mask-image:var(--scribble);
+  -webkit-mask-size:100% 100%; mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+  opacity:0; transform:scaleX(.55); transform-origin:left center;
+  transition:opacity .38s var(--e-enter), transform .52s var(--e-enter);
 }
-.disc__t:hover, .disc__t:focus-visible{
-  color:var(--chip, var(--leaf)); transform:translateY(-3px);
+/* and a soft bloom under it, so the colour reads as light rather than paint */
+.disc__t::after{
+  content:""; position:absolute; z-index:-2;
+  left:-.3em; right:-.3em; top:0; bottom:0; border-radius:999px;
+  background:var(--chip, var(--leaf));
+  opacity:0; filter:blur(11px); transform:scale(.7);
+  transition:opacity .45s var(--e-enter), transform .55s var(--e-enter);
 }
-.disc__t:hover::after, .disc__t:focus-visible::after{ transform:scaleX(1); }
+.disc__t:hover, .disc__t:focus-visible{ transform:translateY(-3px); }
+.disc__t:hover::before, .disc__t:focus-visible::before{ opacity:.42; transform:none; }
+.disc__t:hover::after,  .disc__t:focus-visible::after{ opacity:.3; transform:scale(1); }
 .disc__t:focus-visible{ outline:none; }
+
+/* the stroke itself: two passes of a rough marker, the second lighter, so the
+   edge breaks up the way a crayon does instead of ending in a clean rectangle */
+:root{
+  --scribble:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 44' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='%23000' stroke-linecap='round'%3E%3Cpath d='M9 23C46 11 78 27 116 17c26-7 52-9 76 3' stroke-width='24' opacity='.92'/%3E%3Cpath d='M15 30C58 21 92 33 132 24c22-5 44-6 55 2' stroke-width='13' opacity='.58'/%3E%3Cpath d='M22 13C64 5 96 17 140 10' stroke-width='7' opacity='.34'/%3E%3C/g%3E%3C/svg%3E");
+}
 
 /* The discipline line has to hold six terms without breaking, so About gives
    its second column more room than the default prose split — the heading
@@ -833,8 +883,20 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 
    It pauses on hover and on keyboard focus: the cards carry readable text,
    and text that will not hold still cannot be read. */
+/* The row is a real scroll container, not a transform animation. That single
+   change is what lets it be both: the script advances scrollLeft frame by
+   frame for the travel, and the same property is what a drag, a trackpad
+   swipe or a touch flick moves — so automatic and manual are the same
+   mechanism and never fight each other. */
 .marq{
-  margin-top:clamp(30px,3.6vw,52px); overflow:hidden;
+  margin-top:clamp(30px,3.6vw,52px);
+  overflow-x:auto; overflow-y:hidden;
+  overscroll-behavior-x:contain;
+  scrollbar-width:none; -ms-overflow-style:none;
+  /* the script writes scrollLeft every frame; smooth scrolling inherited from
+     html would try to animate each of those writes and the row would crawl */
+  scroll-behavior:auto;
+  cursor:grab;
   /* a card is always mid-way through the cut at both ends; the fade makes the
      cut read as the row continuing rather than as a card that got clipped */
   /* narrow, and in px not %: a card is only ~258px wide at its smallest, and a
@@ -842,17 +904,15 @@ button{ font:inherit; color:inherit; background:none; border:0; }
   -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 16px),transparent 100%);
           mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 16px),transparent 100%);
 }
-/* the fade only makes sense while the row is moving */
-.marq--static{ -webkit-mask-image:none; mask-image:none; }
+.marq::-webkit-scrollbar{ display:none; }
+.marq.is-drag{ cursor:grabbing; user-select:none; }
+/* a drag must not start the browser's own image drag on a card illustration */
+.marq img{ -webkit-user-drag:none; user-select:none; }
 .marq__row{ display:flex; width:max-content; }
 .marq__track{
   display:flex; gap:clamp(14px,1.5vw,20px);
   padding-right:clamp(14px,1.5vw,20px);
-  animation:marq var(--marq-dur,60s) linear infinite;
 }
-@keyframes marq{ from{ transform:translateX(0); } to{ transform:translateX(-100%); } }
-.marq:hover .marq__track,
-.marq:focus-within .marq__track{ animation-play-state:paused; }
 
 .marq__hint{
   display:flex; align-items:center; gap:.5rem;
@@ -860,23 +920,11 @@ button{ font:inherit; color:inherit; background:none; border:0; }
   color:var(--text-mute); margin-top:clamp(12px,1.4vw,18px);
 }
 .marq__hint::before{ content:""; width:18px; height:1px; background:var(--line); }
-/* nothing hovers on a touch screen */
-@media (hover:none){ .marq__hint{ display:none; } }
 
-/* before the script measures and clones, show one readable row rather than a
-   stalled animation on a half-empty track */
-.marq:not([data-ready]) .marq__track{ animation:none; }
-.marq:not([data-ready]) .marq__row{ width:auto; max-width:100%; }
-.marq:not([data-ready]) .marq__track{ overflow-x:auto; scrollbar-width:none; }
-
-/* reduced motion, and any browser where the script did not run: the row stays
-   a plain horizontal scroller the reader drives */
-.marq--static{ overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; }
-.marq--static::-webkit-scrollbar{ display:none; }
-.marq--static .marq__track{ animation:none; }
-@media (prefers-reduced-motion:reduce){
-  .marq__track{ animation:none !important; }
-}
+/* Nothing here depends on the script: with no JS there is one track inside a
+   scroll container, which is already a row the reader can drag and swipe. The
+   script only adds the second track and the travel. Same under reduced
+   motion — the row holds still and waits to be pushed. */
 
 /* ---------- marquee card ---------- */
 .mcard{
@@ -889,6 +937,13 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 .mcard:hover{ border-color:var(--leaf); transform:translateY(-3px);
   box-shadow:0 18px 36px -26px rgba(0,0,0,.75); }
 .mcard__body{ padding-inline:.6rem; display:flex; flex-direction:column; gap:.5rem; }
+
+/* The certificate course carries no illustration — the client asked for the
+   picture area to come off that row and the content to stand on its own. With
+   no plate the card's outer padding is all that holds the text, so it takes
+   the padding the plate used to occupy. */
+.mcard--text{ padding:clamp(20px,2.1vw,26px); }
+.mcard--text .mcard__body{ padding-inline:0; }
 .mcard h3{ font-size:var(--t-h3); font-weight:600; letter-spacing:-.018em; }
 .mcard p{ font-size:.92rem; color:var(--text-soft); }
 .mcard .micro{ color:var(--text-mute); }

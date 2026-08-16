@@ -70,6 +70,19 @@ const server = createServer(async (req, res) => {
     return;
   }
 
+  // A deliberately slow 1x1 image, used to hold the load event open.
+  // --dump-dom captures at load and --timeout does not delay it, so a debug
+  // view that needs to watch something over time has no way to report what it
+  // saw. Requesting this image keeps load pending until the watching is done.
+  if (url.pathname === "/__slow") {
+    const ms = Math.min(Number(url.searchParams.get("ms") ?? 1500), 15000);
+    setTimeout(() => {
+      res.writeHead(200, { "Content-Type": "image/gif", "Cache-Control": "no-store" });
+      res.end(Buffer.from("R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7", "base64"));
+    }, ms);
+    return;
+  }
+
   let rel = decodeURIComponent(url.pathname);
   if (rel === "/") rel = "/" + ENTRY;
 
@@ -104,10 +117,53 @@ const server = createServer(async (req, res) => {
       // ?debug=widths — report any element wider than the viewport into the
       // document title, so a headless --dump-dom can read it back.
       // any debug query freezes the marquees for the same reason ?reveal=all does
-      if (url.searchParams.has("debug")) {
+      // The marquees travel by writing scrollLeft from requestAnimationFrame,
+      // so `animation:none` does not stop them and a rAF that never settles
+      // keeps the virtual clock from going idle. main.js reads this flag.
+      const stillness =
+        `<script>window.CESS_NO_AUTOSCROLL=1</script>` +
+        `<style>*,*::before,*::after{ animation:none !important; }</style>`;
+      // ?debug=travel is the one debug view that needs the motion left alone —
+      // it is measuring it.
+      if (url.searchParams.has("debug") && url.searchParams.get("debug") !== "travel") {
+        body = body.replace(/<\/head>/i, `${stillness}</head>`);
+      }
+      // ?debug=travel — sample each marquee's scroll position over a couple of
+      // seconds and report how far it moved and whether it wrapped cleanly.
+      // The row travels by writing scrollLeft, so nothing about it shows up in
+      // a screenshot or in the computed styles.
+      if (url.searchParams.get("debug") === "travel") {
         body = body.replace(
-          /<\/head>/i,
-          `<style>*,*::before,*::after{ animation:none !important; }</style></head>`
+          /<\/body>/i,
+          `<img src="/__slow?ms=3200" alt="" width="1" height="1"
+                style="position:absolute;left:-9px;top:0;opacity:0">
+          <script>
+            /* Each row only travels while it is on screen, so the walk has to
+               bring one into view at a time. Sampling starts at DOMContent —
+               before load, which the slow image above is holding open. */
+            addEventListener("DOMContentLoaded", function(){
+              var rows = [].slice.call(document.querySelectorAll(".marq"));
+              var out = [];
+              (function step(i){
+                if (i >= rows.length) { document.title = "TRAVEL " + out.join(" | "); return; }
+                var m = rows[i], lap = m.querySelector(".marq__track").scrollWidth;
+                m.scrollIntoView({ block: "center", behavior: "instant" });
+                /* parked just short of the wrap, so the sample window crosses
+                   it: a wrap that does not work shows up as a stall at the end */
+                m.scrollLeft = Math.max(0, lap - 30);
+                var from = m.scrollLeft, low = from;
+                var t = setInterval(function(){ low = Math.min(low, m.scrollLeft); }, 40);
+                setTimeout(function(){
+                  clearInterval(t);
+                  out.push((m.closest("section")||{}).id +
+                    " lap=" + lap + " from=" + Math.round(from) +
+                    " now=" + Math.round(m.scrollLeft) +
+                    " wrapped=" + (low < from - 1));
+                  step(i + 1);
+                }, 800);
+              })(0);
+            });
+          </script></body>`
         );
       }
       if (url.searchParams.get("debug") === "widths") {
@@ -258,7 +314,7 @@ const server = createServer(async (req, res) => {
       if (popN) {
         body = body.replace(
           /<\/head>/i,
-          `<style>.r,.disc__i{ opacity:1 !important; transform:none !important; }</style></head>`
+          `${stillness}<style>.r,.disc__i{ opacity:1 !important; transform:none !important; }</style></head>`
         );
         body = body.replace(
           /<\/body>/i,
@@ -290,6 +346,7 @@ const server = createServer(async (req, res) => {
         );
       }
       if (url.searchParams.get("reveal") === "all") {
+        body = body.replace(/<\/head>/i, `${stillness}</head>`);
         body = body.replace(
           /<\/head>/i,
           `<style>

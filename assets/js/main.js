@@ -179,16 +179,75 @@
     });
   });
 
-  /* continuous marquees — rows that travel on their own.
+  /* drag to pan, shared by the marquees and the rails.
 
-     Two tracks sit side by side and both slide left by exactly their own
-     width, so when the animation restarts, track two is standing where track
-     one began and the loop shows no seam. That only holds if a track is wider
-     than the visible row, so a short set is repeated until it is; otherwise a
-     three-card section would loop with a gap in it.
+     Mouse and pen only. A touch screen already drags an overflow-x container
+     natively, and taking over the pointer there would mean deciding for
+     ourselves whether a finger meant to pan the row or scroll the page —
+     which is exactly the judgement the browser already makes correctly.
 
-     Speed is fixed in pixels per second rather than in seconds per lap, so a
-     six-card row and a three-card row travel at the same pace. */
+     `wrap` is passed by the marquees, whose scroll position is a loop rather
+     than a range; the rails leave it out and let the browser clamp at the
+     ends as usual. */
+  function dragToPan(el, wrap){
+    var down = false, startX = 0, startLeft = 0, moved = 0;
+
+    el.addEventListener("pointerdown", function(e){
+      if(e.pointerType === "touch") return;
+      if(e.pointerType === "mouse" && e.button !== 0) return;
+      down = true; moved = 0;
+      startX = e.clientX; startLeft = el.scrollLeft;
+      el.classList.add("is-drag");
+      try{ el.setPointerCapture(e.pointerId); }catch(_){}
+    });
+
+    el.addEventListener("pointermove", function(e){
+      if(!down) return;
+      var dx = e.clientX - startX;
+      if(Math.abs(dx) > moved) moved = Math.abs(dx);
+      var to = startLeft - dx;
+      el.scrollLeft = wrap ? wrap(to) : to;
+      e.preventDefault();
+    });
+
+    function up(e){
+      if(!down) return;
+      down = false;
+      el.classList.remove("is-drag");
+      try{ el.releasePointerCapture(e.pointerId); }catch(_){}
+    }
+    el.addEventListener("pointerup", up);
+    el.addEventListener("pointercancel", up);
+
+    /* a drag that ends on a card must not also count as a click on it */
+    el.addEventListener("click", function(e){
+      if(moved > 4){ e.preventDefault(); e.stopPropagation(); }
+    }, true);
+    el.addEventListener("dragstart", function(e){ e.preventDefault(); });
+
+    return { dragging: function(){ return down; } };
+  }
+
+  $$(".rail").forEach(function(rail){ dragToPan(rail); });
+
+  /* continuous marquees — rows that travel on their own, and that the reader
+     can also take hold of.
+
+     Two identical tracks sit side by side, so a scroll position of exactly one
+     track width shows the same thing as a position of zero. Travel is a frame
+     by frame addition to scrollLeft, wrapped into that one-track range: the
+     row never reaches an end to stop at, and because the wrap point is a place
+     where the content repeats, crossing it is invisible. The seamlessness only
+     holds while a track is wider than the visible row, so a short set is
+     repeated until it is.
+
+     Driving scrollLeft rather than a transform is what makes the row draggable
+     at the same time: the travel and the drag are writing to the same number,
+     so a reader taking hold of it does not have to fight an animation, and
+     letting go does not snap it back to where the animation had got to.
+
+     Speed is in pixels per second, so a six-card row and a three-card row
+     travel at the same pace. */
   var MARQ_PX_PER_SEC = 34;
   var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -196,30 +255,33 @@
     var row = marq.querySelector(".marq__row");
     var track = marq.querySelector(".marq__track");
     if(!row || !track) return;
-
-    /* a reader who has asked for less motion gets the same row to push
-       themselves, not a stalled animation */
-    if(reduced){ marq.classList.add("marq--static"); marq.setAttribute("data-ready",""); return; }
-
     var seed = Array.prototype.slice.call(track.children);
     if(!seed.length) return;
+
+    var lap = 0;
+
+    function loop(x){
+      if(!lap) return x;
+      x = x % lap;
+      return x < 0 ? x + lap : x;
+    }
+
+    var drag = dragToPan(marq, loop);
 
     function build(){
       /* start from the original set every time, so a resize does not stack
          clones from the previous pass on top of the ones before it */
       while(track.children.length > seed.length) track.removeChild(track.lastChild);
-      var twin = row.querySelector('[data-marq-twin]');
+      var twin = row.querySelector("[data-marq-twin]");
       if(twin) row.removeChild(twin);
 
       var visible = marq.clientWidth;
-      /* repeat the set until one track alone can cover the row */
       var guard = 0;
       while(track.scrollWidth < visible && guard++ < 12){
         seed.forEach(function(el){ track.appendChild(el.cloneNode(true)); });
       }
 
-      var w = track.scrollWidth;
-      marq.style.setProperty("--marq-dur", (w / MARQ_PX_PER_SEC).toFixed(1) + "s");
+      lap = track.scrollWidth;
 
       var copy = track.cloneNode(true);
       copy.setAttribute("data-marq-twin", "");
@@ -230,6 +292,7 @@
       });
       row.appendChild(copy);
       marq.setAttribute("data-ready", "");
+      marq.scrollLeft = loop(marq.scrollLeft);
     }
 
     build();
@@ -238,6 +301,36 @@
     addEventListener("resize", function(){
       clearTimeout(rt);
       rt = setTimeout(build, 200);
+    });
+
+    /* travel stops for anything that means the row is being read or handled:
+       a pointer over it, keyboard focus inside it, a drag in progress, or the
+       section being off screen entirely. */
+    var hovered = false, focused = false, onScreen = true;
+    marq.addEventListener("mouseenter", function(){ hovered = true; });
+    marq.addEventListener("mouseleave", function(){ hovered = false; });
+    marq.addEventListener("focusin",  function(){ focused = true; });
+    marq.addEventListener("focusout", function(){ focused = false; });
+    new IntersectionObserver(function(es){
+      onScreen = es[es.length - 1].isIntersecting;
+    }).observe(marq);
+
+    /* No travel under reduced motion, and none when the page is being driven
+       by a screenshot — a rAF that never settles keeps headless Chrome's
+       virtual clock from going idle, the same way an infinite CSS animation
+       does. The row stays draggable in both cases. */
+    if(reduced || window.CESS_NO_AUTOSCROLL) return;
+
+    var last = 0;
+    requestAnimationFrame(function frame(now){
+      requestAnimationFrame(frame);
+      var dt = last ? now - last : 0;
+      last = now;
+      if(!lap || hovered || focused || !onScreen || drag.dragging()) return;
+      /* a backgrounded tab hands back one enormous delta; without the clamp
+         the row would leap most of a lap on the frame the reader comes back */
+      if(dt > 64) dt = 64;
+      marq.scrollLeft = loop(marq.scrollLeft + MARQ_PX_PER_SEC * dt / 1000);
     });
   });
 
