@@ -291,6 +291,15 @@ report, remains the reference for anything the client document does not cover:
 programmes, participant numbers, partners, outcomes, strategy. It ends with a list
 of open questions; check it before publishing anything it flags.
 
+**Written for the page, not taken from a source.** The client's document gives
+What We're Building and Research and Innovation as bare titles, and cards
+carrying a title alone read as unfinished — so each now has a three-word line
+under it in the same voice as Opportunities ("Enquire. Evidence. Publish."),
+and a number, matching that section's pattern exactly (2026-08-17, at the
+client's request). Those lines are ours: they describe the theme and assert
+nothing — no counts, dates, partners or claims — which is what keeps them
+inside the rule below. If the Centre supplies its own wording, replace them.
+
 **Never invent facts about CHRIST or CESS.** Not dates, not counts, not names of
 partner institutions, not funding figures. If a number is needed for a section to
 demonstrate its shape, mark it visibly as illustrative and pending confirmation —
