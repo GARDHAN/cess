@@ -3,11 +3,19 @@
 Website for the Centre for Ecological and Social Sustainability at CHRIST (Deemed
 to be University), Bangalore.
 
-Content is drawn from the Centre's Annual Activity & Impact Report 2025–2026 —
-nine programmes across three strategic tiers, the feedback and impact data, the
-confirmed partners, and the strategy and measurable targets for 2026–2027 —
-together with the Centre's own review of the draft, which supplies the hero,
-about, areas, opportunities and closing copy.
+Content comes from the Centre's own review of the draft, which the Centre
+confirmed should govern the page in full. It supplies every section:
+
+```
+hero → about → areas → certificate course → what we're building
+     → research → opportunities → closing
+```
+
+The earlier draft also carried the programmes, feedback data, partners and
+strategy from the Annual Activity & Impact Report 2025–2026. That material was
+removed in favour of the Centre's own document, which does not ask for it. It
+remains in git history, and the components that presented it are still in the
+stylesheet and script.
 
 ## Viewing it
 
@@ -28,8 +36,8 @@ dependencies; it uses only Node's standard library.
 ```
 index.html          the site
 assets/css/main.css styles — design tokens in :root
-assets/js/main.js   scroll reveal, mobile menu, rails, marquees, the
-                    pinned-heading sections, and the page's motion
+assets/js/main.js   scroll reveal, mobile menu, rails, marquees and the
+                    page's motion
 images/brand/       the CHRIST lockup and the Centre's own marks
 tools/dev-server.mjs
 CLAUDE.md           conventions, design system, content rules
@@ -52,6 +60,3 @@ or in `CLAUDE.md`:
 
 The Centre sits in the **Department of Social Work**, confirmed by the Centre in
 its review of the draft.
-
-Participant figures are per-programme and are deliberately not summed — the
-source report's own numbers overlap between programmes.

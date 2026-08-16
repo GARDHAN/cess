@@ -5,7 +5,7 @@ to be University), Bangalore.
 
 The Centre sits in the **Department of Social Work** at CHRIST. That was open for a
 while — the two source documents named different schools — and was settled by the
-client in `docs/ improvements.docx` (2026-08-14), which both instructs "instead of
+client in `docs/CESS WEBSITE.docx` (2026-08-14), which both instructs "instead of
 faculty u can mention department social work" and gives the footer line verbatim.
 Use the department, not a school. "Faculty" still means academic staff elsewhere on
 the page and should stay that way.
@@ -86,8 +86,8 @@ Tokens live in `:root`. Use them rather than literal colours.
 - **Section shades** give the page rhythm: `.sec--lift` and `.sec--deep` sit a
   couple of percent either side of the ground, with a hairline at each join so
   the step reads as deliberate rather than as a rendering seam. Keep the deltas
-  tiny — this is rhythm, not a second colour. Currently on areas, impact,
-  building, framework and opportunities.
+  tiny — this is rhythm, not a second colour. Currently on areas, building and
+  opportunities.
 - **The masthead is the exception** and keeps its own light palette —
   `--chrome`, `--chrome-line`, `--chrome-mute`. It carries CHRIST's identity and
   the university lockup is drawn for a white ground. Anything placed in the bar
@@ -122,6 +122,13 @@ Tokens live in `:root`. Use them rather than literal colours.
   It pauses on hover and focus, and falls back to a plain scroller under
   `prefers-reduced-motion` or if the script never runs.
 
+**Two components are built and supported but not currently on the page.** Both
+carried annual-report and Dean's-document material that the client's own document
+does not ask for, and went out with it (2026-08-16, see *Scope* below). The CSS
+and JS are deliberately left in place — the client may well want this content
+back, and both are the right answer when it returns. Neither costs anything while
+unused: the JS binds through `$$()`, which no-ops on an empty list.
+
 - **Disclosures** (`.more`) keep dense cards to their headline: a programme card
   shows its title and its number, and folds venue, partner and findings into a
   native `<details>`. Prefer this to deleting content the report supports.
@@ -129,15 +136,16 @@ Tokens live in `:root`. Use them rather than literal colours.
   every `<details>` in its rail. Each card still owns a real `<details>`, so
   with no script every card opens on its own and the group button is hidden —
   the per-card summaries only step aside once `.js` is on the root.
-- **The pinned stack** (`.stack`) is used twice, by `#strategy` and `#value`: the
-  heading column
+- **The pinned stack** (`.stack`): the heading column
   sticks while the objectives travel past it, and `main.js` fades each objective
   by its distance from a reading line at 42% of the viewport, so exactly one is
   at full strength. The script binds to `.stack` / `.stack__list` / `.stack__dots`
-  by class, not by id, so a third one needs no JS change. Pinning is pure CSS, so
+  by class, not by id, so a new one needs no JS change. Pinning is pure CSS, so
   the section releases itself when the list ends — but only if `.stack__list` keeps a bottom tail taller than the
   viewport gap, or the heading unpins while the last objective is still being
   read. Below 901px the columns collapse and the fade is switched off.
+  `?debug=stack` remains the only way to check it: sticky never engages in a tall
+  screenshot window.
 
 - **Motion** lives in one block at the end of the stylesheet: reveal stagger,
   drifting orbs, a hero that recedes as you scroll off it, hairlines that draw
@@ -159,11 +167,11 @@ so `--virtual-time-budget` hangs on this page. Use `--timeout=6000` instead. Any
 
 ## Content rules
 
-`docs/cess-facts-2025-26.md` is **the source of truth for site content** —
-programmes, participant numbers, partners, outcomes, strategy, vision and mission,
-all extracted from the Centre's 2025–2026 annual report (`docs/` holds the source
-PDF). It ends with a list of open questions; check it before publishing anything
-it flags.
+`docs/CESS WEBSITE.docx` is **the source of truth for site content** — see *Scope*
+below. `docs/cess-facts-2025-26.md`, extracted from the Centre's 2025–2026 annual
+report, remains the reference for anything the client document does not cover:
+programmes, participant numbers, partners, outcomes, strategy. It ends with a list
+of open questions; check it before publishing anything it flags.
 
 **Never invent facts about CHRIST or CESS.** Not dates, not counts, not names of
 partner institutions, not funding figures. If a number is needed for a section to
@@ -190,11 +198,38 @@ The client asked for pictures in the marquee cards and none are licensed yet, so
 than leaving an empty box. Dropping an `<img>` inside the element covers the
 drawing — no other change to the card is needed.
 
-## Client review, 2026-08-14
+## Scope — the client document governs the page
 
-`docs/ improvements.docx` is the client's own annotated review — text plus nine
-screenshots. The screenshots are of a **different build** of the CESS site, not
-this one, so its instructions map by role rather than by matching text: its
-"areas" screenshot means `#areas` here, its "accomplishments" one became
-`#building`, and so on. Content in that document overrides the annual report
-wherever the two differ; it is the Centre speaking about itself.
+`docs/CESS WEBSITE.docx` (formerly delivered as ` improvements.docx`) is the
+client's own annotated review — text plus nine screenshots. The screenshots are of
+a **different build** of the CESS site, not this one, so its instructions map by
+role rather than by matching text: its "areas" screenshot means `#areas` here, its
+"accomplishments" one became `#building`, and so on. It is the Centre speaking
+about itself, and it overrides the annual report wherever the two differ.
+
+**The screenshots are content, not just layout.** Where the document says "put the
+same thing" or "same format change the information", the words inside that
+screenshot are the copy to use — that is where `#programme` and `#research` get
+their headings, ledes and cards.
+
+On 2026-08-16 the client confirmed the page should carry **only** what that
+document contains. The page is now exactly its sequence:
+
+    hero → about → areas → programme → building → research → opportunities → contact
+
+Seven sections were removed at that point — programmes (nine, three tiers), impact
+(feedback charts), partners, strategy (five objectives), the triple-pillar
+framework, the value proposition and the plan of action — along with the hero
+stats strip and the Vision/Mission cards in `#about`. None of it was wrong; it
+simply came from the annual report and the Dean's document, and the client's
+document never asks for it. It is all in git history, and the components that
+carried it are still in the CSS and JS.
+
+Card copy is held to the document's own words: where it lists a bare title, the
+card carries the title and nothing else. Do not reintroduce supporting lines from
+the annual report without asking.
+
+Still outstanding from the document: it asks for photographs in the marquee cards
+("use animated pictures"), deferred until images are licensed, and for LinkedIn,
+Instagram and the official CESS email, which the client will send. The footer has
+a commented-out social block ready for them.
