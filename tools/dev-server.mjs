@@ -250,6 +250,32 @@ const server = createServer(async (req, res) => {
           </script></body>`
         );
       }
+      // ?pop=N — click the Nth discipline (1-based) and leave its panel open,
+      // the only way to see it in a screenshot. Reports what the dialog is
+      // actually carrying, so --dump-dom can check the wiring without a
+      // picture. The reveal is forced too: the row starts at opacity 0.
+      const popN = url.searchParams.get("pop");
+      if (popN) {
+        body = body.replace(
+          /<\/head>/i,
+          `<style>.r,.disc__i{ opacity:1 !important; transform:none !important; }</style></head>`
+        );
+        body = body.replace(
+          /<\/body>/i,
+          `<script>
+            addEventListener("load", function(){
+              var t = document.querySelectorAll(".disc__t")[${Number(popN) - 1}];
+              if(!t){ document.title = "POP no-such-term"; return; }
+              t.click();
+              var d = document.getElementById("pop");
+              document.title = "POP open=" + (d && d.open) +
+                " title=" + JSON.stringify(d.querySelector(".pop__title").textContent) +
+                " bodyLen=" + d.querySelector(".pop__body").textContent.length +
+                " inplaceHidden=" + (getComputedStyle(document.querySelector(".disc__d")).display === "none");
+            });
+          </script></body>`
+        );
+      }
       // ?nojs=1 — serve the page with every script stripped, to check the
       // no-JavaScript path. Chrome's --disable-javascript is a no-op in current
       // builds and --blink-settings=scriptEnabled=false renders nothing, so
@@ -275,6 +301,14 @@ const server = createServer(async (req, res) => {
             *,*::before,*::after{ animation:none !important; }
             /* the objective stack sets its own opacity from the reading line */
             .objx{ opacity:1 !important; transform:none !important; }
+            /* children staged inside a revealed parent — a section head's
+               eyebrow, heading and line, and the discipline row. These hold at
+               opacity 0 behind their own transition-delay, so forcing only the
+               parent .r leaves a screenshot showing empty section heads. */
+            .head.r > div > .micro, .head.r > div > h2, .head.r > .lede,
+            .disc__i{
+              opacity:1 !important; transform:none !important; transition:none !important;
+            }
           </style></head>`
         );
       }

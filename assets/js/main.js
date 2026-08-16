@@ -2,11 +2,37 @@
   "use strict";
   var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
 
-  /* reveal on scroll */
-  var io = new IntersectionObserver(function(es){
-    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
-  }, { threshold:.12, rootMargin:"0px 0px -6% 0px" });
-  $$(".r").forEach(function(el){ io.observe(el); });
+  /* Reveal on scroll, in two stages and both ways.
+
+     Stage: a section's heading is meant to land before the information under
+     it, so anything that counts as information is given a deeper trigger line
+     — it waits until the reader has scrolled further into the section. The
+     split is by selector rather than by hand-tagging every element; data-late
+     is there for the cases the selector cannot name.
+
+     Both ways: an element that leaves also drops back to its start state, so
+     coming back to it plays the fade again rather than finding it already
+     resolved. Exit is watched by a separate observer at the true viewport
+     edge, so nothing ever fades while any part of it is still on screen —
+     the deeper entry line must not become a fade-out line. */
+  var LATE = ".card,.mcard,.marq,.hero__acts,.rows,.disc,.rail-wrap,[data-late]";
+
+  function enterObserver(bottom){
+    return new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting) e.target.classList.add("in"); });
+    }, { threshold:.1, rootMargin:"0px 0px " + bottom + " 0px" });
+  }
+  var ioHead = enterObserver("-8%"),
+      ioBody = enterObserver("-22%");
+
+  var ioOut = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(!e.isIntersecting) e.target.classList.remove("in"); });
+  }, { threshold:0 });
+
+  $$(".r").forEach(function(el){
+    (el.matches(LATE) ? ioBody : ioHead).observe(el);
+    ioOut.observe(el);
+  });
 
   /* once the page moves, the utility strip collapses and the masthead
      tightens — the bar gives its height back to the content */
@@ -95,6 +121,42 @@
     addEventListener("resize", sync);
     sync();
   });
+
+  /* the discipline panel.
+
+     Content is lifted out of the clicked item rather than duplicated into the
+     dialog, so each description has exactly one home in the markup. The
+     `pop-ok` class is what hides the in-place descriptions — set here, after
+     showModal is confirmed, so a browser without it keeps them readable
+     instead of hiding text behind a control that cannot open. */
+  var pop = document.getElementById("pop");
+  if(pop && typeof pop.showModal === "function"){
+    document.documentElement.classList.add("pop-ok");
+
+    var popTitle = pop.querySelector(".pop__title"),
+        popBody  = pop.querySelector(".pop__body"),
+        opener   = null;
+
+    $$(".disc__t").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var item = btn.parentNode.querySelector(".disc__d");
+        popTitle.textContent = btn.textContent.trim();
+        popBody.textContent  = item ? item.textContent.trim() : "";
+        pop.style.setProperty("--chip", btn.style.getPropertyValue("--chip") || "");
+        opener = btn;
+        pop.showModal();
+      });
+    });
+
+    pop.querySelector(".pop__x").addEventListener("click", function(){ pop.close(); });
+
+    /* the backdrop is the dialog itself — a click landing on the element
+       rather than on the panel inside it is a click outside */
+    pop.addEventListener("click", function(e){ if(e.target === pop) pop.close(); });
+
+    /* put the reader back where they were */
+    pop.addEventListener("close", function(){ if(opener) opener.focus(); });
+  }
 
   /* one disclosure control per row.
 

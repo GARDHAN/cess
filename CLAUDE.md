@@ -44,6 +44,10 @@ with `--dump-dom`:
   no-JavaScript path. Chrome's `--disable-javascript` is a **no-op** in current
   builds and `--blink-settings=scriptEnabled=false` renders nothing at all, so
   this is the only reliable way to see that path — don't trust either flag.
+- `?pop=N` — click the Nth discipline in the About row (1-based) and leave its
+  panel open; reports the dialog's title, body length and whether the in-place
+  description was hidden. A screenshot cannot click, and the row starts at
+  opacity 0, so this is the only way to see or check that component.
 - `?debug=widths` — list elements wider than the viewport
 - `?debug=sections` — each section's id and vertical extent
 - `?debug=rails` — rail and marquee geometry, plus page scroll width
@@ -122,6 +126,24 @@ Tokens live in `:root`. Use them rather than literal colours.
   It pauses on hover and focus, and falls back to a plain scroller under
   `prefers-reduced-motion` or if the script never runs.
 
+- **The discipline line** (`.disc`) carries the About section's "We combine" set
+  as one continuous line — no boxes, a hairline between each term, the accent
+  drawing itself under a term on hover as the term lifts. The client's document
+  marks this row "(POPUP)", so each term is a real `<button>` opening a native
+  `<dialog>`. The dialog is filled from the clicked item rather than holding its
+  own copy of the text, so each description has exactly one home in the markup.
+  Every description is the Centre's own wording, lifted from the areas and
+  certificate-course copy elsewhere on the page — check there before editing one.
+  **The line never wraps.** Six terms are about 590px and the About column is
+  wider than the default prose split for exactly that reason (`#about .prose`);
+  below the width it needs, the row scrolls rather than wrapping, which keeps
+  the single-line reading everywhere and keeps a stray separator off the start
+  of a wrapped line. A row that scrolls inside a grid item also needs
+  `min-width:0` on that item, or the column and then the page grow to fit it.
+  Without the dialog the descriptions simply read in place: `main.js` sets
+  `pop-ok` on the root only after confirming `showModal`, and that class is what
+  hides them — never hide them from CSS alone.
+
 **Two components are built and supported but not currently on the page.** Both
 carried annual-report and Dean's-document material that the client's own document
 does not ask for, and went out with it (2026-08-16, see *Scope* below). The CSS
@@ -147,6 +169,22 @@ unused: the JS binds through `$$()`, which no-ops on an empty list.
   `?debug=stack` remains the only way to check it: sticky never engages in a tall
   screenshot window.
 
+- **Reveals run in two stages and both ways.** A section's heading is meant to
+  land before the information under it, so `main.js` observes with two entry
+  lines: `.r` in general trips at 8% up the viewport, and anything matching
+  `LATE` — cards, marquees, the discipline row, `[data-late]` — waits until 22%,
+  so it arrives as the reader carries on scrolling. Add `data-late` for cases
+  the selector cannot name.
+  Elements also fade back out, so returning to one plays the fade again rather
+  than finding it already resolved. **Exit is watched by a separate observer at
+  the true viewport edge**, never the staged entry line: reusing the -22% line
+  for exit would fade a heading out while it is still on screen and being read.
+  Inside a `.head`, the wrapper itself no longer animates and its children carry
+  the motion in order — eyebrow, heading, then the line beside it. Nesting one
+  fade inside another only muddies both. Anything staged this way is invisible
+  until its parent is `.in`, so it needs its own entry in both the
+  `prefers-reduced-motion` block and the server's `?reveal=all` style, or a
+  reduced-motion reader and every screenshot get an empty section head.
 - **Motion** lives in one block at the end of the stylesheet: reveal stagger,
   drifting orbs, a hero that recedes as you scroll off it, hairlines that draw
   in, disclosure content that arrives. It is all ambient or on-reveal — nothing

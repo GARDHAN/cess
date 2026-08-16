@@ -147,26 +147,50 @@
 <!-- ==================== ABOUT / FOREWORD ==================== -->
 <section class="sec" id="about">
   <div class="wrap">
-    <div class="prose r">
-      <div>
+    <div class="prose">
+      <div class="r">
         <span class="micro">About the Centre</span>
         <h2 style="font-size:var(--t-h2); max-width:16ch; margin-top:1.1rem;">Where ideas become action. Where action becomes impact.</h2>
       </div>
-      <div>
+      <div class="r" data-late>
         <p class="lede">
           CESS is an interdisciplinary hub that explores the powerful connection between
           society and the environment.
         </p>
 
         <span class="micro micro--inline">We combine</span>
-        <div class="chips">
-          <span class="chip" style="--chip:#7FD3A0">Social Work</span>
-          <span class="chip" style="--chip:#8FBAF5">Behavioural Science</span>
-          <span class="chip" style="--chip:#A8DC7C">Sustainability</span>
-          <span class="chip" style="--chip:#C4ABEC">Research</span>
-          <span class="chip" style="--chip:#F0BC66">Innovation</span>
-          <span class="chip" style="--chip:#A2B4F5">Global Partnerships</span>
-        </div>
+
+        <!-- One line, hairline separators, no boxes. Each discipline opens a
+             panel — the client's document marks this row "(POPUP)". Every
+             description below is the Centre's own wording, taken from the areas
+             and certificate-course copy elsewhere on this page.
+             Without the dialog the descriptions simply read in place. -->
+        <ul class="disc" role="list">
+          <li class="disc__i">
+            <button class="disc__t" type="button" aria-haspopup="dialog" style="--chip:#7FD3A0">Social Work</button>
+            <p class="disc__d">Green social work — integrating ecological perspectives into social work education, research and practice.</p>
+          </li>
+          <li class="disc__i">
+            <button class="disc__t" type="button" aria-haspopup="dialog" style="--chip:#8FBAF5">Behavioural Science</button>
+            <p class="disc__d">Behavioural change and social innovation — strategies for sustainable behaviour, participation and community engagement.</p>
+          </li>
+          <li class="disc__i">
+            <button class="disc__t" type="button" aria-haspopup="dialog" style="--chip:#A8DC7C">Sustainability</button>
+            <p class="disc__d">Ecological sustainability — environmental responsibility, resilience and sustainable living.</p>
+          </li>
+          <li class="disc__i">
+            <button class="disc__t" type="button" aria-haspopup="dialog" style="--chip:#C4ABEC">Research</button>
+            <p class="disc__d">Interdisciplinary research that contributes to academic knowledge as well as social transformation, pursued with community partners and, where relevant, international collaborators.</p>
+          </li>
+          <li class="disc__i">
+            <button class="disc__t" type="button" aria-haspopup="dialog" style="--chip:#F0BC66">Innovation</button>
+            <p class="disc__d">Innovative community-based solutions, and innovation for sustainable communities.</p>
+          </li>
+          <li class="disc__i">
+            <button class="disc__t" type="button" aria-haspopup="dialog" style="--chip:#A2B4F5">Global Partnerships</button>
+            <p class="disc__d">Connecting students, faculty, practitioners and international partners through research, learning and innovation — exposure to global best practices and cross-cultural learning.</p>
+          </li>
+        </ul>
 
         <p class="lede" style="margin-top:1.6rem;">
           Our mission is to develop solutions that are not only innovative in theory, but
@@ -418,7 +442,7 @@
     </div>
     <p class="marq__hint">Hover to pause</p>
 
-    <p class="lede r" data-d="1" style="margin-top:clamp(24px,2.6vw,34px);">
+    <p class="lede r" data-d="1" data-late style="margin-top:clamp(24px,2.6vw,34px);">
       Research is pursued with community partners and, where relevant, international
       collaborators.
     </p>
@@ -524,6 +548,21 @@
     </div>
   </div>
 </section>
+
+<!-- ==================== DISCIPLINE PANEL ====================
+     Filled from the clicked discipline rather than duplicating its text, so
+     the copy has exactly one home. Native <dialog>: Esc closes it, focus is
+     trapped, and the backdrop is the browser's own. -->
+<dialog class="pop" id="pop" aria-labelledby="popTitle">
+  <div class="pop__in">
+    <button class="pop__x" type="button" aria-label="Close">
+      <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+    <span class="micro">We combine</span>
+    <h3 class="pop__title" id="popTitle"></h3>
+    <p class="pop__body"></p>
+  </div>
+</dialog>
 
 <script src="assets/js/main.js"></script>
 </body>

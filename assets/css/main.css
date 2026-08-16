@@ -313,7 +313,11 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 
 /* two-column prose */
 .prose{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.1fr); gap:clamp(26px,5vw,86px); align-items:start; }
-@media (max-width:880px){ .prose{ grid-template-columns:1fr; } }
+/* a grid item defaults to min-width:auto, which lets it be pushed wider than
+   its track by something that scrolls inside it — the discipline line does
+   exactly that. Without this the column, and then the page, grows to fit. */
+.prose > *{ min-width:0; }
+@media (max-width:880px){ .prose{ grid-template-columns:minmax(0,1fr); } }
 .prose p + p{ margin-top:1.1rem; }
 
 /* highlighted programme */
@@ -343,15 +347,19 @@ button{ font:inherit; color:inherit; background:none; border:0; }
    Gated behind .js, which an inline script in <head> sets. If the script
    file fails to load for any reason, nothing is hidden and the whole page
    still reads — content must never depend on JavaScript to be visible. */
-.js .r{ opacity:0; transform:translateY(14px); transition:opacity .9s var(--e-out), transform .9s var(--e-out); }
+.js .r{ opacity:0; transform:translateY(18px); transition:opacity 1.15s var(--e-out), transform 1.15s var(--e-out); }
 .js .r.in{ opacity:1; transform:none; }
-.js .r[data-d="1"]{ transition-delay:.07s } .js .r[data-d="2"]{ transition-delay:.14s }
-.js .r[data-d="3"]{ transition-delay:.21s } .js .r[data-d="4"]{ transition-delay:.28s }
+.js .r[data-d="1"]{ transition-delay:.1s } .js .r[data-d="2"]{ transition-delay:.2s }
+.js .r[data-d="3"]{ transition-delay:.3s } .js .r[data-d="4"]{ transition-delay:.4s }
 
 @media (prefers-reduced-motion:reduce){
   html{ scroll-behavior:auto; }
   *,*::before,*::after{ animation:none !important; transition-duration:.001ms !important; }
   .r{ opacity:1 !important; transform:none !important; }
+  /* the staged children too — these are hidden until their parent is .in, so
+     without this rule a reduced-motion reader gets an empty section head */
+  .head.r > div > .micro, .head.r > div > h2, .head.r > .lede,
+  .disc__i{ opacity:1 !important; transform:none !important; }
 }
 
 /* ==========================================================
@@ -732,23 +740,86 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 }
 .hero .lede + .lede{ margin-top:.9rem; }
 
-/* ---------- discipline chips ----------
+/* ---------- disciplines ----------
    The Centre works across six disciplines and names them as a set, so they
-   read as one row of labels rather than six separate statements. */
-.chips{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1rem; }
-.chip{
-  display:inline-flex; align-items:center; gap:.45rem;
-  padding:.42rem .85rem; border-radius:999px;
-  border:1px solid var(--line); background:var(--paper-2);
-  font-size:.86rem; letter-spacing:-.005em; color:var(--text);
-  transition:border-color .3s var(--e), transform .3s var(--e), box-shadow .3s var(--e);
+   read as one continuous line rather than six separate statements: no boxes,
+   just a hairline between each. The line never wraps — below the width it
+   needs, it scrolls, which keeps the single-line reading everywhere and keeps
+   a stray separator off the start of a wrapped line. */
+.disc{
+  display:flex; flex-wrap:nowrap; align-items:center;
+  margin-top:1rem; padding:.2rem 0 .5rem; list-style:none;
+  overflow-x:auto; overscroll-behavior-x:contain;
+  scrollbar-width:none; -ms-overflow-style:none;
 }
-.chip::before{
-  content:""; width:6px; height:6px; border-radius:50%;
-  background:var(--chip, var(--leaf)); flex:none;
+.disc::-webkit-scrollbar{ display:none; }
+.disc__i{ display:flex; align-items:center; flex:none; }
+.disc__i + .disc__i::before{
+  content:""; flex:none; width:1px; height:.95em; border-radius:1px;
+  background:var(--line-2); margin-inline:clamp(.55rem,1.15vw,1.05rem);
 }
-.chip:hover{ border-color:var(--chip, var(--leaf)); transform:translateY(-1px);
-  box-shadow:0 12px 26px -20px rgba(0,0,0,.7); }
+.disc__t{
+  appearance:none; -webkit-appearance:none; background:none; border:0;
+  padding:.28rem 0; margin:0; font:inherit;
+  font-size:clamp(.79rem,.92vw,.9rem); letter-spacing:-.005em;
+  color:var(--text); white-space:nowrap; cursor:pointer; position:relative;
+  transition:color .4s var(--e), transform .5s var(--e-enter);
+}
+/* the accent draws itself under the word rather than boxing it */
+.disc__t::after{
+  content:""; position:absolute; left:0; right:0; bottom:.05rem; height:1px;
+  background:var(--chip, var(--leaf));
+  transform:scaleX(0); transform-origin:left;
+  transition:transform .5s var(--e-enter);
+}
+.disc__t:hover, .disc__t:focus-visible{
+  color:var(--chip, var(--leaf)); transform:translateY(-3px);
+}
+.disc__t:hover::after, .disc__t:focus-visible::after{ transform:scaleX(1); }
+.disc__t:focus-visible{ outline:none; }
+
+/* The discipline line has to hold six terms without breaking, so About gives
+   its second column more room than the default prose split — the heading
+   opposite is capped at 16ch and does not want the width anyway. */
+#about .prose{
+  grid-template-columns:minmax(0,.82fr) minmax(0,1.35fr);
+  gap:clamp(26px,3.6vw,58px);
+}
+
+/* the description reads in place until the dialog can carry it */
+.disc__d{ margin:.3rem 0 0; font-size:.88rem; color:var(--text-mute); max-width:52ch; }
+.pop-ok .disc__d{ display:none; }
+.pop-ok .disc{ align-items:baseline; }
+
+/* ---------- discipline panel ---------- */
+.pop{
+  border:0; padding:0; background:transparent; color:var(--text);
+  width:min(520px, calc(100vw - 2rem)); max-height:calc(100vh - 3rem);
+  overflow:visible;
+}
+.pop::backdrop{ background:rgba(4,16,11,.62); }
+.pop__in{
+  position:relative; background:var(--paper-2);
+  border:1px solid var(--line); border-radius:20px;
+  padding:clamp(26px,3.4vw,36px);
+  box-shadow:0 40px 90px -40px rgba(0,0,0,.85);
+}
+/* the accent restates which discipline this is */
+.pop__in::before{
+  content:""; position:absolute; left:clamp(26px,3.4vw,36px); top:0;
+  width:34px; height:2px; border-radius:2px;
+  background:var(--chip, var(--leaf));
+}
+.pop__title{ font-size:clamp(1.3rem,2.1vw,1.62rem); letter-spacing:-.02em; margin:.7rem 0 0; }
+.pop__body{ margin:.75rem 0 0; color:var(--text-soft, var(--text-mute)); font-size:1rem; line-height:1.62; }
+.pop__x{
+  position:absolute; top:14px; right:14px; width:34px; height:34px;
+  display:grid; place-items:center; border-radius:50%;
+  border:1px solid var(--line); background:transparent; color:var(--text-mute);
+  cursor:pointer; transition:color .3s var(--e), border-color .3s var(--e), transform .3s var(--e-enter);
+}
+.pop__x svg{ width:15px; height:15px; }
+.pop__x:hover{ color:var(--text); border-color:var(--chip, var(--leaf)); transform:rotate(90deg); }
 
 .prose .micro--inline{ display:block; margin-top:1.6rem; }
 
@@ -954,8 +1025,48 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 /* ---------- reveals ---------- */
 /* more stagger steps, so a strip of four or a row of six can arrive in
    sequence rather than all at once */
-.js .r[data-d="5"]{ transition-delay:.35s } .js .r[data-d="6"]{ transition-delay:.42s }
-.js .r[data-d="7"]{ transition-delay:.49s } .js .r[data-d="8"]{ transition-delay:.56s }
+.js .r[data-d="5"]{ transition-delay:.5s } .js .r[data-d="6"]{ transition-delay:.6s }
+.js .r[data-d="7"]{ transition-delay:.7s } .js .r[data-d="8"]{ transition-delay:.8s }
+
+/* A section head arrives in its own order — eyebrow, then heading, then the
+   line beside it — so the reader is given the title before the sentence that
+   qualifies it. The wrapper itself stays put and its children carry the
+   motion; nesting one fade inside another only muddies both. */
+.js .head.r{ opacity:1; transform:none; transition:none; }
+.js .head.r > div > .micro,
+.js .head.r > div > h2,
+.js .head.r > .lede{
+  opacity:0; transform:translateY(12px);
+  transition:opacity 1.05s var(--e-enter), transform 1.05s var(--e-enter);
+}
+.js .head.r.in > div > .micro{ transition-delay:.04s }
+.js .head.r.in > div > h2{ transition-delay:.19s }
+.js .head.r.in > .lede{ transition-delay:.38s }
+.js .head.r.in > div > .micro,
+.js .head.r.in > div > h2,
+.js .head.r.in > .lede{ opacity:1; transform:none; }
+
+/* the disciplines arrive along the line, left to right */
+.js .disc__i{
+  opacity:0; transform:translateY(9px);
+  transition:opacity .8s var(--e-enter), transform .8s var(--e-enter);
+}
+.js .r.in .disc__i{ opacity:1; transform:none; }
+.js .r.in .disc__i:nth-child(1){ transition-delay:.06s }
+.js .r.in .disc__i:nth-child(2){ transition-delay:.14s }
+.js .r.in .disc__i:nth-child(3){ transition-delay:.22s }
+.js .r.in .disc__i:nth-child(4){ transition-delay:.30s }
+.js .r.in .disc__i:nth-child(5){ transition-delay:.38s }
+.js .r.in .disc__i:nth-child(6){ transition-delay:.46s }
+
+/* the panel arrives rather than appearing */
+.pop[open]{ animation:popIn .42s var(--e-enter) both; }
+.pop[open]::backdrop{ animation:popFade .42s var(--e-enter) both; }
+@keyframes popIn{
+  from{ opacity:0; transform:translateY(12px) scale(.985); }
+  to  { opacity:1; transform:none; }
+}
+@keyframes popFade{ from{ opacity:0 } to{ opacity:1 } }
 
 /* the facts strip arrives item by item */
 .js .facts.r .facts__i{
