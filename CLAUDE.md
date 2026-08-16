@@ -112,17 +112,22 @@ Tokens live in `:root`. Use them rather than literal colours.
   draws a hard horizontal line across the page; off the left or right the clip
   lands at the viewport edge where nobody sees it. If you add a placement, keep
   the vertical translate at 0 and the orb no taller than its section.
-- **Rails** carry any section with more items than a row should hold:
-  `.rail-wrap` > `.rail` (id, `tabindex="0"`, `role="region"`, `aria-label`) plus
-  a `.rail__bar` of two buttons. Items sized by `grid-auto-columns:
-  minmax(clamp(...), 1fr)`, so a rail with few enough items simply fills the row
-  and the script marks it `data-pos="none"`, hiding its controls.
-- Scroll-snap parks the first item behind the rail's own 3px padding, so a rail
-  at rest reports `scrollLeft` of about 3, not 0. The end-detection tolerance in
-  `main.js` (`EPS`) exists for that; don't tighten it or the left arrow never
-  disables and the edge mask never clears.
-- **Marquees** are the rail's moving cousin, used where the client asked for a row
-  that travels on its own: `.marq` > `.marq__row` > `.marq__track` of `.mcard`s.
+- **Rails** (`.rail-wrap` > `.rail` + a `.rail__bar` of arrow buttons) are the
+  static version of a travelling row, and are **no longer used on the page**:
+  the client asked for every horizontal row to move on its own, so `#areas` and
+  `#opportunities` became marquees on 2026-08-17 and the arrows gave way to the
+  scrollbar underneath. The CSS and JS are kept for a row that should not travel.
+  If one comes back: items are sized by `grid-auto-columns:
+  minmax(clamp(...), 1fr)`, so a rail with few enough items fills the row and the
+  script marks it `data-pos="none"`, hiding its controls. Scroll-snap parks the
+  first item behind the rail's own 3px padding, so a rail at rest reports
+  `scrollLeft` of about 3, not 0 — the `EPS` tolerance in `main.js` exists for
+  that, and tightening it stops the left arrow ever disabling.
+- **Marquees carry every horizontal row on the page** — areas, the certificate
+  course, what we're building, research and opportunities: `.marq`
+  (`tabindex="0"`, `role="region"`, `aria-label`) > `.marq__row` >
+  `.marq__track` of cards. A `.card` in a track is given a fixed width; an
+  `.mcard` already has one.
   The script duplicates the track, so a scroll position of exactly one track
   width shows the same thing as a position of zero — which only holds while a
   track is wider than the row, hence the repeat-until-wide-enough loop for short
@@ -142,9 +147,25 @@ Tokens live in `:root`. Use them rather than literal colours.
   Consequences worth knowing: `animation:none` does **not** stop it, so the
   server's debug views set `window.CESS_NO_AUTOSCROLL` instead; and `.marq` needs
   `scroll-behavior:auto`, or the smooth scrolling inherited from `html` tries to
-  animate every per-frame write and the row crawls.
+  animate every per-frame write and the row crawls. One shared rAF drives all
+  five rows, so there is a single place to switch the motion off.
+- **Each row's scrollbar** (`.hbar`, built by the script) replaces the arrow
+  buttons the rails had: dragging a thumb is a shorter route to a distant card
+  than clicking an arrow repeatedly, and it doubles as the sign that the row
+  holds more than it shows. The thumb is sized `clientWidth / lap` and runs the
+  length of one lap before starting again — the same journey the cards make.
+  It is built in JS, not markup: with no script there is nothing for it to
+  drive, and an inert scrollbar is worse than none. The old "Scroll for more"
+  and "Hover to pause" hints came off with it.
+- **Card pictures are full-bleed and fade out downward.** A light plate inset in
+  a dark card reads as a second rectangle drawn inside the first, so
+  `.card__pic` and `.mcard__fig` run to the card's edges, take its top corners,
+  and dissolve over their bottom third. Both a mask *and* a gradient in
+  `--paper-2` are needed: the mask alone leaves a hard cream edge at the sides.
+  A label inside one of these plates belongs at the top — the bottom is the part
+  that fades away, as `.mcard__fig i` found out.
 - **Drag to pan** (`dragToPan` in `main.js`) is on every horizontal scroller —
-  both rails and all three marquees. Mouse and pen only: a touch screen already
+  all five rows. Mouse and pen only: a touch screen already
   drags an `overflow-x` container natively, and taking the pointer there would
   mean deciding for ourselves whether a finger meant to pan the row or scroll the
   page, which is the judgement the browser already makes correctly. Marquees pass
@@ -169,13 +190,16 @@ Tokens live in `:root`. Use them rather than literal colours.
   Without the dialog the descriptions simply read in place: `main.js` sets
   `pop-ok` on the root only after confirming `showModal`, and that class is what
   hides them — never hide them from CSS alone.
-  On hover each term gets a **crayon scribble** in its own colour, the same
-  drawn-by-hand language as the area illustrations. It is one SVG in `--scribble`
-  used as a *mask*, so the shape is shared and only `background` changes per
-  word; six background-images would be six copies of the same drawing. The
-  scribble sits at `z-index:-1`, which is why the button carries
-  `isolation:isolate` — without a stacking context of its own it would fall
-  behind the section instead of behind the word.
+  Each term sits on a **soft pastel wash** in its own colour, present at rest
+  rather than only on hover — the row is meant to read as coloured at a glance,
+  and hover simply brings it up. Deliberately not a chip: no border, no flat
+  fill, uneven corners and a fraction off level, so it reads as laid down by
+  hand rather than as a box drawn around the word. (A crayon-scribble version
+  came first and was dropped — too busy, and it only existed on hover.) The wash
+  sits at `z-index:-1`, which is why the button carries `isolation:isolate`:
+  without a stacking context of its own it falls behind the section instead of
+  behind the word. Keep `.disc` centred, not `align-items:baseline` — the first
+  term has no separator to align to and drops below the line.
 
 **Two components are built and supported but not currently on the page.** Both
 carried annual-report and Dean's-document material that the client's own document
@@ -202,6 +226,10 @@ unused: the JS binds through `$$()`, which no-ops on an empty list.
   `?debug=stack` remains the only way to check it: sticky never engages in a tall
   screenshot window.
 
+- **Reveals are a fade and nothing else.** No element travels vertically on the
+  way in: a card that rises as it arrives is still rising while the reader is
+  already looking at it, which reads as the layout settling late rather than as
+  an entrance. The client asked for this directly. Hover lifts are unaffected.
 - **Reveals run in two stages and both ways.** A section's heading is meant to
   land before the information under it, so `main.js` observes with two entry
   lines: `.r` in general trips at 8% up the viewport, and anything matching

@@ -135,7 +135,7 @@ const server = createServer(async (req, res) => {
       if (url.searchParams.get("debug") === "travel") {
         body = body.replace(
           /<\/body>/i,
-          `<img src="/__slow?ms=3200" alt="" width="1" height="1"
+          `<img src="/__slow?ms=7000" alt="" width="1" height="1"
                 style="position:absolute;left:-9px;top:0;opacity:0">
           <script>
             /* Each row only travels while it is on screen, so the walk has to
@@ -160,7 +160,7 @@ const server = createServer(async (req, res) => {
                     " now=" + Math.round(m.scrollLeft) +
                     " wrapped=" + (low < from - 1));
                   step(i + 1);
-                }, 800);
+                }, 700);
               })(0);
             });
           </script></body>`

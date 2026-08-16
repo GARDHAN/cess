@@ -290,25 +290,42 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 }
 
 /* A card carrying its own illustration. The drawings are numbered to the
-   areas and sit above the number and title. They are decorative — the card
-   says in words what the picture says in pencil — so the img takes alt="".
-   The plate keeps the card's padding off the picture: the illustration is
-   inset to the card edge, which reads as a drawing pinned to the card rather
-   than a photograph filling it. */
-.card--pic{ padding-top:clamp(14px,1.5vw,18px); }
+   areas. They are decorative — the card says in words what the picture says in
+   pencil — so the img takes alt="".
+
+   The picture is full-bleed rather than an inset plate: it runs to the card's
+   own edges and takes its top corners, so there is no second rectangle inside
+   the first. The drawings are on cream paper and the card is deep green, so
+   the join needs handling — the plate fades out over its bottom third into the
+   card's own colour, which is why the mask and the gradient are both here. The
+   mask alone would leave a hard cream edge at the sides. */
+.card--pic{ padding-top:0; overflow:hidden; }
 .card__pic{
-  aspect-ratio:16/10; overflow:hidden;
-  border-radius:calc(var(--r) - 6px);
-  background:#F6F2E6;                       /* the paper the drawings sit on */
-  margin-bottom:.35rem;
+  position:relative;
+  margin:0 calc(clamp(20px,2.1vw,28px) * -1) .1rem;   /* out to the card edges */
+  aspect-ratio:16/9;
+  background:#F6F2E6;                                 /* the paper they are drawn on */
+  /* the picture dissolves downward instead of ending on a line */
+  -webkit-mask-image:linear-gradient(180deg,#000 0 58%,rgba(0,0,0,.55) 82%,transparent 100%);
+          mask-image:linear-gradient(180deg,#000 0 58%,rgba(0,0,0,.55) 82%,transparent 100%);
 }
 .card__pic img{
   display:block; width:100%; height:100%; object-fit:cover;
-  /* the subject is centred in a wide frame with a lot of paper around it;
-     cover on a 16:10 plate crops that margin rather than the drawing */
-  transition:transform .6s var(--e-enter);
+  /* the source is wider than the plate, so cover trims the side margin and
+     keeps the whole scene; object-position lifts the subject clear of the fade */
+  object-position:center 38%;
+  transition:transform .7s var(--e-enter);
 }
-.card--pic:hover .card__pic img{ transform:scale(1.03); }
+/* and the same fade in the card's colour laid over it, so the cream is
+   travelling toward the card rather than toward transparent */
+.card__pic::after{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(180deg,
+    transparent 0 46%,
+    color-mix(in srgb, var(--paper-2) 55%, transparent) 74%,
+    var(--paper-2) 100%);
+}
+.card--pic:hover .card__pic img{ transform:scale(1.035); }
 
 /* card on dark */
 
@@ -368,8 +385,11 @@ button{ font:inherit; color:inherit; background:none; border:0; }
    Gated behind .js, which an inline script in <head> sets. If the script
    file fails to load for any reason, nothing is hidden and the whole page
    still reads — content must never depend on JavaScript to be visible. */
-.js .r{ opacity:0; transform:translateY(18px); transition:opacity 1.15s var(--e-out), transform 1.15s var(--e-out); }
-.js .r.in{ opacity:1; transform:none; }
+/* Fade only — nothing travels vertically on the way in. A card that rises as
+   it arrives is still rising while the reader is already looking at it, which
+   reads as the layout settling late rather than as an entrance. */
+.js .r{ opacity:0; transition:opacity 1.15s var(--e-out); }
+.js .r.in{ opacity:1; }
 .js .r[data-d="1"]{ transition-delay:.1s } .js .r[data-d="2"]{ transition-delay:.2s }
 .js .r[data-d="3"]{ transition-delay:.3s } .js .r[data-d="4"]{ transition-delay:.4s }
 
@@ -792,41 +812,36 @@ button{ font:inherit; color:inherit; background:none; border:0; }
   color:var(--text); white-space:nowrap; cursor:pointer; position:relative;
   transition:color .4s var(--e), transform .5s var(--e-enter);
 }
-/* A crayon scribble sweeps in behind the word, in that word's own colour —
-   the same drawn-by-hand language as the illustrations in the areas. It is one
-   SVG used as a mask, so the shape is shared and only the colour changes; a
-   background-image per colour would be six copies of the same drawing.
-   `isolation` keeps the z-index:-1 inside the button: without a stacking
-   context of its own the scribble would fall behind the section itself. */
+/* Each discipline sits on its own soft pastel wash. It is there at rest, not
+   only on hover — the row should read as coloured at a glance — and hover
+   simply brings it up. Deliberately not a chip: no border, no flat fill, and
+   the corners are uneven so it reads as something laid down by hand rather
+   than a box drawn around the word. */
 .disc__t{ isolation:isolate; }
 .disc__t::before{
   content:""; position:absolute; z-index:-1;
-  left:-.42em; right:-.42em; top:-.34em; bottom:-.16em;
+  left:-.55em; right:-.55em; top:-.3em; bottom:-.24em;
   background:var(--chip, var(--leaf));
-  -webkit-mask-image:var(--scribble); mask-image:var(--scribble);
-  -webkit-mask-size:100% 100%; mask-size:100% 100%;
-  -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
-  opacity:0; transform:scaleX(.55); transform-origin:left center;
-  transition:opacity .38s var(--e-enter), transform .52s var(--e-enter);
+  /* uneven corners, and a fraction off level, so no two read quite the same */
+  border-radius:60% 40% 55% 45% / 46% 54% 44% 56%;
+  transform:rotate(-.7deg);
+  opacity:.17;
+  transition:opacity .4s var(--e-enter), transform .5s var(--e-enter);
 }
-/* and a soft bloom under it, so the colour reads as light rather than paint */
+/* a bloom under it, so the colour reads as light rather than as paint */
 .disc__t::after{
   content:""; position:absolute; z-index:-2;
-  left:-.3em; right:-.3em; top:0; bottom:0; border-radius:999px;
+  left:-.4em; right:-.4em; top:-.1em; bottom:-.05em; border-radius:999px;
   background:var(--chip, var(--leaf));
-  opacity:0; filter:blur(11px); transform:scale(.7);
-  transition:opacity .45s var(--e-enter), transform .55s var(--e-enter);
+  opacity:.12; filter:blur(10px);
+  transition:opacity .45s var(--e-enter);
 }
 .disc__t:hover, .disc__t:focus-visible{ transform:translateY(-3px); }
-.disc__t:hover::before, .disc__t:focus-visible::before{ opacity:.42; transform:none; }
-.disc__t:hover::after,  .disc__t:focus-visible::after{ opacity:.3; transform:scale(1); }
-.disc__t:focus-visible{ outline:none; }
-
-/* the stroke itself: two passes of a rough marker, the second lighter, so the
-   edge breaks up the way a crayon does instead of ending in a clean rectangle */
-:root{
-  --scribble:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 44' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='%23000' stroke-linecap='round'%3E%3Cpath d='M9 23C46 11 78 27 116 17c26-7 52-9 76 3' stroke-width='24' opacity='.92'/%3E%3Cpath d='M15 30C58 21 92 33 132 24c22-5 44-6 55 2' stroke-width='13' opacity='.58'/%3E%3Cpath d='M22 13C64 5 96 17 140 10' stroke-width='7' opacity='.34'/%3E%3C/g%3E%3C/svg%3E");
+.disc__t:hover::before, .disc__t:focus-visible::before{
+  opacity:.36; transform:rotate(-.7deg) scale(1.04);
 }
+.disc__t:hover::after, .disc__t:focus-visible::after{ opacity:.32; }
+.disc__t:focus-visible{ outline:none; }
 
 /* The discipline line has to hold six terms without breaking, so About gives
    its second column more room than the default prose split — the heading
@@ -839,7 +854,8 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 /* the description reads in place until the dialog can carry it */
 .disc__d{ margin:.3rem 0 0; font-size:.88rem; color:var(--text-mute); max-width:52ch; }
 .pop-ok .disc__d{ display:none; }
-.pop-ok .disc{ align-items:baseline; }
+/* stays centred: on `baseline` the first term has no separator to align to and
+   sits a few pixels below the rest of the line */
 
 /* ---------- discipline panel ---------- */
 .pop{
@@ -912,14 +928,32 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 .marq__track{
   display:flex; gap:clamp(14px,1.5vw,20px);
   padding-right:clamp(14px,1.5vw,20px);
+  align-items:stretch;
 }
+.marq:focus-visible{ outline:2px solid var(--leaf); outline-offset:6px; border-radius:var(--r); }
 
-.marq__hint{
-  display:flex; align-items:center; gap:.5rem;
-  font-size:.66rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--text-mute); margin-top:clamp(12px,1.4vw,18px);
+/* a card sized for a travelling row: fixed width, and equal height to its
+   neighbours so the row does not step up and down as it goes past */
+.marq__track > .card{ width:clamp(258px,26vw,340px); flex:none; }
+
+/* ---------- the row's own scrollbar ----------
+   Built by the script under each travelling row. It replaces the arrow
+   buttons: dragging a thumb is a shorter route to a distant card than
+   clicking an arrow repeatedly, and it doubles as the indication that the row
+   holds more than it shows. The row loops, so the thumb runs the length of
+   one lap and starts again — the same journey the cards make. */
+.hbar{
+  position:relative; height:4px; border-radius:999px;
+  background:var(--line); margin-top:clamp(14px,1.6vw,20px);
+  cursor:pointer; touch-action:none;
 }
-.marq__hint::before{ content:""; width:18px; height:1px; background:var(--line); }
+.hbar__thumb{
+  position:absolute; top:-3px; height:10px; min-width:34px;
+  border-radius:999px; background:var(--green-2); opacity:.55;
+  transition:opacity .3s var(--e), background .3s var(--e);
+}
+.hbar:hover .hbar__thumb, .hbar.is-drag .hbar__thumb{ opacity:1; background:var(--lime); }
+.hbar.is-drag{ cursor:grabbing; }
 
 /* Nothing here depends on the script: with no JS there is one track inside a
    scroll container, which is already a row the reader can drag and swipe. The
@@ -952,10 +986,17 @@ button{ font:inherit; color:inherit; background:none; border:0; }
    plate is drawn from the same orb language as the page rather than left as
    an empty box. Drop an <img> inside and it covers the drawing — the card
    needs no other change. */
+/* Full-bleed and fading out at the bottom, the same as the area cards: a
+   light plate inset in a dark card reads as a second rectangle drawn inside
+   the first. Everything below is unchanged — the drawn field, and an <img>
+   covering it if one is ever dropped in. */
 .mcard__fig{
   position:relative; aspect-ratio:16/10; overflow:hidden;
-  border-radius:calc(var(--r) - 3px);
+  margin:-.55rem -.55rem 0;
+  border-radius:calc(var(--r) - 1px) calc(var(--r) - 1px) 0 0;
   background:var(--fig-bg,#EAF3E4);
+  -webkit-mask-image:linear-gradient(180deg,#000 0 56%,rgba(0,0,0,.5) 82%,transparent 100%);
+          mask-image:linear-gradient(180deg,#000 0 56%,rgba(0,0,0,.5) 82%,transparent 100%);
 }
 .mcard__fig::before,
 .mcard__fig::after{ content:""; position:absolute; border-radius:50%; }
@@ -968,8 +1009,10 @@ button{ font:inherit; color:inherit; background:none; border:0; }
   background:radial-gradient(closest-side, var(--fig-b,rgba(189,227,136,.75)) 0%, transparent 72%);
 }
 .mcard__fig img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+/* at the top of the plate, not the bottom: the plate now fades out downward
+   and a label sitting in that fade goes with it */
 .mcard__fig i{
-  position:absolute; left:.85rem; bottom:.7rem; font-style:normal;
+  position:absolute; left:.95rem; top:.8rem; font-style:normal;
   font-size:.62rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
   color:var(--green); mix-blend-mode:multiply;
 }
@@ -1091,22 +1134,22 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 .js .head.r > div > .micro,
 .js .head.r > div > h2,
 .js .head.r > .lede{
-  opacity:0; transform:translateY(12px);
-  transition:opacity 1.05s var(--e-enter), transform 1.05s var(--e-enter);
+  opacity:0;
+  transition:opacity 1.05s var(--e-enter);
 }
 .js .head.r.in > div > .micro{ transition-delay:.04s }
 .js .head.r.in > div > h2{ transition-delay:.19s }
 .js .head.r.in > .lede{ transition-delay:.38s }
 .js .head.r.in > div > .micro,
 .js .head.r.in > div > h2,
-.js .head.r.in > .lede{ opacity:1; transform:none; }
+.js .head.r.in > .lede{ opacity:1; }
 
 /* the disciplines arrive along the line, left to right */
 .js .disc__i{
-  opacity:0; transform:translateY(9px);
-  transition:opacity .8s var(--e-enter), transform .8s var(--e-enter);
+  opacity:0;
+  transition:opacity .8s var(--e-enter);
 }
-.js .r.in .disc__i{ opacity:1; transform:none; }
+.js .r.in .disc__i{ opacity:1; }
 .js .r.in .disc__i:nth-child(1){ transition-delay:.06s }
 .js .r.in .disc__i:nth-child(2){ transition-delay:.14s }
 .js .r.in .disc__i:nth-child(3){ transition-delay:.22s }

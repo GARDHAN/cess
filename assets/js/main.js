@@ -230,8 +230,8 @@
 
   $$(".rail").forEach(function(rail){ dragToPan(rail); });
 
-  /* continuous marquees — rows that travel on their own, and that the reader
-     can also take hold of.
+  /* Travelling rows — they move on their own, and the reader can also take
+     hold of them.
 
      Two identical tracks sit side by side, so a scroll position of exactly one
      track width shows the same thing as a position of zero. Travel is a frame
@@ -242,14 +242,14 @@
      repeated until it is.
 
      Driving scrollLeft rather than a transform is what makes the row draggable
-     at the same time: the travel and the drag are writing to the same number,
-     so a reader taking hold of it does not have to fight an animation, and
-     letting go does not snap it back to where the animation had got to.
+     at the same time: the travel, the drag, the scrollbar and a trackpad swipe
+     are all writing the same number, so none of them has to fight any other.
 
-     Speed is in pixels per second, so a six-card row and a three-card row
+     Speed is in pixels per second, so a seven-card row and a four-card row
      travel at the same pace. */
   var MARQ_PX_PER_SEC = 34;
   var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var rows = [];
 
   $$(".marq").forEach(function(marq){
     var row = marq.querySelector(".marq__row");
@@ -267,6 +267,63 @@
     }
 
     var drag = dragToPan(marq, loop);
+
+    /* the row's own scrollbar, in place of the arrow buttons: dragging a thumb
+       is a shorter route to a distant card than clicking an arrow repeatedly,
+       and it says at a glance that the row holds more than it shows. Built
+       here rather than in the markup — with no script there is nothing for it
+       to drive, and an inert scrollbar is worse than none. */
+    var bar = document.createElement("div");
+    bar.className = "hbar";
+    var thumb = document.createElement("span");
+    thumb.className = "hbar__thumb";
+    bar.appendChild(thumb);
+    marq.parentNode.insertBefore(bar, marq.nextSibling);
+
+    var barDrag = false;
+
+    function thumbFrac(){
+      return lap ? Math.max(.08, Math.min(1, marq.clientWidth / lap)) : 1;
+    }
+
+    function sync(){
+      if(!lap) return;
+      var w = thumbFrac();
+      thumb.style.width = (w * 100) + "%";
+      thumb.style.left = ((marq.scrollLeft / lap) * (100 - w * 100)) + "%";
+    }
+
+    /* invert `sync`: put the middle of the thumb under the pointer, so the
+       card you are aiming at is the one you land on */
+    function seek(e){
+      if(!lap) return;
+      var r = bar.getBoundingClientRect();
+      if(r.width <= 0) return;
+      var w = thumbFrac();
+      var span = 1 - w;
+      var at = (e.clientX - r.left) / r.width;
+      var pos = span > 0 ? (at - w / 2) / span : 0;
+      marq.scrollLeft = loop(Math.max(0, Math.min(1, pos)) * lap);
+    }
+
+    bar.addEventListener("pointerdown", function(e){
+      barDrag = true;
+      bar.classList.add("is-drag");
+      try{ bar.setPointerCapture(e.pointerId); }catch(_){}
+      seek(e);
+      e.preventDefault();
+    });
+    bar.addEventListener("pointermove", function(e){ if(barDrag){ seek(e); e.preventDefault(); } });
+    function barUp(e){
+      if(!barDrag) return;
+      barDrag = false;
+      bar.classList.remove("is-drag");
+      try{ bar.releasePointerCapture(e.pointerId); }catch(_){}
+    }
+    bar.addEventListener("pointerup", barUp);
+    bar.addEventListener("pointercancel", barUp);
+
+    marq.addEventListener("scroll", sync, { passive:true });
 
     function build(){
       /* start from the original set every time, so a resize does not stack
@@ -293,6 +350,7 @@
       row.appendChild(copy);
       marq.setAttribute("data-ready", "");
       marq.scrollLeft = loop(marq.scrollLeft);
+      sync();
     }
 
     build();
@@ -304,35 +362,45 @@
     });
 
     /* travel stops for anything that means the row is being read or handled:
-       a pointer over it, keyboard focus inside it, a drag in progress, or the
-       section being off screen entirely. */
+       a pointer over it, keyboard focus inside it, either kind of drag, or the
+       section being off screen entirely */
     var hovered = false, focused = false, onScreen = true;
     marq.addEventListener("mouseenter", function(){ hovered = true; });
     marq.addEventListener("mouseleave", function(){ hovered = false; });
+    bar.addEventListener("mouseenter", function(){ hovered = true; });
+    bar.addEventListener("mouseleave", function(){ hovered = false; });
     marq.addEventListener("focusin",  function(){ focused = true; });
     marq.addEventListener("focusout", function(){ focused = false; });
     new IntersectionObserver(function(es){
       onScreen = es[es.length - 1].isIntersecting;
     }).observe(marq);
 
-    /* No travel under reduced motion, and none when the page is being driven
-       by a screenshot — a rAF that never settles keeps headless Chrome's
-       virtual clock from going idle, the same way an infinite CSS animation
-       does. The row stays draggable in both cases. */
-    if(reduced || window.CESS_NO_AUTOSCROLL) return;
+    rows.push({
+      advance: function(dt){
+        if(!lap || hovered || focused || !onScreen || barDrag || drag.dragging()) return;
+        marq.scrollLeft = loop(marq.scrollLeft + MARQ_PX_PER_SEC * dt / 1000);
+      }
+    });
+  });
 
+  /* One loop for every row rather than one each: they all advance by the same
+     clock, and there is a single place where the motion can be switched off.
+     No travel under reduced motion, and none when the page is being driven by
+     a screenshot — a rAF that never settles keeps headless Chrome's virtual
+     clock from going idle, the same way an infinite CSS animation does. The
+     rows stay draggable in both cases. */
+  if(rows.length && !reduced && !window.CESS_NO_AUTOSCROLL){
     var last = 0;
     requestAnimationFrame(function frame(now){
       requestAnimationFrame(frame);
       var dt = last ? now - last : 0;
       last = now;
-      if(!lap || hovered || focused || !onScreen || drag.dragging()) return;
       /* a backgrounded tab hands back one enormous delta; without the clamp
-         the row would leap most of a lap on the frame the reader comes back */
+         every row would leap most of a lap on the frame the reader comes back */
       if(dt > 64) dt = 64;
-      marq.scrollLeft = loop(marq.scrollLeft + MARQ_PX_PER_SEC * dt / 1000);
+      if(dt) rows.forEach(function(r){ r.advance(dt); });
     });
-  });
+  }
 
   /* pinned heading, travelling objectives.
 
