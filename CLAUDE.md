@@ -140,8 +140,13 @@ Tokens live in `:root`. Use them rather than literal colours.
   one track width every frame; because the wrap point is where the content
   repeats, crossing it is invisible. Speed is px/sec so every row travels at the
   same pace whatever it carries.
-  Travel stops for a pointer over the row, focus inside it, a drag in progress,
-  or the section being off screen. Under `prefers-reduced-motion`, or with no
+  **Travel does not stop for a pointer resting on the row** — only for a drag in
+  progress, keyboard focus inside it, or the section being off screen. Pausing
+  on hover was tried and removed (2026-08-17): a reader scrolling down a page
+  leaves the cursor mid-viewport, which is exactly where these rows arrive, so
+  every row froze under it and the movement appeared not to work at all. A
+  reader who wants the row still takes hold of it — which is what the drag is
+  for. Under `prefers-reduced-motion`, or with no
   script at all, the row simply does not travel — it is a scroll container
   either way, so it stays draggable and swipeable.
   Consequences worth knowing: `animation:none` does **not** stop it, so the

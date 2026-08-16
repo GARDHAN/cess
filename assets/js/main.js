@@ -303,21 +303,27 @@
       rt = setTimeout(build, 200);
     });
 
-    /* travel stops for anything that means the row is being read or handled:
-       a pointer over it, keyboard focus inside it, either kind of drag, or the
-       section being off screen entirely */
-    var hovered = false, focused = false, onScreen = true;
-    marq.addEventListener("mouseenter", function(){ hovered = true; });
-    marq.addEventListener("mouseleave", function(){ hovered = false; });
+    /* Travel stops only for someone actually working the row: a drag in
+       progress, or keyboard focus inside it. It does **not** stop for a
+       pointer resting on top.
+
+       It used to. That looked correct and was not: a reader scrolling down a
+       page leaves the cursor wherever it was, which is usually the middle of
+       the viewport — which is where these rows land. Every row you arrived at
+       froze under the cursor, so the automatic movement appeared not to work
+       at all. A reader who wants the row still can take hold of it, which is
+       the point of the row being draggable. */
+    var focused = false, onScreen = true;
     marq.addEventListener("focusin",  function(){ focused = true; });
     marq.addEventListener("focusout", function(){ focused = false; });
+    /* off screen it is not being read by anyone, and the work is wasted */
     new IntersectionObserver(function(es){
       onScreen = es[es.length - 1].isIntersecting;
     }).observe(marq);
 
     rows.push({
       advance: function(dt){
-        if(!lap || hovered || focused || !onScreen || drag.dragging()) return;
+        if(!lap || focused || !onScreen || drag.dragging()) return;
         marq.scrollLeft = loop(marq.scrollLeft + MARQ_PX_PER_SEC * dt / 1000);
       }
     });
