@@ -343,36 +343,31 @@
     <div class="marq r" data-d="1">
       <div class="marq__row">
         <div class="marq__track">
-          <article class="mcard">
-            <div class="mcard__fig" style="--fig-a:rgba(30,122,75,.5); --fig-b:rgba(189,227,136,.8)"><i>01</i></div>
+          <article class="mcard mcard--text">
             <div class="mcard__body">
               <span class="micro">Highlight</span>
               <h3>Research &amp; Knowledge</h3>
             </div>
           </article>
-          <article class="mcard">
-            <div class="mcard__fig" style="--fig-a:rgba(53,169,106,.5); --fig-b:rgba(224,163,62,.5)"><i>02</i></div>
+          <article class="mcard mcard--text">
             <div class="mcard__body">
               <span class="micro">Highlight</span>
               <h3>Sustainability &amp; Awareness</h3>
             </div>
           </article>
-          <article class="mcard">
-            <div class="mcard__fig" style="--fig-a:rgba(20,96,60,.5); --fig-b:rgba(122,90,168,.45)"><i>03</i></div>
+          <article class="mcard mcard--text">
             <div class="mcard__body">
               <span class="micro">Highlight</span>
               <h3>Community Engagement</h3>
             </div>
           </article>
-          <article class="mcard">
-            <div class="mcard__fig" style="--fig-a:rgba(30,122,75,.45); --fig-b:rgba(63,114,196,.4)"><i>04</i></div>
+          <article class="mcard mcard--text">
             <div class="mcard__body">
               <span class="micro">Highlight</span>
               <h3>Student–Faculty Collaboration</h3>
             </div>
           </article>
-          <article class="mcard">
-            <div class="mcard__fig" style="--fig-a:rgba(53,169,106,.45); --fig-b:rgba(189,227,136,.7)"><i>05</i></div>
+          <article class="mcard mcard--text">
             <div class="mcard__body">
               <span class="micro">Highlight</span>
               <h3>Capacity Building</h3>
@@ -401,32 +396,27 @@
     <div class="marq r" data-d="1">
       <div class="marq__row">
         <div class="marq__track">
-          <article class="mcard">
-            <div class="mcard__fig" style="--fig-a:rgba(30,122,75,.5); --fig-b:rgba(189,227,136,.8)"><i>01</i></div>
+          <article class="mcard mcard--text">
             <div class="mcard__body">
               <h3>Sustainability studies</h3>
             </div>
           </article>
-          <article class="mcard">
-            <div class="mcard__fig" style="--fig-a:rgba(53,169,106,.5); --fig-b:rgba(63,114,196,.4)"><i>02</i></div>
+          <article class="mcard mcard--text">
             <div class="mcard__body">
               <h3>Social development</h3>
             </div>
           </article>
-          <article class="mcard">
-            <div class="mcard__fig" style="--fig-a:rgba(20,96,60,.5); --fig-b:rgba(122,90,168,.45)"><i>03</i></div>
+          <article class="mcard mcard--text">
             <div class="mcard__body">
               <h3>Community well-being</h3>
             </div>
           </article>
-          <article class="mcard">
-            <div class="mcard__fig" style="--fig-a:rgba(30,122,75,.45); --fig-b:rgba(224,163,62,.5)"><i>04</i></div>
+          <article class="mcard mcard--text">
             <div class="mcard__body">
               <h3>Behavioural and social research</h3>
             </div>
           </article>
-          <article class="mcard">
-            <div class="mcard__fig" style="--fig-a:rgba(53,169,106,.45); --fig-b:rgba(189,227,136,.7)"><i>05</i></div>
+          <article class="mcard mcard--text">
             <div class="mcard__body">
               <h3>Innovation for sustainable communities</h3>
             </div>
@@ -517,14 +507,29 @@
         </div>
         <div>
           <span><a href="mailto:cess@christuniversity.in" style="color:var(--green-2); text-decoration:none;">cess@christuniversity.in</a></span>
-          <!-- Social accounts pending. When the LinkedIn and Instagram handles and the
-               official CESS address are confirmed, uncomment and fill in — a link that
-               goes nowhere is worse on an official site than no link at all.
+
+          <!-- Social accounts. The handles are not confirmed yet, so these carry
+               no href: an <a> without one is valid, is not focusable, and does
+               not offer the reader a link that goes nowhere. To turn them on,
+               add href (and target/rel) to each — nothing else needs changing.
+                 <a class="soc" href="https://www.linkedin.com/company/…"
+                    target="_blank" rel="noopener" aria-label="CESS on LinkedIn"> -->
           <div class="foot__social">
-            <a href="https://www.linkedin.com/company/________" target="_blank" rel="noopener">LinkedIn</a>
-            <a href="https://www.instagram.com/________" target="_blank" rel="noopener">Instagram</a>
+            <a class="soc" aria-label="LinkedIn — link to follow">
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.76-1.95C21.4 8.75 22 11.1 22 14.15V21h-4v-6.1c0-1.45-.03-3.3-2.05-3.3-2.05 0-2.37 1.57-2.37 3.2V21h-3.9V9Z"/>
+              </svg>
+              <span>LinkedIn</span>
+            </a>
+            <a class="soc" aria-label="Instagram — link to follow">
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="3" y="3" width="18" height="18" rx="5"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="17.2" cy="6.8" r="1.2" fill="currentColor" stroke="none"/>
+              </svg>
+              <span>Instagram</span>
+            </a>
           </div>
-          -->
         </div>
       </div>
       <div class="foot__note">

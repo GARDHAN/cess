@@ -149,21 +149,27 @@ Tokens live in `:root`. Use them rather than literal colours.
   `scroll-behavior:auto`, or the smooth scrolling inherited from `html` tries to
   animate every per-frame write and the row crawls. One shared rAF drives all
   five rows, so there is a single place to switch the motion off.
-- **Each row's scrollbar** (`.hbar`, built by the script) replaces the arrow
-  buttons the rails had: dragging a thumb is a shorter route to a distant card
-  than clicking an arrow repeatedly, and it doubles as the sign that the row
-  holds more than it shows. The thumb is sized `clientWidth / lap` and runs the
-  length of one lap before starting again — the same journey the cards make.
-  It is built in JS, not markup: with no script there is nothing for it to
-  drive, and an inert scrollbar is worse than none. The old "Scroll for more"
-  and "Hover to pause" hints came off with it.
+- **A row has no controls at all** — no arrows, no scrollbar, no hint label. It
+  travels, and it answers the cursor. A `.hbar` scrollbar was built and then
+  removed at the client's request (2026-08-17); don't reintroduce one without
+  asking.
+- **A scroll container clips, vertically as well as sideways**, and both of the
+  page's horizontal components were caught by it. `.marq` carries
+  `padding:14px 0 22px` so a card's hover lift and its shadow have somewhere to
+  go — without it the raised edge was sliced flat and the lift read as the card
+  being cut. `.disc` carries padding for the same reason: the washes bleed past
+  their words, and the clip was cutting the first word's edge and drawing a
+  faint rectangle around the whole row. Both pay the padding back in their
+  margin so the layout does not shift. Anything that bleeds outside its own box
+  inside one of these — a shadow, a lift, a blur — needs room made for it
+  first.
 - **Card pictures are full-bleed and fade out downward.** A light plate inset in
   a dark card reads as a second rectangle drawn inside the first, so
-  `.card__pic` and `.mcard__fig` run to the card's edges, take its top corners,
-  and dissolve over their bottom third. Both a mask *and* a gradient in
-  `--paper-2` are needed: the mask alone leaves a hard cream edge at the sides.
-  A label inside one of these plates belongs at the top — the bottom is the part
-  that fades away, as `.mcard__fig i` found out.
+  `.card__pic` runs to the card's edges, takes its top corners, and dissolves
+  over its bottom third. Both a mask *and* a gradient in `--paper-2` are needed:
+  the mask alone leaves a hard cream edge at the sides.
+  Only `#areas` has pictures — the client asked for the drawn placeholder plates
+  off every `.mcard` row (2026-08-17), so all of them are now `.mcard--text`.
 - **Drag to pan** (`dragToPan` in `main.js`) is on every horizontal scroller —
   all five rows. Mouse and pen only: a touch screen already
   drags an `overflow-x` container natively, and taking the pointer there would
@@ -190,12 +196,15 @@ Tokens live in `:root`. Use them rather than literal colours.
   Without the dialog the descriptions simply read in place: `main.js` sets
   `pop-ok` on the root only after confirming `showModal`, and that class is what
   hides them — never hide them from CSS alone.
-  Each term sits on a **soft pastel wash** in its own colour, present at rest
+  Each term sits on a **pastel wash** in its own colour, present at rest
   rather than only on hover — the row is meant to read as coloured at a glance,
   and hover simply brings it up. Deliberately not a chip: no border, no flat
   fill, uneven corners and a fraction off level, so it reads as laid down by
-  hand rather than as a box drawn around the word. (A crayon-scribble version
-  came first and was dropped — too busy, and it only existed on hover.) The wash
+  hand rather than as a box drawn around the word. (A crayon-scribble
+  version came first and was dropped — too busy, and it only existed on hover.
+  A blurred bloom sat under the wash and went too: a blur is drawn well outside
+  the element that owns it, so the scroll container clipped every one of them
+  along the same two lines and the row picked up a rectangle nobody had drawn.) The wash
   sits at `z-index:-1`, which is why the button carries `isolation:isolate`:
   without a stacking context of its own it falls behind the section instead of
   behind the word. Keep `.disc` centred, not `align-items:baseline` — the first
@@ -310,11 +319,17 @@ screen reader. Source files were 2–9MB each; they ship resized to 900px wide a
 converted to WebP (~40KB each, `sips -Z 900` then `cwebp -q 80`). Anything added
 later should go through the same pass — the originals are far too heavy to serve.
 
-The other rows still have no photography. `.mcard__fig` draws a soft field from
-the same orb language as the page rather than leaving an empty box; dropping an
-`<img>` inside covers the drawing, with no other change to the card. The
-certificate course row is deliberately without one: the client asked for the
-picture area to come off it, and those cards carry `.mcard--text`.
+The other rows have no pictures at all. `.mcard__fig` — a soft field drawn from
+the same orb language as the page, which an `<img>` covers if one is dropped in
+— is kept in the stylesheet but is on nothing: the client asked for the picture
+area off the certificate course row, then off what we're building and research
+too, so every `.mcard` is `.mcard--text`.
+
+**Footer social links.** LinkedIn and Instagram icons are in place but carry no
+`href` — the handles are not confirmed. An `<a>` without one is valid, is not
+focusable, and offers no dead link; `.soc[href]` is what colours them and gives
+them a hover, so adding the attribute is the only change needed to turn them
+on.
 
 ## Scope — the client document governs the page
 

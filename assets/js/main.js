@@ -268,63 +268,6 @@
 
     var drag = dragToPan(marq, loop);
 
-    /* the row's own scrollbar, in place of the arrow buttons: dragging a thumb
-       is a shorter route to a distant card than clicking an arrow repeatedly,
-       and it says at a glance that the row holds more than it shows. Built
-       here rather than in the markup — with no script there is nothing for it
-       to drive, and an inert scrollbar is worse than none. */
-    var bar = document.createElement("div");
-    bar.className = "hbar";
-    var thumb = document.createElement("span");
-    thumb.className = "hbar__thumb";
-    bar.appendChild(thumb);
-    marq.parentNode.insertBefore(bar, marq.nextSibling);
-
-    var barDrag = false;
-
-    function thumbFrac(){
-      return lap ? Math.max(.08, Math.min(1, marq.clientWidth / lap)) : 1;
-    }
-
-    function sync(){
-      if(!lap) return;
-      var w = thumbFrac();
-      thumb.style.width = (w * 100) + "%";
-      thumb.style.left = ((marq.scrollLeft / lap) * (100 - w * 100)) + "%";
-    }
-
-    /* invert `sync`: put the middle of the thumb under the pointer, so the
-       card you are aiming at is the one you land on */
-    function seek(e){
-      if(!lap) return;
-      var r = bar.getBoundingClientRect();
-      if(r.width <= 0) return;
-      var w = thumbFrac();
-      var span = 1 - w;
-      var at = (e.clientX - r.left) / r.width;
-      var pos = span > 0 ? (at - w / 2) / span : 0;
-      marq.scrollLeft = loop(Math.max(0, Math.min(1, pos)) * lap);
-    }
-
-    bar.addEventListener("pointerdown", function(e){
-      barDrag = true;
-      bar.classList.add("is-drag");
-      try{ bar.setPointerCapture(e.pointerId); }catch(_){}
-      seek(e);
-      e.preventDefault();
-    });
-    bar.addEventListener("pointermove", function(e){ if(barDrag){ seek(e); e.preventDefault(); } });
-    function barUp(e){
-      if(!barDrag) return;
-      barDrag = false;
-      bar.classList.remove("is-drag");
-      try{ bar.releasePointerCapture(e.pointerId); }catch(_){}
-    }
-    bar.addEventListener("pointerup", barUp);
-    bar.addEventListener("pointercancel", barUp);
-
-    marq.addEventListener("scroll", sync, { passive:true });
-
     function build(){
       /* start from the original set every time, so a resize does not stack
          clones from the previous pass on top of the ones before it */
@@ -350,7 +293,6 @@
       row.appendChild(copy);
       marq.setAttribute("data-ready", "");
       marq.scrollLeft = loop(marq.scrollLeft);
-      sync();
     }
 
     build();
@@ -367,8 +309,6 @@
     var hovered = false, focused = false, onScreen = true;
     marq.addEventListener("mouseenter", function(){ hovered = true; });
     marq.addEventListener("mouseleave", function(){ hovered = false; });
-    bar.addEventListener("mouseenter", function(){ hovered = true; });
-    bar.addEventListener("mouseleave", function(){ hovered = false; });
     marq.addEventListener("focusin",  function(){ focused = true; });
     marq.addEventListener("focusout", function(){ focused = false; });
     new IntersectionObserver(function(es){
@@ -377,7 +317,7 @@
 
     rows.push({
       advance: function(dt){
-        if(!lap || hovered || focused || !onScreen || barDrag || drag.dragging()) return;
+        if(!lap || hovered || focused || !onScreen || drag.dragging()) return;
         marq.scrollLeft = loop(marq.scrollLeft + MARQ_PX_PER_SEC * dt / 1000);
       }
     });

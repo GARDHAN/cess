@@ -281,7 +281,7 @@ button{ font:inherit; color:inherit; background:none; border:0; }
   padding:clamp(20px,2.1vw,28px); display:flex; flex-direction:column; gap:.7rem;
   position:relative; transition:border-color .35s var(--e), transform .35s var(--e), box-shadow .35s var(--e);
 }
-.card:hover{ border-color:var(--leaf); transform:translateY(-3px); box-shadow:0 18px 36px -26px rgba(0,0,0,.75); }
+.card:hover{ border-color:var(--leaf); transform:translateY(-6px); box-shadow:0 22px 44px -24px rgba(0,0,0,.8); }
 .card h3{ font-size:var(--t-h3); font-weight:600; letter-spacing:-.018em; }
 .card p{ font-size:.94rem; color:var(--text-soft); }
 .card__n{
@@ -795,9 +795,15 @@ button{ font:inherit; color:inherit; background:none; border:0; }
    a stray separator off the start of a wrapped line. */
 .disc{
   display:flex; flex-wrap:nowrap; align-items:center;
-  margin-top:1rem; padding:.2rem 0 .5rem; list-style:none;
+  list-style:none;
   overflow-x:auto; overscroll-behavior-x:contain;
   scrollbar-width:none; -ms-overflow-style:none;
+  /* A scroll container clips, and it clips vertically as well as sideways.
+     Each wash bleeds past its own word, so with no room inside the box the
+     clip cut through them — the first word lost its left edge and the cut ran
+     as a faint rectangle around the whole row. The padding is that room; the
+     negative margin puts the line back where it would have sat without it. */
+  padding:.75rem 1rem; margin:.25rem -1rem 0;
 }
 .disc::-webkit-scrollbar{ display:none; }
 .disc__i{ display:flex; align-items:center; flex:none; }
@@ -812,35 +818,31 @@ button{ font:inherit; color:inherit; background:none; border:0; }
   color:var(--text); white-space:nowrap; cursor:pointer; position:relative;
   transition:color .4s var(--e), transform .5s var(--e-enter);
 }
-/* Each discipline sits on its own soft pastel wash. It is there at rest, not
-   only on hover — the row should read as coloured at a glance — and hover
-   simply brings it up. Deliberately not a chip: no border, no flat fill, and
-   the corners are uneven so it reads as something laid down by hand rather
-   than a box drawn around the word. */
+/* Each discipline sits on its own pastel wash. It is there at rest, not only
+   on hover — the row should read as coloured at a glance — and hover simply
+   brings it up. Deliberately not a chip: no border, no flat fill, and the
+   corners are uneven so it reads as something laid down by hand rather than a
+   box drawn around the word.
+
+   One shape only. A blurred bloom sat under this and had to go: a blur is
+   drawn well outside the element that owns it, so the scroll container clipped
+   every one of them along the same two lines and the row picked up a faint
+   rectangle nobody had drawn. */
 .disc__t{ isolation:isolate; }
 .disc__t::before{
   content:""; position:absolute; z-index:-1;
-  left:-.55em; right:-.55em; top:-.3em; bottom:-.24em;
+  left:-.62em; right:-.62em; top:-.34em; bottom:-.28em;
   background:var(--chip, var(--leaf));
   /* uneven corners, and a fraction off level, so no two read quite the same */
   border-radius:60% 40% 55% 45% / 46% 54% 44% 56%;
   transform:rotate(-.7deg);
-  opacity:.17;
+  opacity:.3;
   transition:opacity .4s var(--e-enter), transform .5s var(--e-enter);
-}
-/* a bloom under it, so the colour reads as light rather than as paint */
-.disc__t::after{
-  content:""; position:absolute; z-index:-2;
-  left:-.4em; right:-.4em; top:-.1em; bottom:-.05em; border-radius:999px;
-  background:var(--chip, var(--leaf));
-  opacity:.12; filter:blur(10px);
-  transition:opacity .45s var(--e-enter);
 }
 .disc__t:hover, .disc__t:focus-visible{ transform:translateY(-3px); }
 .disc__t:hover::before, .disc__t:focus-visible::before{
-  opacity:.36; transform:rotate(-.7deg) scale(1.04);
+  opacity:.5; transform:rotate(-.7deg) scale(1.05);
 }
-.disc__t:hover::after, .disc__t:focus-visible::after{ opacity:.32; }
 .disc__t:focus-visible{ outline:none; }
 
 /* The discipline line has to hold six terms without breaking, so About gives
@@ -905,8 +907,14 @@ button{ font:inherit; color:inherit; background:none; border:0; }
    swipe or a touch flick moves — so automatic and manual are the same
    mechanism and never fight each other. */
 .marq{
-  margin-top:clamp(30px,3.6vw,52px);
+  margin-top:clamp(18px,2.6vw,38px);
   overflow-x:auto; overflow-y:hidden;
+  /* A card lifts on hover and casts a shadow below it, and a scroll container
+     clips both. Without this padding the raised edge was sliced off flat at
+     the top and the shadow at the bottom — the lift read as the card being cut
+     rather than picked up. The row keeps its place: the padding is paid back
+     in the margin above. */
+  padding:14px 0 22px;
   overscroll-behavior-x:contain;
   scrollbar-width:none; -ms-overflow-style:none;
   /* the script writes scrollLeft every frame; smooth scrolling inherited from
@@ -936,24 +944,6 @@ button{ font:inherit; color:inherit; background:none; border:0; }
    neighbours so the row does not step up and down as it goes past */
 .marq__track > .card{ width:clamp(258px,26vw,340px); flex:none; }
 
-/* ---------- the row's own scrollbar ----------
-   Built by the script under each travelling row. It replaces the arrow
-   buttons: dragging a thumb is a shorter route to a distant card than
-   clicking an arrow repeatedly, and it doubles as the indication that the row
-   holds more than it shows. The row loops, so the thumb runs the length of
-   one lap and starts again — the same journey the cards make. */
-.hbar{
-  position:relative; height:4px; border-radius:999px;
-  background:var(--line); margin-top:clamp(14px,1.6vw,20px);
-  cursor:pointer; touch-action:none;
-}
-.hbar__thumb{
-  position:absolute; top:-3px; height:10px; min-width:34px;
-  border-radius:999px; background:var(--green-2); opacity:.55;
-  transition:opacity .3s var(--e), background .3s var(--e);
-}
-.hbar:hover .hbar__thumb, .hbar.is-drag .hbar__thumb{ opacity:1; background:var(--lime); }
-.hbar.is-drag{ cursor:grabbing; }
 
 /* Nothing here depends on the script: with no JS there is one track inside a
    scroll container, which is already a row the reader can drag and swipe. The
@@ -968,8 +958,8 @@ button{ font:inherit; color:inherit; background:none; border:0; }
   border:1px solid var(--line); border-radius:var(--r); background:var(--paper-2);
   transition:border-color .35s var(--e), transform .35s var(--e), box-shadow .35s var(--e);
 }
-.mcard:hover{ border-color:var(--leaf); transform:translateY(-3px);
-  box-shadow:0 18px 36px -26px rgba(0,0,0,.75); }
+.mcard:hover{ border-color:var(--leaf); transform:translateY(-6px);
+  box-shadow:0 22px 44px -24px rgba(0,0,0,.8); }
 .mcard__body{ padding-inline:.6rem; display:flex; flex-direction:column; gap:.5rem; }
 
 /* The certificate course carries no illustration — the client asked for the
@@ -1018,9 +1008,25 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 }
 
 /* ---------- footer social row ---------- */
-.foot__social{ display:flex; gap:1.1rem; flex-wrap:wrap; margin-top:.9rem; }
-.foot__social a{ font-size:.86rem; color:var(--green-2); text-decoration:none; }
-.foot__social a:hover{ text-decoration:underline; }
+.foot__social{ display:flex; gap:.6rem; flex-wrap:wrap; margin-top:1rem; }
+/* The icons are here before the accounts are. Until an href is added they are
+   not links — muted, and nothing happens on hover — so the page never offers a
+   reader somewhere to go that does not exist. Adding href lights them up:
+   `[href]` is doing all the work below. */
+.soc{
+  display:inline-flex; align-items:center; gap:.5rem;
+  padding:.45rem .8rem .45rem .65rem; border-radius:999px;
+  border:1px solid var(--line); color:var(--text-mute);
+  font-size:.82rem; text-decoration:none;
+  transition:color .3s var(--e), border-color .3s var(--e),
+             background .3s var(--e), transform .35s var(--e-enter);
+}
+.soc svg{ width:17px; height:17px; flex:none; }
+.soc[href]{ color:var(--green-2); }
+.soc[href]:hover{
+  color:var(--lime); border-color:var(--lime);
+  background:rgba(189,227,136,.07); transform:translateY(-2px);
+}
 
 /* ---------- disclosure inside a programme card ----------
    The cards were carrying venue, date, partner and a paragraph of findings
@@ -1222,7 +1228,7 @@ button{ font:inherit; color:inherit; background:none; border:0; }
 .menu__nav a{ transition:padding-left .32s var(--e-enter), color .3s var(--e); }
 .menu__nav a:hover{ padding-left:.7rem; color:var(--lime); }
 
-.foot__social a, .util__links a, .bar__nav a, .more summary{ transition-duration:.3s; }
+.soc, .util__links a, .bar__nav a, .more summary{ transition-duration:.3s; }
 
 /* a disclosure's content arrives rather than appearing */
 .more[open] > :not(summary){
